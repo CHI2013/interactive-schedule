@@ -1,0 +1,20 @@
+{
+    "_id" : "_design/session",
+    "_rev" : "3-d51923e857332e16874f53b36c7d3535",
+    "views" : {
+        "all" : {
+            "map" :  "function(doc) { 
+                        if (doc.type == 'session') {
+                            emit(doc._id, doc._rev);
+                        }
+                      }"
+        },
+        "bydate": {
+            "map": "function(doc) {
+                        if(doc.type === 'session') {
+                            emit(doc.startTime, {'id': doc._id, 'start': doc['Time'], 'end': doc['End Time']}); 
+                        }
+                    }"
+        }
+    } 
+}

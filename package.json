@@ -1,0 +1,13 @@
+{
+  "name": "glance",
+  "version": "0.0.1",
+  "description": "CHI at-a-glance",
+  "keywords": ["chi", "conference", "visualization", "tags"],
+  "homepage": "",
+  "author": "Arvind Satyanarayan <arvindsatya@cs.stanford.edu>, Clemens N. Klokmose <clemens@cs.au.dk>",
+  "dependencies": {
+    "express": "*",
+    "nano": "*",
+    "ya-csv": "*"
+  }
+}

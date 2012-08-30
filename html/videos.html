@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery-ui.min.js"></script>
+    <script src="lib/jquery.rf.slideshow.js"></script>
+    <script src="lib/jquery.svg.min.js"></script>
+    <script src="lib/jquery.svgdom.min.js"></script>
+    <script src="lib/data.js"></script>
+	<style type="text/css">
+	    html,body{
+           margin:0;
+           padding:0;
+           height:100%;
+           border:none
+        }
+        
+	    body { 
+	        font-family: "Helvetica Neue"; 
+	        background: #444;
+	    }
+	    
+	    table {
+	        width: 1920px;
+	        height: 1080px;
+	        border-collapse: collapse;
+	    }
+	    
+	    td { 
+	        border: 1px solid #999;
+            padding: 0;
+            margin: 0; 
+            width: 640px !important;
+            height: 360px !important;
+	    }
+	    
+	    .blank { 
+	        background: #444 !important; 
+	        border-color: #999 !important;
+	    }
+	    
+	    #map { background: #000 !important; }
+	    
+	    #map img {
+	        margin: 0 38px;
+	        height: 360px;
+	        opacity: 0.5;
+	    }
+	    
+	    svg#map_pins {
+	        width: 640px;
+	        height: 360px;
+	        position: absolute;
+	        left: 640px;
+	        top: 0;
+	    }
+	    
+	    svg#map_pins rect.item { 
+	        fill: floralwhite;
+	        opacity: 0.5;
+	    }
+	    
+	    svg .pin { 
+	        opacity: 0.5; 
+	        stroke-width: 0;
+          display: none;
+	    }
+	    svg polygon.pin, svg polygon.pin-large { stroke-width: 1; }
+	    svg .pin-large { 
+	        opacity: 1; 
+          display: none;
+	    }
+	    
+	    /* Color Brewers */
+	    #filter1 { background: #8DD3C7; }
+	    #filter1 h3 { color: #3F876D;}
+	    svg .filter1 { 
+	        fill: #8DD3C7; 
+	        stroke: #8DD3C7;
+	    }
+	    
+	    #filter2 { background: #FDB462; }
+	    #filter2 h3 { color: #975500; }
+	    svg .filter2 { 
+	        fill: #FDB462; 
+	        stroke: #FDB462;
+	    }
+	    
+	    #filter3 { background: #BEBADA; }
+	    #filter3 h3 { color: #441FA8; }
+	    svg .filter3 { 
+	        fill: #BEBADA; 
+	        stroke: #BEBADA;
+	    }
+	    
+	    #filter4 { background: #FB8072; }
+	    #filter4 h3 { color: #A32213; }
+	    svg .filter4 { 
+	        fill: #FB8072; 
+	        stroke: #FB8072;
+	    }
+	    
+	    #filter5 { background: #80B1D3; }
+	    #filter5 h3 { color: #2872A4; }
+	    svg .filter5 { 
+	        fill: #80B1D3; 
+	        stroke: #80B1D3;
+	    }
+	    
+	    #filter6 { background: #B3DE69; }
+	    #filter6 h3 { color: #446112; }
+	    svg .filter6 { 
+	        fill: #B3DE69; 
+	        stroke: #B3DE69;
+	    }
+	    
+    	.filter { border-color: #333; }
+    	
+    	.filter h2 { 
+    	    margin: 10px 0 5px 20px; 
+    	    font-variant: small-caps;
+    	    font-size: 36px;
+    	}
+    	
+    	.filter .info {
+    	}
+    	
+    	.info .inner { 
+    	    height: 220px;
+    	    width: 565px;
+    	    overflow: hidden;
+    	    background: #fff;
+    	    margin: 0 20px;
+    	    padding: 15px;
+    	    border-radius: 10px;
+    	    font-family: "Franklin Gothic Medium";
+    	    font-weight: normal;
+    	    display: block;
+    	}
+    	
+    	.slideshow {
+    	    height: 250px; 
+    	    overflow: hidden;
+    	}
+    	
+    	.filter h3 {
+    	    margin: 0;
+    	    font-size: 30px;
+    	    font-weight: normal;
+    	    max-height: 100px;
+            overflow: hidden;
+    	}
+    	
+    	.filter h4 {
+    	    font-size: 25px;
+    	    font-weight: normal;
+    	    color: #333;
+    	    margin: 18px 0;
+    	}
+    	
+    	.filter h5 { 
+    	    margin: 0;
+    	    font-size: 22px;
+    	    font-weight: normal;
+    	    color: #666;
+    	}
+
+        .title h5 { margin-bottom: 15px; }
+    	
+    	.filter svg {
+    	    height: 20px;
+            margin: 20px 0 0 0;
+    	}
+    	
+    	.filter svg circle { 
+    	    fill: #fff; 
+    	    opacity: 0.4;
+    	}
+    	
+    	.filter svg circle.current { opacity: 1; }
+    	
+    	.filter iframe {
+    	    margin: 0;
+    	    padding: 0;
+    	}
+    	
+    	.tag_cloud { 
+    	    background: #444 !important; 
+    	    border-color: #999 !important;
+    	}
+    	
+    	#twitter-left {
+    	    float: left;
+    	    width: 285px;
+    	    height: 360px;
+            padding: 15px;
+    	    overflow: hidden;
+    	}
+    	
+    	#twitter-right {
+    	    float: left;
+    	    width: 285px;
+    	    height: 360px;
+    	    padding: 15px;
+    	    overflow: hidden;
+    	}
+    	
+    	.tweet {
+	        display: block;
+	        background: #333;
+	        padding: 10px;
+	        margin-bottom: 15px;
+	        color: #eee;
+	        font-family: "Gill Sans";
+	        font-size: 14px;
+	        font-weight: 300;
+	    }
+	    
+	    .tweet .userpic {
+	        float: left;
+	        margin: 0 15px 0 5px; 
+	    }
+	    .tweet .userpic img { border-radius: 5px; }
+	    .tweet .byline { float: right; }
+	    
+	    #announcement div {
+	        display: block;
+            color: white;
+            width: 600px;
+            font-size: 48px;
+            font-family: "Gill Sans";
+            font-weight: 300;
+            padding-left: 40px;
+	    }
+    </style>
+    <style type="text/css">
+    #htmltagcloud{
+    	font-size: 10px;
+    	width: 600px;
+    	height: 330px;
+    	margin: 15px 20px;
+    	font-family:'lucida grande','trebuchet ms',arial,helvetica,sans-serif;
+
+    }#htmltagcloud{line-height:2.4em;word-spacing:normal;letter-spacing:normal;text-transform:none;text-align:justify;text-indent:0}#htmltagcloud a:link{text-decoration:underline}#htmltagcloud a:visited{text-decoration:none}#htmltagcloud a:hover{color:white;background-color:#05f}#htmltagcloud a:active{color:white;background-color:#03d}.wrd{padding:0;position:relative}.wrd a{text-decoration:none}.tagcloud0{font-size:1.0em;color:#555;z-index:10}.tagcloud0 a{color:#555}.tagcloud1{font-size:1.4em;color:#666;z-index:9}.tagcloud1 a{color:#666}.tagcloud2{font-size:1.8em;color:#777;z-index:8}.tagcloud2 a{color:#777}.tagcloud3{font-size:2.2em;color:#888;z-index:7}.tagcloud3 a{color:#888}.tagcloud4{font-size:2.6em;color:#999;z-index:6}.tagcloud4 a{color:#999}.tagcloud5{font-size:3.0em;color:#aaa;z-index:5}.tagcloud5 a{color:#aaa}.tagcloud6{font-size:3.3em;color:#bbb;z-index:4}.tagcloud6 a{color:#bbb}.tagcloud7{font-size:3.6em;color:#ccc;z-index:3}.tagcloud7 a{color:#ccc}.tagcloud8{font-size:3.9em;color:#ddd;z-index:2}.tagcloud8 a{color:#ddd}.tagcloud9{font-size:4.2em;color:#eee;z-index:1}.tagcloud9 a{color:#eee}.tagcloud10{font-size:4.5em;color:#fff;z-index:0}.tagcloud10 a{color:#fff}.freq{font-size:10pt !important;color:#bbb}#credit{text-align:center;color:#333;margin-bottom:0.6em;font:0.7em 'lucida grande',trebuchet,'trebuchet ms',verdana,arial,helvetica,sans-serif}#credit a:link{color:#777;text-decoration:none}#credit a:visited{color:#777;text-decoration:none}#credit a:hover{color:white;background-color:#05f}#credit a:active{text-decoration:underline}
+    </style>
+    <script type="text/javascript">
+    <!--
+        var slideShows = {};
+        
+        function showTagCloud() {
+            var tagCloudHtml = '<div id="htmltagcloud" style="display: none;"> <span id="0" class="wrd tagcloud3">acm</span> <span id="1" class="wrd tagcloud0">addressing</span> <span id="2" class="wrd tagcloud3">areas</span> <span id="3" class="wrd tagcloud3">authors</span> <span id="4" class="wrd tagcloud0">business</span> <span id="5" class="wrd tagcloud5">changing</span> <span id="7" class="wrd tagcloud3">co-chair</span> <span id="8" class="wrd tagcloud5">communities</span> <span id="9" class="wrd tagcloud7">conference</span> <span id="10" class="wrd tagcloud3">constantly</span> <span id="6" class="wrd tagcloud10"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'crowdsourcing\');">crowdsourcing</a></span> <span id="11" class="wrd tagcloud3">culture</span> <span id="12" class="wrd tagcloud6"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'design\');">design</a></span> <span id="13" class="wrd tagcloud5">different</span> <span id="14" class="wrd tagcloud5">diverse</span> <span id="15" class="wrd tagcloud3">draw</span> <span id="22" class="wrd tagcloud0"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'education\');">education</a></span> <span id="19" class="wrd tagcloud3"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'environment\');">environment</a></span> <span id="16" class="wrd tagcloud5">engineering</span> <span id="17" class="wrd tagcloud3">europe</span> <span id="18" class="wrd tagcloud3">experience</span> <span id="20" class="wrd tagcloud5">france</span> <span id="21" class="wrd tagcloud0">games</span> <span id="22" class="wrd tagcloud0">hci</span> <span id="19" class="wrd tagcloud3"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'health\');">health</a></span> <span id="23" class="wrd tagcloud3">human-computer</span> <span id="24" class="wrd tagcloud5">innovative</span> <span id="25" class="wrd tagcloud5">interaction</span> <span id="26" class="wrd tagcloud0">light</span> <span id="27" class="wrd tagcloud3">management</span> <span id="28" class="wrd tagcloud0">multidisciplinary</span> <span id="29" class="wrd tagcloud3">news</span> <span id="30" class="wrd tagcloud3">offering</span> <span id="31" class="wrd tagcloud7">page</span> <span id="32" class="wrd tagcloud6">paris</span> <span id="33" class="wrd tagcloud3">people</span> <span id="34" class="wrd tagcloud7">perspectives</span> <span id="35" class="wrd tagcloud3">professor</span> <span id="36" class="wrd tagcloud3">program</span> <span id="37" class="wrd tagcloud3">recent</span> <span id="38" class="wrd tagcloud6">research</span>  <span id="40" class="wrd tagcloud0">serve</span> <span id="41" class="wrd tagcloud3">sigchi</span> <span id="43" class="wrd tagcloud0">spirit</span> <span id="44" class="wrd tagcloud3">students</span> <span id="45" class="wrd tagcloud3">system</span> <span id="46" class="wrd tagcloud3">technical</span> <span id="47" class="wrd tagcloud3">technology</span> <span id="48" class="wrd tagcloud3">user</span> <span id="6" class="wrd tagcloud10"><a href="#" onclick="addFilter($(this).parent().parent().parent().attr(\'id\'), \'visualization\');">visualization</a></span> <span id="49" class="wrd tagcloud5">welcome</span> </div>'; 
+            if($('#htmltagcloud').length > 0) return;
+            if($('.blank').length == 0) return;
+            
+            var rand = Math.floor((Math.random()*$('.blank').length));
+            $($('.blank')[rand]).html(tagCloudHtml);
+            $('#htmltagcloud').fadeIn(2000);
+        }
+    
+        function addFilter(filterId, filterName) {
+            var filter = { "filter": filterName, "items": [] };
+            $('svg .pin.' + filterId).show();
+
+            var cellId = '#' + filterId;
+            
+            $(cellId).removeClass('blank').html('<div class="content"></div>');
+            var content = $(cellId).children('.content'); 
+            
+            for(var i = 0; i < filtersData.length; i++)
+                if(filtersData[i].filter.toLowerCase() == filterName.toLowerCase())
+                    filter = filtersData[i];
+                    
+            var html  = '<h2>' + filter.filter + '</h2>';
+            html     += '<div class="slideshow"><div class="title info"><div class="inner">';
+            for(var i = 0; i < filter.items.length; i++)
+                html += '<h5>' + filter.items[i].title + '</h5>';
+            html    += '</div></div>';
+            
+            for(var i = 0; i < filter.items.length; i++) {
+                var item = filter.items[i];
+                html += '<div class="info"><div class="inner">';
+                html += '<h3>' + item.title + '</h3>';
+                html += '<h4>' + item.authors + '</h4>';
+                html += '<h5>' + item.affiliation + '</h4>';
+                html += '</div></div>';
+            }
+            
+            html     += '</div>';
+            
+            html     += '<svg class="progress_bar" width="640" height="20">';
+            var cxCenter = (640-40*filter.items.length)/2;
+            for(var i = 0, cx = cxCenter; i < filter.items.length; i++, cx+=50)
+                html += '<circle r="10" cx="' + cx + '" cy="10"></circle>';            
+            html     += '</svg>';
+            
+            content.html(html);
+            content.after('<iframe style="display: none;" width="640" height="357" src="" frameborder="0" allowfullscreen></iframe>');
+            
+            var slideshow = $(cellId + ' .content .slideshow').slideshow({
+                duration: 400,
+                delay: 23000,
+                selector: '> div',
+                transition: 'push(left)',
+                autoPlay: false,
+                show: function (e, params){
+                    var currIndex = params.next.index - 1;
+                    var nextElm = params.next.element;
+                    var content = nextElm.parent().parent();
+
+                    if(params.next.index == 0) {
+                        delete slideShows[cellId];
+                        content.fadeOut(500, function() {
+                            content.parent().addClass('blank'); 
+                            $('svg .' + filterId).hide();
+                            
+                            showTagCloud();
+                        })
+                    } else {
+                        content.next('iframe')
+                            .attr('src', filter.items[currIndex].video)
+                    }
+                        
+                    nextElm.parent().next('svg').children('circle').removeClass('current');
+                    nextElm.parent().next('svg').children('circle:eq(' + (params.next.index - 1) + ')').addClass('current');
+                }
+            });
+            
+            slideshow.slideshow('show', 0);
+            slideShows[cellId] = slideshow;
+            
+            window.setTimeout(showTagCloud, 2000);
+        }
+        
+        function synchSlideshow() {
+            console.log('syncSlideshow');
+            $('.pin-large').hide();
+            
+            for(var id in slideShows) {
+                slideShows[id].slideshow('show', 'next');
+                var curr = $(id + ' .content .slideshow').data('slideshow').current;
+                $(id + '-' + curr).show();
+            }
+                
+            window.setTimeout(function() {
+                console.log('showVideo');
+                
+                for(var id in slideShows) {                        
+                    if($(id + ' .content .slideshow').data('slideshow').current == 0)
+                        continue;
+
+                    $(id + ' .content').fadeOut(250, function() {
+                        $(this).next('iframe').fadeIn(250);
+                    });
+                }
+                    
+                window.setTimeout(function() {
+                    console.log('showTitle');
+                    
+                    for(var id in slideShows) {                        
+                        if($(id + ' .content .slideshow').data('slideshow').current == 0)
+                            continue;
+
+                        $(id + ' iframe').fadeOut(250, function() {
+                            $(this).prev('.content').fadeIn(250);
+                        });
+                    }
+                    
+                    window.setTimeout(synchSlideshow, 3000);
+                }, 10000);
+            }, 5000);    
+            
+        }
+        
+        synchSlideshow();
+        
+        var tweet = 0;
+        var twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
+        function twitterFn() {
+            $('div.tweet:eq(' + (tweet++) + ')').fadeIn();
+            clearInterval(twitter);
+            twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
+        }
+    //-->
+    </script>
+</head> 
+<body onload="showTagCloud()">
+    <table>
+        <tr>
+            <td>                
+                <div id="twitter-left">
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1766403894/Me_-_Guitar_on_head_-_DSC_9672_crop_normal.png" /></div>
+                        <div class="text">&#147;@mdgreenb Thinking I'll do a Mountain Lion clean install during the week between the #chi2013 deadline and classes. Also, new phone then.&#148; </div>
+                        <div class="byline">--@Noleli</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1454028655/2008_07_me_IMG_2355_normal.JPG" /></div>
+                        <div class="text">&#147;Should @acmchi2012 have said "Hey y'all" or "tout le monde" when announcing the #chi2013 cfp http://chi2013.acm.org/cfp-papers-notes.shtml ?&#148; </div>
+                        <div class="byline">--@DrAnnaLCox</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/281164020/039_31742_Bill-Murray-Posters_normal.jpg" /></div>
+                        <div class="text">&#147;In case you didn't notice, the #chi2013 cfp is up! #cscw2013 @sigchi &#148; </div>
+                        <div class="byline">--@clifflampe</div>
+                        <br clear="all" />
+                    </div>
+                </div>
+                
+                <div id="twitter-right">
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1233071179/msbernst_headcrop_normal" /></div>
+                        <div class="text">&#147;I'm thrilled to be joining the faculty of Stanford's Computer Science department!&#148; </div>
+                        <div class="byline">--@msbernst</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                         <div class="userpic"><img src="https://si0.twimg.com/profile_images/1410247055/edchi-smile_normal.png" /></div>
+                         <div class="text">&#147;Many people's lectures make me feel we don't know anything. Stu's lecture today made me feel we have capacity to know everything. #chi2012&#148; </div>
+                         <div class="byline">--@edchi</div>
+                         <br clear="all" />
+                     </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1342742070/logo_normal.jpeg" /></div>
+                        <div class="text">&#147;@CHIFilter #chi2011 has begun! Follow @CHIFilter and @ reply this account for your CHI-specific tweets.&#148; </div>
+                        <div class="byline">--@CHIFilter</div>
+                        <br clear="all" />
+                    </div>
+                </div>
+            </td>
+            <td id="map">
+                <img src="img/floor2-small.png" id="floor2" />
+                <img src="img/floor3-small.png" id="floor3" />
+                
+                <svg id="map_pins" width="640" height="360">
+                    <!-- 251 -->    
+                    <rect id="filter1-1" x="10" y="192" width="20" height="20" class="filter1 pin-large" />
+                    <polygon id="filter3-3" points="10,212 30,212 10,192" class="filter3 pin-large" />
+                    <polygon id="filter4-1" points="70,212 90,212 80,192" class="filter4 pin-large" />
+                    <polygon id="filter5-4" points="95,203 105,193 115,203 105,213" class="filter5 pin-large" />
+                    <polygon id="filter6-1" points="120,212 140,212 140,192" class="filter6 pin-large" />
+                                    
+                    <rect x="10" y="215" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="45" y="215" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="70" y="215" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="95" y="215" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="120" y="215" rx="3" ry="3" width="30" height="7" class="item" />  
+                    
+                    <rect x="13" y="225" width="10" height="10" class="filter1 pin" />
+                    <circle cx="31" cy="230" r="5" class="filter2 pin" />
+                    <polygon points="13,248 23,248 13,238" class="filter3 pin" />
+                    
+                    <polygon points="73,235 83,235 78,225" class="filter4 pin" />
+                    
+                    <polygon points="98,230 103,225 108,230 103,235" class="filter5 pin" />
+                    
+                    <polygon points="123,235 133,235 133,225" class="filter6 pin" />
+                    
+                    <!-- 252 -->
+                    <circle id="filter2-1" cx="90" cy="137" r="10" class="filter2 pin-large" />
+                    <polygon id="filter3-1" points="13,147 33,147 13,127" class="filter3 pin-large" />
+                    <polygon id="filter4-4" points="140,147 160,147 150,127" class="filter4 pin-large" />
+                    <polygon id="filter5-2" points="10,137 20,127 30,137 20,147" class="filter5 pin-large" />
+                    <polygon id="filter6-2" points="140,147 160,147 160,127" class="filter6 pin-large" />
+                    
+                    <rect x="10"  y="150" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="45"  y="150" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="80"  y="150" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="105" y="150" rx="3" ry="3" width="30" height="7" class="item" />                    
+                    <rect x="140" y="150" rx="3" ry="3" width="20" height="7" class="item" />
+                    
+                    <polygon points="13,170 23,170 13,160" class="filter3 pin" />
+                    <polygon points="26,165 31,160 36,165 31,170" class="filter5 pin" />
+                    
+                    <circle cx="88" cy="165" r="5" class="filter2 pin" />
+                    
+                    <polygon points="143,170 153,170 153,160" class="filter6 pin" />
+                    
+                    <polygon points="143,183 153,183 148,173" class="filter4 pin" />
+                    
+                    <!-- 253 -->
+                    <rect id="filter1-3" x="13" y="72" width="20" height="20" class="filter1 pin-large" />
+                    
+                    <rect x="10"  y="95" rx="3" ry="3" width="135" height="7" class="item" /> 
+
+                    <rect x="13" y="105" width="10" height="10" class="filter1 pin" />
+                    <circle cx="31" cy="110" r="5" class="filter2 pin" />
+                    <polygon points="39,115 49,115 39,105" class="filter3 pin" />                                     
+                    <polygon points="52,110 57,105 62,110 57,115" class="filter5 pin" />   
+                    
+                    <!-- Bleu -->
+                    <circle id="filter2-2" cx="100" cy="22" r="10" class="filter2 pin-large" />
+                    <polygon id="filter3-2" points="125,32 145,32 125,12" class="filter3 pin-large" />
+                    <polygon id="filter4-2" points="150,32 170,32 160,12" class="filter4 pin-large" />
+                    <polygon id="filter5-3" points="175,22 185,12 195,22 185,32" class="filter5 pin-large" />
+                    <polygon id="filter6-3" points="200,32 220,32 220,12" class="filter6 pin-large" />
+                    
+                    <rect x="90"  y="35" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="125" y="35" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="150" y="35" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="175" y="35" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="200" y="35" rx="3" ry="3" width="30" height="7" class="item" /> 
+                    
+                    <rect x="93" y="45" width="10" height="10" class="filter1 pin" />
+                    <circle cx="111" cy="50" r="5" class="filter2 pin" />
+                    <polygon points="128,55 138,55 128,45" class="filter3 pin" />
+                    
+                    <polygon points="153,55 163,55 158,45" class="filter4 pin" />
+                    
+                    <polygon points="178,50 183,45 188,50 183,55" class="filter5 pin" />
+                    
+                    <polygon points="203,55 213,55 213,45" class="filter6 pin" />                        
+                    
+                    <!-- 243 -->
+                    <polygon id="filter5-1" points="175,102 185,92 195,102 185,112" class="filter5 pin-large" />
+                    
+                    <rect x="175"  y="115" rx="3" ry="3" width="135" height="7" class="item" /> 
+                    
+                    <rect x="178" y="125" width="10" height="10" class="filter1 pin" />
+                    <circle cx="196" cy="130" r="5" class="filter2 pin" />
+                    <polygon points="204,135 214,135 204,125" class="filter3 pin" />                                     
+                    <polygon points="217,130 222,125 227,130 222,135" class="filter5 pin" />
+                    
+                    <!-- 242 -->
+                    <rect x="175" y="180" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="210" y="180" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="235" y="180" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="260" y="180" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="285" y="180" rx="3" ry="3" width="30" height="7" class="item" />     
+                    
+                    <!-- 241 -->
+                    <rect x="175" y="230" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="210" y="230" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="245" y="230" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="270" y="230" rx="3" ry="3" width="30" height="7" class="item" />                    
+                    <rect x="305" y="230" rx="3" ry="3" width="20" height="7" class="item" />
+                    
+                    <!-- Havane -->
+                    <circle id="filter2-4" cx="345" cy="272" r="10" class="filter2 pin-large" />
+                    
+                    <rect x="335"  y="285" rx="3" ry="3" width="135" height="7" class="item" />
+                    
+                    <rect x="335" y="295" width="10" height="10" class="filter1 pin" />
+                    <circle cx="351" cy="300" r="5" class="filter2 pin" />
+                    
+                    <!-- Bordeaux -->
+                    <rect x="470" y="340" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="505" y="340" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="540" y="340" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="565" y="340" rx="3" ry="3" width="30" height="7" class="item" />                    
+                    <rect x="600" y="340" rx="3" ry="3" width="20" height="7" class="item" />
+                                                                
+                    <!-- 351 -->
+                    <rect id="filter1-2" x="363" y="197" width="20" height="20" class="filter1 pin-large" />
+                    <circle id="filter2-3" cx="405" cy="207" r="10" class="filter2 pin-large" />
+                    <polygon id="filter3-4" points="420,217 440,217 420,197" class="filter3 pin-large" />
+                    <polygon id="filter4-3" points="445,217 465,217 455,197" class="filter4 pin-large" />
+                    <polygon id="filter6-4" points="470,217 490,217 490,197" class="filter6 pin-large" />
+                    
+                    <rect x="360" y="220" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="395" y="220" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="420" y="220" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="445" y="220" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="470" y="220" rx="3" ry="3" width="30" height="7" class="item" />
+                    
+                    <rect x="363" y="230" width="10" height="10" class="filter1 pin" />
+                    <circle cx="398" cy="235" r="5" class="filter2 pin" />
+                    <polygon points="423,240 433,240 423,230" class="filter3 pin" />
+                    
+                    <polygon points="448,240 458,240 453,230" class="filter4 pin" />
+                    
+                    <polygon points="473,240 483,240 483,230" class="filter6 pin" />     
+                    
+                    <!-- 352 -->
+                    <rect x="360" y="145" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="395" y="145" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="430" y="145" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="455" y="145" rx="3" ry="3" width="30" height="7" class="item" />                    
+                    <rect x="490" y="145" rx="3" ry="3" width="20" height="7" class="item" />  
+                    
+                    <!-- 342 -->
+                    <rect id="filter1-4" x="610" y="162" width="20" height="20" class="filter1 pin-large" />
+                    
+                    <rect x="480" y="185" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="515" y="185" rx="3" ry="3" width="30" height="7" class="item" />  
+                    <rect x="550" y="185" rx="3" ry="3" width="20" height="7" class="item" />
+                    <rect x="575" y="185" rx="3" ry="3" width="30" height="7" class="item" />                    
+                    <rect x="610" y="185" rx="3" ry="3" width="20" height="7" class="item" />
+                    
+                    <rect x="613" y="195" width="10" height="10" class="filter1 pin" />
+                    <circle cx="618" cy="213" r="5" class="filter2 pin" />
+                    <polygon points="613,231 623,231 613,221" class="filter3 pin" />
+                    <polygon points="613,244 623,244 618,234" class="filter4 pin" />
+                    <polygon points="613,252 618,247 623,252 618,257" class="filter5 pin" />
+                    <polygon points="613,270 623,270 623,260" class="filter6 pin" />
+                    
+                    <!-- 343 -->
+                    <rect x="480"  y="105" rx="3" ry="3" width="135" height="7" class="item" />                                                          
+                    
+                    <!-- 361 -->
+                    <rect x="480"  y="70" rx="3" ry="3" width="135" height="7" class="item" /> 
+                    
+                    <!-- 363 -->
+                    <rect x="400"  y="40" rx="3" ry="3" width="135" height="7" class="item" /> 
+                </svg>
+            </td>
+            
+            <td id="announcement">
+                <div>Don’t forget, Posters and Interactivity are also open right now in the Maillot Hall!</div>
+            </td>
+        </tr>
+
+        <tr> 
+            <td id="filter1" class="blank filter">
+                
+            </td>
+            
+            <td id="filter2" class="blank filter">
+                
+            </td>
+            
+            <td id="filter3" class="blank filter">
+
+            </td>
+        </tr>                
+                             
+        <tr>                 
+            <td id="filter4" class="blank filter">
+                
+            </td>
+            
+            <td id="filter5" class="blank filter">
+               
+            </td>
+            
+            <td id="filter6" class="blank filter">
+               
+            </td>
+        </tr>
+        
+    </table>
+</body>
+</html>
