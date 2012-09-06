@@ -9,6 +9,7 @@
     "express": "*",
     "nano": "*",
     "ya-csv": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "searchjs": "*"
   }
 }
