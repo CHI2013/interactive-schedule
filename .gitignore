@@ -1,2 +1,4 @@
 node_modules
 html/lib/.DS_Store
+
+html/lib/phone.js

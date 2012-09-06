@@ -8,6 +8,7 @@
   "dependencies": {
     "express": "*",
     "nano": "*",
-    "ya-csv": "*"
+    "ya-csv": "*",
+    "socket.io": "*"
   }
 }

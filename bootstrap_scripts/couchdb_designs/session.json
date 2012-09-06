@@ -1,5 +1,6 @@
 {
     "_id" : "_design/session",
+    "_rev" : "2-8518e5e3b542d57cffc8cd4d7abb9fa1",
     "views" : {
         "all" : {
             "map" :  "function(doc) { 
@@ -11,7 +12,7 @@
         "bydate": {
             "map": "function(doc) {
                         if(doc.type === 'session') {
-                            emit(doc.startTime, {'id': doc._id, 'start': doc['Time'], 'end': doc['End Time']}); 
+                            emit(doc.startTime, {'id': doc._id, 'start': doc['Time'], 'end': doc['End Time'], 'tags': doc.tags}); 
                         }
                     }"
         }
