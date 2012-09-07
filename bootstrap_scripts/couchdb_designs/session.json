@@ -1,6 +1,5 @@
 {
     "_id" : "_design/session",
-    "_rev" : "5-cf7d330e5e88245c96b712248fd47956",
     "views" : {
         "all" : {
             "map" :  "function(doc) { 
