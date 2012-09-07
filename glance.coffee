@@ -76,7 +76,6 @@ class GlanceServer
         
         #Returns a list of all sessions
         @app.get '/session', (req, res) =>
-            console.log "HW"
             @db.view 'session', 'all', (err, body) =>
                 if err?
                     res.send 'Could not load sessions', 500
