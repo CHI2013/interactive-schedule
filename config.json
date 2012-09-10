@@ -1,0 +1,16 @@
+{
+    "name": "Lobby",
+    "db": "chi2013",
+    "tickFrequency": 5000,
+    "tiles": {
+        "A": {"type": "feed"},
+        "B": {"type": "map"},
+        "C": {"type": "message"},
+        "D": {"type": "filter"},
+        "E": {"type": "filter"},
+        "F": {"type": "filter"},
+        "G": {"type": "filter"},
+        "H": {"type": "filter"},
+        "I": {"type": "filter"}
+    }
+}

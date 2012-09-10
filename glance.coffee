@@ -3,27 +3,55 @@ nano = require 'nano'
 http = require 'http'
 io = require 'socket.io'
 s = require 'searchjs'
+fs = require 'fs'
 
 class GlanceServer
     constructor: () ->
-        @activeFilters = [] #Filters that are currently on display
-        @cells = ["A", "B", "C", "D", "E", "F"] #Cell-ids not in use. When a filter is applied one of these is popped
+        @tiles = {}
+        @availableTiles = []
+        @dbName = ""
+        @config = {}
         
+        @loadConfig () =>
+            @setupTiles()
+            @dbName = @config.db
+            @app = @setupExpress()
+            @connectCouchDB () =>
+                server = http.createServer @app
+                server.listen 8000
+                @iosocket = io.listen(server)
+                @setupSocketIO()
+                @setupRest()
+                
+                sendTickWrapper = () => #Ugly scoping hack
+                    @sendTick()
+                setInterval sendTickWrapper, @config.tickFrequency
+    
+    loadConfig: (cb) ->
         if process.argv[2]?
-            @dbName = process.argv[2]
-        else
-            @dbName = 'chi2013'
-        @app = @setupExpress()
-        @connectCouchDB () =>
-            server = http.createServer @app
-            server.listen 8000
-            @iosocket = io.listen(server)
-            @setupSocketIO()
-        @setupRest()
+            filename = process.argv[2]
+            fs.readFile filename, (err, data) =>
+                if err?
+                    console.log err
+                    process.exit 1
+                @config = JSON.parse data
+                cb()
+                    
+    setupTiles: () ->
+        if not @config.tiles?
+            console.log "No tiles defined in config!"
+            process.exit 1
+        @tiles = @config.tiles
+        for tile, val of @tiles
+            if val.type == 'filter'
+                @availableTiles.push tile            
     
     setupSocketIO: () ->
         @iosocket.sockets.on 'connection', (sock) =>
             console.log "Connection!"
+            
+    sendTick: () ->
+        @iosocket.sockets.emit 'tick', {}
         
     setupExpress: () ->
         app = express()
@@ -34,21 +62,23 @@ class GlanceServer
 
 
     setupRest: () ->
-        #Get the filter of a given cell (e.g. F)
-        @app.get '/cell/:id', (req, res) =>
-            for filter in @activeFilters
-                if req.params.id.toLowerCase() == filter.cell.toLowerCase()
-                    res.send filter
-                    return
-            res.send {}
-        
-        #Apply a new filter. The content of the post is a tag. A cell-id will be popped from @cells and the filter will be applied on the given cell.
-        @app.post '/filters', (req, res) =>
-            if @cells.length == 0
-                res.send {'status': 'error', 'message': 'No empty cells'}, 500
+        #Get the filter of a given tile (e.g. F)
+        @app.get '/tiles/:id', (req, res) =>
+            if not @tiles[req.params.id]?
+                res.send {'status': 'error', 'message': 'No such tile'}, 400
                 return
-            cell = @cells.pop()
-            console.log cell
+            res.send @tiles[req.params.id]
+            
+        @app.get '/tiles', (req, res) =>
+            res.send @tiles
+        
+        #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
+        @app.post '/filters', (req, res) =>
+            if @availableTiles.length == 0
+                res.send {'status': 'error', 'message': 'No empty tiles'}, 500
+                return
+            tile = @availableTiles.pop()
+            console.log tile
             query = req.body
             console.log query
             @getOngoingSessions (err, data) =>
@@ -56,15 +86,10 @@ class GlanceServer
                     res.send {'status': 'error'}, 500
                 else
                     matches = s.matchArray data, query
-                    filter = {'query': query, 'sessions': matches, 'timestamp': new Date(), 'cell': cell}
-                    @activeFilters.push filter
-                    res.send {'status': 'ok', 'cell': cell}
-                    @iosocket.sockets.emit 'filtersUpdated', {}
-        
-        #Get all active filters
-        @app.get '/filters', (req, res) =>
-            res.send @activeFilters
-        
+                    filter = {'query': query, 'sessions': matches, 'timestamp': new Date(), 'tile': tile}
+                    @tiles[tile]['filter'] = filter
+                    res.send {'status': 'ok', 'tile': tile}
+                    @iosocket.sockets.emit 'tilesUpdated', {}
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsessions', (req, res) =>
@@ -96,7 +121,8 @@ class GlanceServer
                     else
                         res.send body
         
-        #Returns a list of all tags of ongoing sessions each tag has a list of sessions matching that tag. Also a count of all ongoing sessions is returned (which can be used e.g. to size tags in a tag cloud)
+        #Returns a list of all tags of ongoing sessions each tag has a list of sessions matching that tag. 
+        #Also a count of all ongoing sessions is returned (which can be used e.g. to size tags in a tag cloud)
         @app.get '/ongoingtags', (req, res) =>
             time = @getTime()
             from = [time[0], time[1], time[2]]
