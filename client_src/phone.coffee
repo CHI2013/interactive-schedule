@@ -7,8 +7,8 @@ $(document).ready () ->
             console.log "Filters updated!"
             console.log data
             
-    socket.on 'tick', (data) ->
-        console.log "Tick"
+    socket.on 'tick', (count) ->
+        console.log "Tick", count
     
     $.get '/ongoingsessions', (data) ->
         console.log "Ongoing sessions:"

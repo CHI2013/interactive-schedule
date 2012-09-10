@@ -8,6 +8,7 @@ fs = require 'fs'
 class GlanceServer
     constructor: () ->
         @tiles = {}
+        @tickCount = 0
         @availableTiles = []
         @dbName = ""
         @config = {}
@@ -51,7 +52,8 @@ class GlanceServer
             console.log "Connection!"
             
     sendTick: () ->
-        @iosocket.sockets.emit 'tick', {}
+        @iosocket.sockets.emit 'tick', @tickCount
+        @tickCount++
         
     setupExpress: () ->
         app = express()
