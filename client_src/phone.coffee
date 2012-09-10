@@ -14,6 +14,10 @@ $(document).ready () ->
         console.log "Ongoing sessions:"
         console.log data
         
+    $.get '/ongoingsubmissions', (data) ->
+        console.log "Submissions in ongoing sessions:"
+        console.log data
+        
     $.get '/ongoingtags', (data) ->
         console.log "Ongoing tags:"
         console.log data

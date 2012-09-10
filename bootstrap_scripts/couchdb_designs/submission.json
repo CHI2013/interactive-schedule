@@ -1,0 +1,19 @@
+{
+    "_id" : "_design/submission",
+    "views" : {
+        "all" : {
+            "map" :  "function(doc) { 
+                        if (doc.type == 'submission') {
+                            emit(null, doc);
+                        }
+                      }"
+        },
+        "bysession": {
+            "map": "function(doc) {
+                        if(doc.type === 'submission') {
+                            emit(doc.session, doc); 
+                        }
+                    }"
+        }
+    } 
+}

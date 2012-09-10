@@ -83,15 +83,23 @@ class GlanceServer
             console.log tile
             query = req.body
             console.log query
-            @getOngoingSessions (err, data) =>
+            @getOngoingSubmissions (err, data) =>
                 if err?
                     res.send {'status': 'error'}, 500
                 else
                     matches = s.matchArray data, query
-                    filter = {'query': query, 'sessions': matches, 'timestamp': new Date(), 'tile': tile}
+                    filter = {'query': query, 'submissions': matches, 'timestamp': new Date(), 'tile': tile}
                     @tiles[tile]['filter'] = filter
                     res.send {'status': 'ok', 'tile': tile}
                     @iosocket.sockets.emit 'tilesUpdated', {}
+        
+        #Returns a list of all ongoing sessions
+        @app.get '/ongoingsubmissions', (req, res) =>
+            @getOngoingSubmissions (err, data) ->
+                if err?
+                    res.send 'Could not load ongoing submissions', 500
+                else
+                    res.send data
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsessions', (req, res) =>
@@ -100,6 +108,29 @@ class GlanceServer
                     res.send 'Could not load ongoing sessions', 500
                 else
                     res.send data
+        
+        #Returns a list of all sessions
+        @app.get '/submission', (req, res) =>
+            @db.view 'submission', 'all', (err, body) =>
+                if err?
+                    res.send 'Could not load submissions', 500
+                    return
+                res.send body.rows
+                
+        #Returns a specific submission with a given ID
+        @app.get '/submission/:id', (req, res) =>
+            @db.get req.params.id, (err, body) ->
+                if err?
+                    res.send 'Could not load given submission', 500
+                else
+                    if not body.type?
+                        res.send 'No submission with given id', 404
+                        return
+                    if body.type != 'submission'
+                        res.send 'No submission with given id', 404
+                    else
+                        res.send body
+
         
         #Returns a list of all sessions
         @app.get '/session', (req, res) =>
@@ -184,5 +215,20 @@ class GlanceServer
                     if row.value.Time < clock and row.value["End Time"] > clock
                         results.push row.value
                 cb null, results
+                
+    getOngoingSubmissions: (cb) ->
+        @getOngoingSessions (err, sessions) =>
+            submissionIDs = []
+            for session in sessions
+                for submission in session['Submission IDs']
+                    submissionIDs.push "submission_"+submission
+            result = []
+            @db.fetch {"keys":submissionIDs}, (err, submissions) =>
+                for submission in submissions.rows
+                    if submission.error?
+                        continue
+                    else
+                        result.push submission.doc
+                cb null, result
 
 server = new GlanceServer()
