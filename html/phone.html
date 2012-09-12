@@ -40,7 +40,7 @@
 							</li>
 
 							<li class="short orange">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2">Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> </h3></a>
 
 								<a class="orange" href="talk.html" data-transition="slide"> </a>
 							</li>
@@ -87,7 +87,17 @@
 
 		socket.on('tilesUpdated', function(data) {
 		    $.get('/tiles', function(tiles) {
-			    var x = document.getElementById("tile2").innerHTML="LALALA";
+			    
+			    console.log("1: " + data);
+			    console.log("2: " + tiles);
+			
+			    for( var property in tiles)
+			{
+				console.log("4: " + property);
+		    
+			}
+			
+			    var x = document.getElementById("tile2").innerHTML= tiles.A.type;
 	    
 		        console.log("Filters updated!");	
 		    });
