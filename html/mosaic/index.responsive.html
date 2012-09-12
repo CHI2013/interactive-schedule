@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <link rel="stylesheet" type="text/css" href="css/styles.css" media="screen and (max-device-width: 1920px)">
+    <link rel="stylesheet" type="text/css" media="screen and (max-device-width: 768px)" href="css/tablet.css" />
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+     <script type="text/javascript">
+     <!--
+        var mode = window.screen.width > 1024 ? 'desktop' : window.screen.width > 480 ? 'tablet' : 'phone';
+
+        // When resizing, reposition all the tiles by getting rid 
+        // of columns or rows at a time.
+        $(window).resize(function(evt) {
+            if(mode != 'desktop')
+                return;
+
+            var w = $(window).width();
+            var h = $(window).height();
+
+            var tileMinWidth  = 400;
+            var tileMinHeight = 250;
+
+            // Defaults
+            $('.row1, .row2, .row3, .col1, .col2, .col3').show();
+            $('.row2').css('top', '33%');
+            $('.row3').css('top', '66%');
+            $('.col2').css('left', '33%');
+            $('.col3').css('left', '66%');
+
+            if(w < 3*tileMinWidth) {
+                $('.col3').hide();
+                $('.col2').css('left', '400px');
+            }
+
+            if(w < 2*tileMinWidth) {
+                $('.col1').hide();
+                $('.col2').css('left', '0px');
+            }
+
+            if(h < 3*tileMinHeight) {
+                $('.row3').hide();
+                $('.row2').css('top', '250px');
+            }
+
+            if(h < 2*tileMinHeight) {
+                $('.row1').hide();
+                $('.row2').css('top', '0px');
+            }
+
+        });
+     //-->
+     </script>
+</head>
+<body>
+
+<div class="tile col1 row1"> </div>
+
+<div class="tile col2 row1"> </div>
+
+<div class="tile col3 row1"> </div>
+
+<div class="tile col1 row2"> </div>
+
+<div id="map" class="tile col2 row2"> </div>
+
+<div class="tile col3 row2"> </div>
+
+<div class="tile col1 row3"> </div>
+
+<div class="tile col2 row3"> </div>
+
+<div class="tile col3 row3"> </div>
+
+
+</body>
+</html>

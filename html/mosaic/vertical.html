@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+    <script src="js/jquery.rf.slideshow.js"></script>
+    <script src="js/jquery.svg.min.js"></script>
+    <script src="js/jquery.svgdom.min.js"></script>
+    <script src="js/titleCaps.js"></script>
+    <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+    <script src="data.js"></script>
+    <script src="js/tiles.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+    var tile = {
+        width:  540,
+        height: 384
+    };
+    </script>
+    <style type="text/css">
+        html,body{
+           margin:0;
+           padding:0;
+           height:100%;
+           border:none
+        }
+        
+        body { 
+            font-family: "Helvetica Neue"; 
+            background: #444;
+        }
+        
+        table {
+            width: 1080px !important;
+            height: 1920px !important;
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+
+        tr {
+            height: 384px !important;
+            overflow: hidden;
+        }
+        
+        td { 
+            border: 1px solid #999;
+            padding: 0;
+            margin: 0; 
+            width: 540px !important;
+            height: 384px !important;
+            overflow: hidden;
+        }
+        
+        .blank { 
+            background: #444 !important; 
+            border-color: #999 !important;
+        }
+        
+        #map img {
+            display: block;
+            height: 384px;
+            margin: 0 auto;
+            opacity: 0.6;
+        }
+        
+        #map svg {
+            width: 540px;
+            height: 384px;
+            position: absolute;
+            left: 540px;
+            top: 768px;
+        }
+        
+        #map svg rect.lozenge { 
+            fill: floralwhite;
+            opacity: 0.6;
+            stroke-width: 1;
+            stroke: floralwhite;
+        }
+        
+        #map svg .pin { 
+            opacity: 0.8; 
+            stroke-width: 1;
+            stroke: #222 !important;
+            display: none;
+        }
+        #map svg polygon.pin, svg polygon.pin-large { stroke-width: 1; }
+        #map svg .pin-large { 
+            opacity: 1; 
+            display: none;
+        }
+        
+        /* Color Brewers */
+        #filterD { background: #8DD3C7; }
+        #filterD h3 { color: #3F876D;}
+        #map svg .filterD { 
+            fill: #8DD3C7; 
+            stroke: #8DD3C7;
+        }
+        
+        #filterE { background: #FDB462; }
+        #filterE h3 { color: #975500; }
+        #map svg .filterE { 
+            fill: #FDB462; 
+            stroke: #FDB462;
+        }
+        
+        #filterF { background: #BEBADA; }
+        #filterF h3 { color: #441FA8; }
+        #map svg .filterF { 
+            fill: #BEBADA; 
+            stroke: #BEBADA;
+        }
+        
+        #filterG { background: #FB8072; }
+        #filterG h3 { color: #A32213; }
+        #map svg .filterG { 
+            fill: #FB8072; 
+            stroke: #FB8072;
+        }
+        
+        #filterH { background: #80B1D3; }
+        #filterH h3 { color: #2872A4; }
+        #map svg .filterH { 
+            fill: #80B1D3; 
+            stroke: #80B1D3;
+        }
+        
+        #filterI { background: #B3DE69; }
+        #filterI h3 { color: #446112; }
+        #map svg .filterI { 
+            fill: #B3DE69; 
+            stroke: #B3DE69;
+        }
+        
+        .filter { border-color: #333; }
+        
+        .filter h2 { 
+            margin: 10px 0 5px 20px; 
+            font-variant: small-caps;
+            font-size: 36px;
+        }
+        
+        .filter .info {
+        }
+        
+        .info .inner { 
+            height: 220px;
+            width: 470px;
+            overflow: hidden;
+            background: #fff;
+            margin: 0 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: "Franklin Gothic Medium";
+            font-weight: normal;
+            display: block;
+        }
+        
+        .slideshow {
+            height: 250px; 
+            overflow: hidden;
+        }
+        
+        .filter h3 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: normal;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        
+        .filter h4 {
+            font-size: 25px;
+            font-weight: normal;
+            color: #333;
+            margin: 18px 0;
+        }
+        
+        .filter h5 { 
+            margin: 0;
+            font-size: 22px;
+            font-weight: normal;
+            color: #666;
+        }
+
+        .title h5 { margin-bottom: 15px; }
+        
+        .filter svg {
+            height: 20px;
+            margin: 20px 0 0 0;
+        }
+        
+        .filter svg circle { 
+            fill: #fff; 
+            opacity: 0.4;
+        }
+        
+        .filter svg circle.current { opacity: 1; }
+        
+        .filter iframe {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .tag_cloud { 
+            background: #444 !important; 
+            border-color: #999 !important;
+        }
+        
+        #twitter-left {
+            float: left;
+            width: 285px;
+            height: 360px;
+            padding: 15px;
+            overflow: hidden;
+        }
+        
+        #twitter-right {
+            float: left;
+            width: 285px;
+            height: 360px;
+            padding: 15px;
+            overflow: hidden;
+        }
+        
+        .tweet {
+            display: block;
+            background: #333;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #eee;
+            font-family: "Gill Sans";
+            font-size: 14px;
+            font-weight: 300;
+        }
+        
+        .tweet .userpic {
+            float: left;
+            margin: 0 15px 0 5px; 
+        }
+        .tweet .userpic img { border-radius: 5px; }
+        .tweet .byline { float: right; }
+        
+        #announcement div {
+            display: block;
+            color: white;
+            width: 600px;
+            font-size: 48px;
+            font-family: "Gill Sans";
+            font-weight: 300;
+            padding-left: 40px;
+        }
+    </style>
+    <style type="text/css">
+    #htmltagcloud{
+        font-size: 10px;
+        width: 500px;
+        height: 350px;
+        margin: 15px 20px;
+        font-family:'lucida grande','trebuchet ms',arial,helvetica,sans-serif;
+
+    }#htmltagcloud{line-height:2.4em;word-spacing:normal;letter-spacing:normal;text-transform:none;text-align:justify;text-indent:0}#htmltagcloud a:link{text-decoration:underline}#htmltagcloud a:visited{text-decoration:none}#htmltagcloud a:hover{color:white;background-color:#05f}#htmltagcloud a:active{color:white;background-color:#03d}.wrd{padding:0;position:relative}.wrd a{text-decoration:none}.tagcloud0{font-size:1.0em;color:#555;z-index:10}.tagcloud0 a{color:#555}.tagcloud1{font-size:1.4em;color:#666;z-index:9}.tagcloud1 a{color:#666}.tagcloud2{font-size:1.8em;color:#777;z-index:8}.tagcloud2 a{color:#777}.tagcloud3{font-size:2.2em;color:#888;z-index:7}.tagcloud3 a{color:#888}.tagcloud4{font-size:2.6em;color:#999;z-index:6}.tagcloud4 a{color:#999}.tagcloud5{font-size:3.0em;color:#aaa;z-index:5}.tagcloud5 a{color:#aaa}.tagcloud6{font-size:3.3em;color:#bbb;z-index:4}.tagcloud6 a{color:#bbb}.tagcloud7{font-size:3.6em;color:#ccc;z-index:3}.tagcloud7 a{color:#ccc}.tagcloud8{font-size:3.9em;color:#ddd;z-index:2}.tagcloud8 a{color:#ddd}.tagcloud9{font-size:4.2em;color:#eee;z-index:1}.tagcloud9 a{color:#eee}.tagcloud10{font-size:4.5em;color:#fff;z-index:0}.tagcloud10 a{color:#fff}.freq{font-size:10pt !important;color:#bbb}#credit{text-align:center;color:#333;margin-bottom:0.6em;font:0.7em 'lucida grande',trebuchet,'trebuchet ms',verdana,arial,helvetica,sans-serif}#credit a:link{color:#777;text-decoration:none}#credit a:visited{color:#777;text-decoration:none}#credit a:hover{color:white;background-color:#05f}#credit a:active{text-decoration:underline}
+    </style>
+</head> 
+<body>
+    <table>
+        <tr>
+            <td id="filterD" class="blank filter"> </td>
+
+            <td id="filterE" class="blank filter"> </td>
+        </tr>
+
+        <tr>
+            <td id="filterF" class="blank filter"> </td>
+
+            <td id="announcement"> </td>            
+        </tr>
+
+        <tr>
+            <td id="filterG" class="blank filter"> </td>
+
+            <td id="map"><img src="imgs/metro-1.png" /></td>
+        </tr>
+
+        <tr>
+            <td id="filterH" class="blank filter"> </td>
+
+            <td id="twitter"> </td>
+        </tr>
+
+        <tr>
+            <td id="filterI" class="blank filter"> </td>
+
+            <td id="filterJ" class="blank filter"> </td>
+        </tr>
+        
+    </table>
+</body>
+</html>

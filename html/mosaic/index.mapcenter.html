@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+    <script src="js/jquery.rf.slideshow.js"></script>
+    <script src="js/jquery.svg.min.js"></script>
+    <script src="js/jquery.svgdom.min.js"></script>
+    <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+    <script src="data.js"></script>
+    <script src="js/tiles.js"></script>
+    <script type="text/javascript">
+    var tile = {
+        width:  640,
+        height: 360
+    };
+    </script>
+    <style type="text/css">
+        html,body{
+           margin:0;
+           padding:0;
+           height:100%;
+           border:none
+        }
+        
+        body { 
+            font-family: "Helvetica Neue"; 
+            background: #444;
+        }
+        
+        table {
+            width: 1920px;
+            height: 1080px;
+            border-collapse: collapse;
+        }
+        
+        td { 
+            border: 1px solid #999;
+            padding: 0;
+            margin: 0; 
+            width: 640px !important;
+            height: 360px !important;
+        }
+        
+        .blank { 
+            background: #444 !important; 
+            border-color: #999 !important;
+        }
+        
+        #map img {
+            display: block;
+            height: 360px;
+            margin: 0 auto;
+            opacity: 0.6;
+        }
+        
+        #map svg {
+            width: 640px;
+            height: 360px;
+            position: absolute;
+            left: 640px;
+            top: 360px;
+        }
+        
+        #map svg rect.lozenge { 
+            fill: floralwhite;
+            opacity: 0.6;
+            stroke-width: 1;
+            stroke: floralwhite;
+        }
+        
+        #map svg .pin { 
+            opacity: 0.8; 
+            stroke-width: 1;
+            stroke: #222 !important;
+            display: none;
+        }
+        #map svg polygon.pin, svg polygon.pin-large { stroke-width: 1; }
+        #map svg .pin-large { 
+            opacity: 1; 
+            display: none;
+        }
+        
+        /* Color Brewers */
+        #filter1 { background: #8DD3C7; }
+        #filter1 h3 { color: #3F876D;}
+        #map svg .filter1 { 
+            fill: #8DD3C7; 
+            stroke: #8DD3C7;
+        }
+        
+        #filter2 { background: #FDB462; }
+        #filter2 h3 { color: #975500; }
+        #map svg .filter2 { 
+            fill: #FDB462; 
+            stroke: #FDB462;
+        }
+        
+        #filter3 { background: #BEBADA; }
+        #filter3 h3 { color: #441FA8; }
+        #map svg .filter3 { 
+            fill: #BEBADA; 
+            stroke: #BEBADA;
+        }
+        
+        #filter4 { background: #FB8072; }
+        #filter4 h3 { color: #A32213; }
+        #map svg .filter4 { 
+            fill: #FB8072; 
+            stroke: #FB8072;
+        }
+        
+        #filter5 { background: #80B1D3; }
+        #filter5 h3 { color: #2872A4; }
+        #map svg .filter5 { 
+            fill: #80B1D3; 
+            stroke: #80B1D3;
+        }
+        
+        #filter6 { background: #B3DE69; }
+        #filter6 h3 { color: #446112; }
+        #map svg .filter6 { 
+            fill: #B3DE69; 
+            stroke: #B3DE69;
+        }
+        
+        .filter { border-color: #333; }
+        
+        .filter h2 { 
+            margin: 10px 0 5px 20px; 
+            font-variant: small-caps;
+            font-size: 36px;
+        }
+        
+        .filter .info {
+        }
+        
+        .info .inner { 
+            height: 220px;
+            width: 565px;
+            overflow: hidden;
+            background: #fff;
+            margin: 0 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: "Franklin Gothic Medium";
+            font-weight: normal;
+            display: block;
+        }
+        
+        .slideshow {
+            height: 250px; 
+            overflow: hidden;
+        }
+        
+        .filter h3 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: normal;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        
+        .filter h4 {
+            font-size: 25px;
+            font-weight: normal;
+            color: #333;
+            margin: 18px 0;
+        }
+        
+        .filter h5 { 
+            margin: 0;
+            font-size: 22px;
+            font-weight: normal;
+            color: #666;
+        }
+
+        .title h5 { margin-bottom: 15px; }
+        
+        .filter svg {
+            height: 20px;
+            margin: 20px 0 0 0;
+        }
+        
+        .filter svg circle { 
+            fill: #fff; 
+            opacity: 0.4;
+        }
+        
+        .filter svg circle.current { opacity: 1; }
+        
+        .filter .video {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .tag_cloud { 
+            background: #444 !important; 
+            border-color: #999 !important;
+        }
+        
+        #twitter-left {
+            float: left;
+            width: 285px;
+            height: 360px;
+            padding: 15px;
+            overflow: hidden;
+        }
+        
+        #twitter-right {
+            float: left;
+            width: 285px;
+            height: 360px;
+            padding: 15px;
+            overflow: hidden;
+        }
+        
+        .tweet {
+            display: block;
+            background: #333;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #eee;
+            font-family: "Gill Sans";
+            font-size: 14px;
+            font-weight: 300;
+        }
+        
+        .tweet .userpic {
+            float: left;
+            margin: 0 15px 0 5px; 
+        }
+        .tweet .userpic img { border-radius: 5px; }
+        .tweet .byline { float: right; }
+        
+        #announcement div {
+            display: block;
+            color: white;
+            width: 600px;
+            font-size: 48px;
+            font-family: "Gill Sans";
+            font-weight: 300;
+            padding-left: 40px;
+        }
+    </style>
+    <style type="text/css">
+    #htmltagcloud{
+        font-size: 10px;
+        width: 600px;
+        height: 330px;
+        margin: 15px 20px;
+        font-family:'lucida grande','trebuchet ms',arial,helvetica,sans-serif;
+
+    }#htmltagcloud{line-height:2.4em;word-spacing:normal;letter-spacing:normal;text-transform:none;text-align:justify;text-indent:0}#htmltagcloud a:link{text-decoration:underline}#htmltagcloud a:visited{text-decoration:none}#htmltagcloud a:hover{color:white;background-color:#05f}#htmltagcloud a:active{color:white;background-color:#03d}.wrd{padding:0;position:relative}.wrd a{text-decoration:none}.tagcloud0{font-size:1.0em;color:#555;z-index:10}.tagcloud0 a{color:#555}.tagcloud1{font-size:1.4em;color:#666;z-index:9}.tagcloud1 a{color:#666}.tagcloud2{font-size:1.8em;color:#777;z-index:8}.tagcloud2 a{color:#777}.tagcloud3{font-size:2.2em;color:#888;z-index:7}.tagcloud3 a{color:#888}.tagcloud4{font-size:2.6em;color:#999;z-index:6}.tagcloud4 a{color:#999}.tagcloud5{font-size:3.0em;color:#aaa;z-index:5}.tagcloud5 a{color:#aaa}.tagcloud6{font-size:3.3em;color:#bbb;z-index:4}.tagcloud6 a{color:#bbb}.tagcloud7{font-size:3.6em;color:#ccc;z-index:3}.tagcloud7 a{color:#ccc}.tagcloud8{font-size:3.9em;color:#ddd;z-index:2}.tagcloud8 a{color:#ddd}.tagcloud9{font-size:4.2em;color:#eee;z-index:1}.tagcloud9 a{color:#eee}.tagcloud10{font-size:4.5em;color:#fff;z-index:0}.tagcloud10 a{color:#fff}.freq{font-size:10pt !important;color:#bbb}#credit{text-align:center;color:#333;margin-bottom:0.6em;font:0.7em 'lucida grande',trebuchet,'trebuchet ms',verdana,arial,helvetica,sans-serif}#credit a:link{color:#777;text-decoration:none}#credit a:visited{color:#777;text-decoration:none}#credit a:hover{color:white;background-color:#05f}#credit a:active{text-decoration:underline}
+    </style>
+</head> 
+<body>
+    <table>
+        <tr>
+            <td id="filter1" class="blank filter">
+                
+            </td>
+            
+            <td id="filter2" class="blank filter">
+                
+            </td>
+            
+            <td id="announcement">
+                <div>Don't forget, Posters and Interactivity are also open right now in the Maillot Hall!</div>
+            </td>
+        </tr>
+
+        <tr> 
+            <td id="filter3" class="blank filter">
+                
+            </td>
+
+            <td id="map">
+                <img src="imgs/metro-1.png" />
+            </td>
+            
+            <td id="filter4" class="blank filter">
+
+            </td>
+        </tr>                
+                             
+        <tr>    
+            <td>                
+                <div id="twitter-left">
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1766403894/Me_-_Guitar_on_head_-_DSC_9672_crop_normal.png" /></div>
+                        <div class="text">&#147;@mdgreenb Thinking I'll do a Mountain Lion clean install during the week between the #chi2013 deadline and classes. Also, new phone then.&#148; </div>
+                        <div class="byline">--@Noleli</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1454028655/2008_07_me_IMG_2355_normal.JPG" /></div>
+                        <div class="text">&#147;Should @acmchi2012 have said "Hey y'all" or "tout le monde" when announcing the #chi2013 cfp http://chi2013.acm.org/cfp-papers-notes.shtml ?&#148; </div>
+                        <div class="byline">--@DrAnnaLCox</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/281164020/039_31742_Bill-Murray-Posters_normal.jpg" /></div>
+                        <div class="text">&#147;In case you didn't notice, the #chi2013 cfp is up! #cscw2013 @sigchi &#148; </div>
+                        <div class="byline">--@clifflampe</div>
+                        <br clear="all" />
+                    </div>
+                </div>
+                
+                <div id="twitter-right">
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1233071179/msbernst_headcrop_normal" /></div>
+                        <div class="text">&#147;I'm thrilled to be joining the faculty of Stanford's Computer Science department!&#148; </div>
+                        <div class="byline">--@msbernst</div>
+                        <br clear="all" />
+                    </div>
+
+                    <div class="tweet" style="display: none;">
+                         <div class="userpic"><img src="https://si0.twimg.com/profile_images/1410247055/edchi-smile_normal.png" /></div>
+                         <div class="text">&#147;Many people's lectures make me feel we don't know anything. Stu's lecture today made me feel we have capacity to know everything. #chi2012&#148; </div>
+                         <div class="byline">--@edchi</div>
+                         <br clear="all" />
+                     </div>
+
+                    <div class="tweet" style="display: none;">
+                        <div class="userpic"><img src="https://si0.twimg.com/profile_images/1342742070/logo_normal.jpeg" /></div>
+                        <div class="text">&#147;@CHIFilter #chi2011 has begun! Follow @CHIFilter and @ reply this account for your CHI-specific tweets.&#148; </div>
+                        <div class="byline">--@CHIFilter</div>
+                        <br clear="all" />
+                    </div>
+                </div>
+            </td>
+            
+            <td id="filter5" class="blank filter">
+               
+            </td>
+            
+            <td id="filter6" class="blank filter">
+               
+            </td>
+        </tr>
+        
+    </table>
+</body>
+</html>

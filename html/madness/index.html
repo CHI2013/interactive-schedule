@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+	<style type="text/css">
+	    body { font-family: "Helvetica Neue"; }
+	    
+	    .map { 
+	        height: 800px; 
+	        position: absolute;
+	        top: 0;
+	    }
+	    
+	    .left_map { left: -50px; }
+	    .right_map { right: 225px; }
+	    
+	    #video {
+            /*background: black;*/
+            z-index: 100;
+            position: absolute;
+            top: 180px;
+            left: 310px;
+            /*padding: 95px 233px;*/
+            font-size: 100pt;
+            font-weight: bold;
+            color: white;
+            font-family: "Helvetica Neue";
+	    }
+	    
+	    #twitter {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: block;
+            height: 100%;
+            width: 250px;
+            background: #444;
+	    }
+	    
+	    #twitter h3 {
+            display: block;
+            background: url(imgs/twitter.png) 10px -3px no-repeat;
+            background-size: 45px;
+            padding: 7px 7px 7px 65px;
+            margin: 0 0 0px 0;
+            color: #EEE;
+            font-size: 25px;
+            font-family: "Trebuchet MS";
+	    }
+	    
+	    .tweet {
+	        display: block;
+	        background: #333;
+	        padding: 10px;
+	        margin-bottom: 15px;
+	        color: #eee;
+	        font-family: "Gill Sans";
+	        font-size: 14px;
+	        font-weight: 300;
+	    }
+	    
+	    .tweet .userpic {
+	        float: left;
+	        margin: 0 15px 0 5px; 
+	    }
+	    .tweet .userpic img { border-radius: 5px; }
+	    .tweet .byline { float: right; }
+	</style>
+	<script type="text/javascript">
+	    var rooms  = ['left-251', 'left-252', 'left-253', 'right-243', 'right-242', 'right-241'];
+	    var currentRoom = 0; 
+
+        var videos = [
+            '/videos/visualization.mp4',
+            '/videos/design.mp4',
+            '/videos/sustainability.mp4',
+            '/videos/crowdsourcing.mp4',
+            '/videos/health.mp4',
+            '/videos/education.mp4'
+        ];
+	    
+	    var countdown = 20;
+        var counter = setInterval(counterFn, 1000);
+        function counterFn() {
+            if(countdown == 20 || countdown == 10) {
+                jwplayer('vid-iframe').setup({
+                    'flashplayer': 'jwplayer/player.swf',
+                    'id': '_video',
+                    'width': '500',
+                    'height': '350',
+                    'file': videos[Math.floor(Math.random()*videos.length)],
+                    mute: true,
+                    controlbar: "none",
+                    duration: 15,
+                    autoplay: true
+                  });
+
+                // $().attr('src', ).show();
+            } 
+
+            if (--countdown <= 0) {
+                ++currentRoom;      
+                if(currentRoom >= rooms.length) clearInterval(counter);  
+                var room = rooms[currentRoom].split('-');
+                
+                $('#left_map img').attr('src', 'imgs/floor2-left.png');
+                $('#right_map img').attr('src', 'imgs/floor2-right.png');
+                        
+                $('#' + room[0] + '_map img').attr('src', 'imgs/maps/' + room[1] + '.png');
+               
+                countdown = 20;
+            }
+        }
+        
+        var tweet = 5;
+        var twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
+        function twitterFn() {
+            $('div.tweet:eq(' + (--tweet) + ')').fadeIn();
+            clearInterval(twitter);
+            twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
+        }
+	</script>
+</head> 
+<body>
+    <div id="left_map">
+        <img src="imgs/maps/251.png" class="left_map map" />
+    </div>
+    
+    <div id="video">
+        <div style="width: 500px; height: 350px;" id="vid-iframe"></div>
+    </div>
+
+    <div id="right_map">
+        <img src="imgs/floor2-right.png" class="right_map map" />
+    </div>
+    
+    <div id="twitter">
+        <h3>Twitter</h3>
+        
+        <div class="tweet" style="display: none;">
+            <div class="userpic"><img src="https://si0.twimg.com/profile_images/1766403894/Me_-_Guitar_on_head_-_DSC_9672_crop_normal.png" /></div>
+            <div class="text">&#147;@mdgreenb Thinking I'll do a Mountain Lion clean install during the week between the #chi2013 deadline and classes. Also, new phone then.&#148; </div>
+            <div class="byline">--@Noleli</div>
+            <br clear="all" />
+        </div>
+        
+        <div class="tweet" style="display: none;">
+            <div class="userpic"><img src="https://si0.twimg.com/profile_images/1454028655/2008_07_me_IMG_2355_normal.JPG" /></div>
+            <div class="text">&#147;Should @acmchi2012 have said "Hey y'all" or "tout le monde" when announcing the #chi2013 cfp http://chi2013.acm.org/cfp-papers-notes.shtml ?&#148; </div>
+            <div class="byline">--@DrAnnaLCox</div>
+            <br clear="all" />
+        </div>
+        
+        <div class="tweet" style="display: none;">
+            <div class="userpic"><img src="https://si0.twimg.com/profile_images/281164020/039_31742_Bill-Murray-Posters_normal.jpg" /></div>
+            <div class="text">&#147;In case you didn't notice, the #chi2013 cfp is up! #cscw2013 @sigchi &#148; </div>
+            <div class="byline">--@clifflampe</div>
+            <br clear="all" />
+        </div>
+        
+        <div class="tweet" style="display: none;">
+            <div class="userpic"><img src="https://si0.twimg.com/profile_images/1233071179/msbernst_headcrop_normal" /></div>
+            <div class="text">&#147;I'm thrilled to be joining the faculty of Stanford's Computer Science department!&#148; </div>
+            <div class="byline">--@msbernst</div>
+            <br clear="all" />
+        </div>
+        
+        <div class="tweet" style="display: none;">
+             <div class="userpic"><img src="https://si0.twimg.com/profile_images/1410247055/edchi-smile_normal.png" /></div>
+             <div class="text">&#147;Many people's lectures make me feel we don't know anything. Stu's lecture today made me feel we have capacity to know everything. #chi2012&#148; </div>
+             <div class="byline">--@edchi</div>
+             <br clear="all" />
+         </div>
+        
+        <div class="tweet">
+            <div class="userpic"><img src="https://si0.twimg.com/profile_images/1342742070/logo_normal.jpeg" /></div>
+            <div class="text">&#147;@CHIFilter #chi2011 has begun! Follow @CHIFilter and @ reply this account for your CHI-specific tweets.&#148; </div>
+            <div class="byline">--@CHIFilter</div>
+            <br clear="all" />
+        </div>
+        
+    </div>
+</body>
+</html>

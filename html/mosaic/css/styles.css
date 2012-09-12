@@ -1,0 +1,33 @@
+html,body{
+   margin:0;
+   padding:0;
+   height:100%;
+   border:none
+}
+
+body { 
+    font-family: "Helvetica Neue"; 
+    background: #444;
+}
+
+.tile {
+    position: absolute;
+    display: block;
+    width: 33%;
+    height: 33%;
+    min-width: 400px;
+    min-height: 250px;
+    border: 1px solid #999;
+    margin: 0;
+    padding: 0;
+}
+
+.row1 { top: 0; }
+.row2 { top: 33%; }
+.row3 { top: 66%; }
+
+.col1 { left:0; }
+.col2 { left: 33%; }
+.col3 { left: 66%; }
+
+#map { background: #000; }

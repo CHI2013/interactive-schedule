@@ -1,0 +1,9 @@
+.tile { 
+    width: 50%; 
+    height: 50%;
+}
+
+.row2 { top: 50%; }
+.row3 { display: none; }
+.col2 { left: 50%; }
+.col3 { display: none; }

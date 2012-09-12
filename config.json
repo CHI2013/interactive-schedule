@@ -1,7 +1,7 @@
 {
     "name": "Lobby",
     "db": "chi2013",
-    "tickFrequency": 5000,
+    "tickFrequency": 25000,
     "tiles": {
         "A": {"type": "feed"},
         "B": {"type": "map"},
