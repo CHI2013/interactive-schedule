@@ -34,13 +34,13 @@
 							<!-- <li class="short"><a href="talk.html" data-transition="slide"><img src="img/add.png"/> <h3>Fancy Talk Title</h3><p>Something about humans...</p></a></li>
 		 -->
 							<li class="short light_blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Getting Around: Menus, Scrolling, and Advanced Navigation</h3><p>Emmanuel Pietriga, INRIA, France</p></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Getting Around: Menus, Scrolling, and Advanced Navigation</h3><p>Emmanuel Pietriga, INRIA, France</p></a>
 
 								<a class="light_blue" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short orange">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2">Some Talk </h3></a>
 
 								<a class="orange" href="talk.html" data-transition="slide"> </a>
 							</li>
@@ -77,17 +77,19 @@
 			</div> <!-- END PAGE -->
 
 		<script>
-		
+		//Code to sync up with the server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 
 		socket.on('tick', function(count) {
-		    console.log("Tick " + count;)
+		    console.log("Tick " + count);
+    
 		});
 
 		socket.on('tilesUpdated', function(data) {
 		    $.get('/tiles', function(tiles) {
-		        console.log("Filters updated!");
-		        console.log(data);
+			    var x = document.getElementById("tile2").innerHTML="LALALA";
+	    
+		        console.log("Filters updated!");	
 		    });
 		});
 
