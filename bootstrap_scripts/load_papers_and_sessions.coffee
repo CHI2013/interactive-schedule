@@ -5,7 +5,8 @@ chidb = nano.db.use('chi2013');
 
 submissionsToSessions = {}
 
-tags = "theory,crowdsourcing,infovis,multi-surface,visualization,design, health,business,global,systems,toolkits,cscw,ubiquitous computing,tabletops,sense-making,augmented reality,performance,elderly,multicultural,participatory design,BCI,music,accessibility,science,gender HCI,prototyping,fitts' law,hypertext,www".split ','
+tags = "theory,crowdsourcing,infovis,multi-surface,visualization,design,health,business,global,systems,toolkits,cscw,ubiquitous computing,tabletops,sense-making,augmented reality,performance,elderly,multicultural,participatory design,BCI,music,accessibility,science,gender HCI,prototyping,fitts' law,hypertext,www".split ','
+
 
 randomNumbers = () ->
     r1 = Math.floor Math.random()*tags.length
@@ -64,6 +65,7 @@ session_reader.addListener 'end', () ->
         submission.contributionType = data['Paper or Note']
         submission.session = submissionsToSessions[submission.id]
         submission.tags = giveMeTags()
+        submission.video = "video-"+Math.floor(Math.random()*10)
         chidb.insert submission, 'submission_'+submission.id, (err, body) ->
             if err?
                 console.log err
