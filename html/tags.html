@@ -17,7 +17,7 @@
 		<script>
 
 		
-		$(function pressed(){
+		$("#button").click($(function(){
 			$.post("http://localhost:8000/filters",
 						{
 							"tags": ["visualization", "infoviz"]
@@ -26,7 +26,9 @@
 						{
 							console.log("Updated session: " + data);
 						});
-			});
+			})
+			
+		);
 			
 		
 		</script>
@@ -34,7 +36,7 @@
 
   <body>
 		<div>
-				<button type="button" onclick"pressed()"> Test </button>
+				<button type="button"> Test </button>
 		</div>
   </body>
 </html>
