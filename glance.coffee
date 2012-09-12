@@ -12,6 +12,7 @@ class GlanceServer
         @availableTiles = []
         @dbName = ""
         @config = {}
+        @tickIndex = {}
         
         @loadConfig () =>
             @setupTiles()
@@ -52,7 +53,10 @@ class GlanceServer
             console.log "Connection!"
             
     sendTick: () ->
-        @iosocket.sockets.emit 'tick', @tickCount
+        for tile, i of @tickIndex
+            @tickIndex[tile] = ++i
+
+        @iosocket.sockets.emit 'tick', @tickIndex
         @tickCount++
         
     setupExpress: () ->
@@ -90,6 +94,7 @@ class GlanceServer
                     matches = s.matchArray data, query
                     filter = {'query': query, 'submissions': matches, 'timestamp': new Date(), 'tile': tile}
                     @tiles[tile]['filter'] = filter
+                    @tickIndex[tile] = -1
                     res.send {'status': 'ok', 'tile': tile}
                     @iosocket.sockets.emit 'tilesUpdated', {}
         
