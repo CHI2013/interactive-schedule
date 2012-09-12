@@ -3,6 +3,12 @@
   <head> 
     <title>Phone</title>
 
+		<meta charset = "UTF-8">
+		<meta name = "viewport" content="width=device-width, initial-scale=1">
+		<title> CHI'13 Schedule </title>
+		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
+		<link rel="stylesheet" href="css/custom.css"/>
     <script src="lib/jquery.min.js"></script>
     <script src="lib/jquery.mobile-1.1.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -11,5 +17,112 @@
   </head>
 
   <body>
+	
+		<body>
+			<div data-role="page" id="home" data-theme="a">
+				<div data-role="header" style="height:10%">
+					<a href="index.html" data-role="button" data-icon="arrow-l">Previous</a>
+					<h1> CHI'13 </h1>
+					<a href="index.html" data-role="button" data-icon="refresh">Now</a>
+				</div>
+				<div data-role="content">
+					<div id="branding">
+						<h1> Current Events</h1>
+					</div>
+					<div class="choice_list">
+						<ul data-role="listview" data-insert="true" >
+							<!-- <li class="short"><a href="talk.html" data-transition="slide"><img src="img/add.png"/> <h3>Fancy Talk Title</h3><p>Something about humans...</p></a></li>
+		 -->
+							<li class="short light_blue">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Getting Around: Menus, Scrolling, and Advanced Navigation</h3><p>Emmanuel Pietriga, INRIA, France</p></a>
+
+								<a class="light_blue" href="talk.html" data-transition="slide"> </a>
+							</li>
+
+							<li class="short orange">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+
+								<a class="orange" href="talk.html" data-transition="slide"> </a>
+							</li>
+
+							<li class="short purple">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+
+								<a class="purple" href="talk.html" data-transition="slide"> </a>
+							</li>
+
+							<li class="short red">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+
+								<a class="red" href="talk.html" data-transition="slide"> </a>
+							</li>
+
+							<li class="short blue">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+
+								<a class="blue" href="talk.html" data-transition="slide"> </a>
+							</li>
+
+							<li class="short green">
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+
+								<a class="green" href="talk.html" data-transition="slide"></a>
+							</li>
+
+		<!-- 					<li  class="short" id="listitem"> Swipe me right! </li>
+		 -->
+						</ul>
+					</div>
+				</div>
+			</div> <!-- END PAGE -->
+
+		<script>
+		
+		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+
+		socket.on('tick', function(count) {
+		    console.log("Tick " + count;)
+		});
+
+		socket.on('tilesUpdated', function(data) {
+		    $.get('/tiles', function(tiles) {
+		        console.log("Filters updated!");
+		        console.log(data);
+		    });
+		});
+
+		//Code to test  swipe gesture on tile
+		$("#listitem").swiperight(function() {
+		    $.mobile.changePage("talk.html");
+		});
+
+		//Change tile status icon
+		$(function(){
+			$('img.changer').click(function(){
+		 //grab the image just clicked as a jquery object.
+		    var img = $(this);
+
+		    console.log(img.data('mode'));
+
+		    if( img.data('mode') === 'alt')
+		    {
+		    	img
+		    	.attr('src', img.data('originalsrc'))
+		    	.data('mode','src');
+		    }
+		    else
+		    {
+		    	img 
+		    	.data('originalsrc', img.attr('src')) //stow the original src
+		        .attr('src', img.data('altsrc'))      //update the src
+		        .data('mode','alt');                  //tag that the img is in alt mode.
+		    }	
+		     console.log(img.data('mode'));
+			});
+		});
+
+		</script>
+
+		</body>
   </body> 
 </html>
