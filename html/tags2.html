@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head> 
+    <title>Phone</title>
+		<meta charset = "UTF-8">
+		<meta name = "viewport" content="width=device-width, initial-scale=1">
+		<title> CHI'13 Schedule </title>
+		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
+		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
+		<link rel="stylesheet" href="css/custom.css"/>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/jquery.mobile-1.1.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="lib/phone.js"></script>
+
+		<script>
+		$(document).ready(function() {
+
+		    $('#a1').click(function(e) {
+		 				$.post("http://localhost:8000/filters",
+							{
+								"tags": ["visualization", "infoviz"]
+							},
+							function(data, status)
+							{
+								console.log("Updated session: " + data);
+							});
+		    });
+	//	});
+		    $('#li2').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["mobile", "devices"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li3').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["crowdsourcing", "mechanical turk"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li4').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["Interaction"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li5').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["Perspectives"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li6').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["Human Factors"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li7').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["Innovative"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		    		
+		    $('#li8').click(function(e) {
+		    		 				$.post("http://localhost:8000/filters",
+		    							{
+		    								"tags": ["Input Techniques"]
+		    							},
+		    							function(data, status)
+		    							{
+		    								console.log("Updated filters: " + data);
+		    							});
+		    });
+		});
+		</script>
+  </head>
+  <body>
+				<div data-role="page" id="tags" data-theme="a" data-add-back-btn="true">
+					<div data-role="header">
+						<h1> CHI'13 </h1>
+					</div>					
+				<div data-role="content" id="tag_list">
+					<div class="choice_list">
+						<ul data-role="listview" data-theme="a" data-filter="true">
+							<li data-icon="check" id="li1"><a id="a1" href="phone.html" data-transition="slidedown">Data Visualization</a></li>
+							<li data-icon="check" id="li2"><a href="phone.html" data-transition="slidedown">Mobile</a></li>
+							<li data-icon="check" id="li3"><a href="phone.html" data-transition="slidedown">Crowdsourcing</a></li>
+							<li data-icon="check" id="li4"><a href="phone.html" data-transition="slidedown">Interaction</a></li>
+							<li data-icon="check" id="li5"><a href="phone.html" data-transition="slidedown">Perspectives</a></li>
+							<li data-icon="check" id="li6"><a href="phone.html" data-transition="slidedown">Human Factors</a></li>
+							<li data-icon="check" id="li7"><a href="phone.html" data-transition="slidedown">Innovative</a></li>
+							<li data-icon="check" id="li8"><a href="phone.html" data-transition="slidedown">Input techniques</a></li>
+						
+						</ul>
+					</div>
+				</div>
+			</div> <!-- END PAGE -->
+
+	
+
+		</body>
+</html>

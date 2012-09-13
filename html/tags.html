@@ -16,27 +16,26 @@
 
 		<script>
 
-		
-		$("#button").click($(function(){
-			$.post("http://localhost:8000/filters",
-						{
-							"tags": ["visualization", "infoviz"]
-						},
-						function(data, status)
-						{
-							console.log("Updated session: " + data);
-						});
-			})
-			
-		);
-			
-		
+
+				$(document).ready(function() {
+
+				    $('#button1').click(function(e) {
+				 				$.post("http://localhost:8000/filters",
+									{
+										"tags": ["visualization", "infoviz"]
+									},
+									function(data, status)
+									{
+										console.log("Updated session: " + data);
+									});
+				    });
+				});
 		</script>
   </head>
 
   <body>
 		<div>
-				<button type="button"> Test </button>
+				<input type="button" id="button1" value="PLease click me"/>
 		</div>
   </body>
 </html>
