@@ -17,9 +17,7 @@
   </head>
 
   <body>
-	
-		<body>
-			<div data-role="page" id="home" data-theme="a">
+				<div data-role="page" id="home" data-theme="a">
 				<div data-role="header" style="height:10%">
 					<a href="index.html" data-role="button" data-icon="arrow-l">Previous</a>
 					<h1> CHI'13 </h1>
@@ -40,35 +38,38 @@
 							</li>
 
 							<li class="short orange">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Add another session </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Select another tag </h3></a>
 
 								<a class="orange" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short purple">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Add another session</h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select another tag</h3></a>
 
 								<a class="purple" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short red">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Add another session</h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select another tag</h3></a>
 
 								<a class="red" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Add another session</h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select another tag</h3></a>
 
 								<a class="blue" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short green">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Add another session </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select another tag </h3></a>
 
 								<a class="green" href="talk.html" data-transition="slide"></a>
 							</li>
 
+							<li class="footer" data-icon="info" data-iconpos="bottom">
+								<a href="tags2.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
+							</li>
 		<!-- 					<li  class="short" id="listitem"> Swipe me right! </li>
 		 -->
 						</ul>
@@ -118,7 +119,7 @@
 						}				
 					  var uniques = removeDups(arr);		
 
-						for (i=0; i< tiles.length; i ++){
+						for (i=0; i< 5; i ++){
 							if(arr[i])
 							  var x = tiles[i].innerHTML = arr[i];
 						  else
@@ -155,7 +156,7 @@
 				}				
 			  var uniques = removeDups(arr);		
 			  
-				for (i=0; i< tiles.length; i ++){
+				for (i=0; i< 6; i ++){
 					if(arr[i])
 					  var x = tiles[i].innerHTML = arr[i];
 				  else
@@ -215,6 +216,7 @@
 
 		</script>
 
+
+
 		</body>
-  </body> 
 </html>

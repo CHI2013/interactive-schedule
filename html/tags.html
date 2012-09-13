@@ -15,28 +15,27 @@
     <script src="lib/phone.js"></script>
 
 		<script>
-$(document).ready(function(){
-		
-		$("#button").click($(function(){
-				console.log("entered button");
-					$.post("http://localhost:8000/filters",
-						{
-							"tags": ["visualization", "infoviz"]
-						},
-						function(data, status)
-						{
-							console.log("Updated session: " + data);
-						});
-			}));
-		
-});			
 
+
+				$(document).ready(function() {
+
+				    $('#button1').click(function(e) {
+				 				$.post("http://localhost:8000/filters",
+									{
+										"tags": ["visualization", "infoviz"]
+									},
+									function(data, status)
+									{
+										console.log("Updated session: " + data);
+									});
+				    });
+				});
 		</script>
   </head>
 
   <body>
 		<div>
-				<button type="button" id="button" name="button"> Selected from a cloudtag </button>
+				<input type="button" id="button1" value="PLease click me"/>
 		</div>
   </body>
 </html>
