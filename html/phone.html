@@ -34,37 +34,37 @@
 							<!-- <li class="short"><a href="talk.html" data-transition="slide"><img src="img/add.png"/> <h3>Fancy Talk Title</h3><p>Something about humans...</p></a></li>
 		 -->
 							<li class="short light_blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Getting Around: Menus, Scrolling, and Advanced Navigation</h3><p>Emmanuel Pietriga, INRIA, France</p></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Beyond visual acuity: the perceptual scalability of information visualizations for large displays</h3></a>
 
 								<a class="light_blue" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short orange">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Add another session </h3></a>
 
 								<a class="orange" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short purple">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Add another session</h3></a>
 
 								<a class="purple" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short red">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Add another session</h3></a>
 
 								<a class="red" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Add another session</h3></a>
 
 								<a class="blue" href="talk.html" data-transition="slide"> </a>
 							</li>
 
 							<li class="short green">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3>Some Talk </h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Add another session </h3></a>
 
 								<a class="green" href="talk.html" data-transition="slide"></a>
 							</li>
@@ -77,30 +77,110 @@
 			</div> <!-- END PAGE -->
 
 		<script>
+		
+		function removeDups( my_array ) {
+		    my_array.sort();
+		    for ( var i = 1; i < my_array.length; i++ ) {
+		        if ( my_array[i] === my_array[ i - 1 ] ) {
+		                    my_array.splice( i--, 1 );
+		        }
+		    }
+		    return my_array;
+		};
+		
 		//Code to sync up with the server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
-
+		var tiles = document.getElementsByTagName("h3");
+		
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
+				 return $.get('/tiles', function(data) {
+		        console.log("Filters updated!" + data);
+						var arr = [];
+						for (var id in data)
+						{ 
+							var tile = data[id];
+							for(property in tile)
+							{
+								var kind = tile[property];
+								for(submissions in kind)
+								{
+									var submission = kind[submissions];
+									for(sessions in submission)
+									{
+										var session = submission[sessions].title;
+										if(session)								
+										arr.push(session);
+
+									}
+								}
+							}
+						}				
+					  var uniques = removeDups(arr);		
+
+						for (i=0; i< tiles.length; i ++){
+							if(arr[i])
+							  var x = tiles[i].innerHTML = arr[i];
+						  else
+						   var x = tiles[i].innerHTML = "Add another tag";
+
+						}
+		        return console.log(data);
+		      });
     
 		});
 
-		socket.on('tilesUpdated', function(data) {
-		    $.get('/tiles', function(tiles) {
-			    
-			    console.log("1: " + data);
-			    console.log("2: " + tiles);
-			
-			    for( var property in tiles)
-			{
-				console.log("4: " + property);
-		    
-			}
-			
-			    var x = document.getElementById("tile2").innerHTML= tiles.A.type;
-	    
-		        console.log("Filters updated!");	
-		    });
+    socket.on('tilesUpdated', function(data) {
+      return $.get('/tiles', function(data) {
+        console.log("Filters updated!" + data);
+				var arr = [];
+				for (var id in data)
+				{ 
+					var tile = data[id];
+					for(property in tile)
+					{
+						var kind = tile[property];
+						for(submissions in kind)
+						{
+							var submission = kind[submissions];
+							for(sessions in submission)
+							{
+								var session = submission[sessions].title;
+								if(session)								
+								arr.push(session);
+					  		
+							}
+						}
+					}
+				}				
+			  var uniques = removeDups(arr);		
+			  
+				for (i=0; i< tiles.length; i ++){
+					if(arr[i])
+					  var x = tiles[i].innerHTML = arr[i];
+				  else
+				   var x = tiles[i].innerHTML = "Add another tag";
+				
+				}
+        return console.log(data);
+      });
+		
+				$.get('/ongoingsessions', function(session) {
+
+				    console.log("5: " + session);
+
+				    for( var property in session)
+				{
+					console.log("4: " + property);
+
+				}
+
+				    var x = document.getElementById("tile2").innerHTML= session[0].Title;
+
+			        console.log("Filters updated!");	
+			    });
+		
+		
 		});
 
 		//Code to test  swipe gesture on tile

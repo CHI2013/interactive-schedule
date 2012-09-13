@@ -15,10 +15,11 @@
     <script src="lib/phone.js"></script>
 
 		<script>
-
+$(document).ready(function(){
 		
 		$("#button").click($(function(){
-			$.post("http://localhost:8000/filters",
+				console.log("entered button");
+					$.post("http://localhost:8000/filters",
 						{
 							"tags": ["visualization", "infoviz"]
 						},
@@ -26,17 +27,16 @@
 						{
 							console.log("Updated session: " + data);
 						});
-			})
-			
-		);
-			
+			}));
 		
+});			
+
 		</script>
   </head>
 
   <body>
 		<div>
-				<button type="button" id="button"> Test </button>
+				<button type="button" id="button" name="button"> Selected from a cloudtag </button>
 		</div>
   </body>
 </html>
