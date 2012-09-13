@@ -37,7 +37,7 @@ var roomLoc = {
 
 $(document).ready(function() {
     $('#map').svg({ onLoad: drawLozenges });
-    // showTagCloud();
+    showTagCloud();
     // synchSlideshow();
 
     var socket;

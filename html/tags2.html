@@ -14,95 +14,111 @@
     <script src="lib/phone.js"></script>
 
 		<script>
+		function createFilter(tags) {
+			// alert(tags);
+
+			$.post("http://192.168.1.5:8000/filters",
+				{
+					"tags": tags
+				},
+				function(data, status)
+				{
+					// alert('Hello');
+					console.log("Updated session: " + data);
+				});
+		}
+
+
+
 		$(document).ready(function() {
 
-		    $('#a1').click(function(e) {
-		 				$.post("http://localhost:8000/filters",
-							{
-								"tags": ["visualization", "infoviz"]
-							},
-							function(data, status)
-							{
-								console.log("Updated session: " + data);
-							});
-		    });
-	//	});
-		    $('#li2').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["mobile", "devices"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#a1').click(function(e) {
+	// 	 				$.post("http://localhost:8000/filters",
+	// 						{
+	// 							"tags": ["visualization", "infoviz"]
+	// 						},
+	// 						function(data, status)
+	// 						{
+	// 							console.log("Updated session: " + data);
+	// 						});
+	// 	    });
+	// //	});
+	// 	    $('#li2').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["mobile", "devices"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li3').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["crowdsourcing", "mechanical turk"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li3').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["crowdsourcing", "mechanical turk"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li4').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["Interaction"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li4').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["health"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li5').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["Perspectives"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li5').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["design"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li6').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["Human Factors"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li6').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["tabletops"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li7').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["Innovative"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li7').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["accessibility"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		    		
-		    $('#li8').click(function(e) {
-		    		 				$.post("http://localhost:8000/filters",
-		    							{
-		    								"tags": ["Input Techniques"]
-		    							},
-		    							function(data, status)
-		    							{
-		    								console.log("Updated filters: " + data);
-		    							});
-		    });
+	// 	    $('#li8').click(function(e) {
+	// 	    		 				$.post("http://localhost:8000/filters",
+	// 	    							{
+	// 	    								"tags": ["elderly"]
+	// 	    							},
+	// 	    							function(data, status)
+	// 	    							{
+	// 	    								console.log("Updated filters: " + data);
+	// 	    							});
+	// 	    });
 		});
 		</script>
   </head>
@@ -114,14 +130,14 @@
 				<div data-role="content" id="tag_list">
 					<div class="choice_list">
 						<ul data-role="listview" data-theme="a" data-filter="true">
-							<li data-icon="check" id="li1"><a id="a1" href="phone.html" data-transition="slidedown">Data Visualization</a></li>
-							<li data-icon="check" id="li2"><a href="phone.html" data-transition="slidedown">Mobile</a></li>
-							<li data-icon="check" id="li3"><a href="phone.html" data-transition="slidedown">Crowdsourcing</a></li>
-							<li data-icon="check" id="li4"><a href="phone.html" data-transition="slidedown">Interaction</a></li>
-							<li data-icon="check" id="li5"><a href="phone.html" data-transition="slidedown">Perspectives</a></li>
-							<li data-icon="check" id="li6"><a href="phone.html" data-transition="slidedown">Human Factors</a></li>
-							<li data-icon="check" id="li7"><a href="phone.html" data-transition="slidedown">Innovative</a></li>
-							<li data-icon="check" id="li8"><a href="phone.html" data-transition="slidedown">Input techniques</a></li>
+							<li><a onclick='createFilter(["visualization", "infoviz"])' id="a1" href="phone.html" data-transition="slidedown">Data Visualization</a></li>
+							<li><a onclick='createFilter(["prototyping"])' href="phone.html" data-transition="slidedown">Prototyping</a></li>
+							<li><a onclick='createFilter(["crowdsourcing"])' href="phone.html" data-transition="slidedown">Crowdsourcing</a></li>
+							<li><a onclick='createFilter(["health"])' href="phone.html" data-transition="slidedown">Health</a></li>
+							<li><a onclick='createFilter(["design"])' href="phone.html" data-transition="slidedown">Design</a></li>
+							<li><a onclick='createFilter(["tabletops"])' href="phone.html" data-transition="slidedown">Table Tops</a></li>
+							<li><a onclick='createFilter(["accessibility"])' href="phone.html" data-transition="slidedown">Accessibility</a></li>
+							<li><a onclick='createFilter(["elderly"])' href="phone.html" data-transition="slidedown">Elderly</a></li>
 						
 						</ul>
 					</div>
