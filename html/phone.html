@@ -32,7 +32,7 @@
 							<!-- <li class="short"><a href="talk.html" data-transition="slide"><img src="img/add.png"/> <h3>Fancy Talk Title</h3><p>Something about humans...</p></a></li>
 		 -->
 							<li class="short light_blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Beyond visual acuity: the perceptual scalability of information visualizations for large displays</h3></a>
+								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Select a tag</h3></a>
 
 								<a class="light_blue" href="talk.html" data-transition="slide"> </a>
 							</li>
@@ -96,7 +96,7 @@
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
 				 return $.get('/tiles', function(data) {
-		        console.log("Filters updated!" + data);
+		        console.log("Filters loaded!" + data);
 						var arr = [];
 						for (var id in data)
 						{ 
@@ -119,11 +119,11 @@
 						}				
 					  var uniques = removeDups(arr);		
 
-						for (i=0; i< 5; i ++){
+						for (i=0; i< 6; i ++){
 							if(arr[i])
 							  var x = tiles[i].innerHTML = arr[i];
 						  else
-						   var x = tiles[i].innerHTML = "Add another tag";
+						   var x = tiles[i].innerHTML = "Select another tag";
 
 						}
 		        return console.log(data);
