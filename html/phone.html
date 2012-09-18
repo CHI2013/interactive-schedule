@@ -9,11 +9,10 @@
 		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
 		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
 		<link rel="stylesheet" href="css/custom.css"/>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/jquery.mobile-1.1.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="lib/phone.js"></script>
-
+ 		<script src="lib/jquery.min.js"></script>
+  		<script src="lib/jquery.mobile-1.1.1.min.js"></script>
+    	<script src="/socket.io/socket.io.js"></script>
+    	<script src="lib/phone.js"></script>
   </head>
 
   <body>
@@ -214,9 +213,20 @@
 			});
 		});
 
+    function createFilter(tags) 
+		{
+			 alert(tags);
+			$.post("http://localhost:8000/filters",
+				{
+					"tags": tags
+				},
+				function(data, status)
+				{
+					// alert('Hello');
+					console.log("Updated session: " + data);
+				});
+		}
 		</script>
-
-
 
 		</body>
 </html>

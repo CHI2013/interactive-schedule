@@ -135,8 +135,8 @@ padding:1%;
 /* Main page HOME styling */
 
 #branding{
-  background:url(images/logo.png) no-repeat;
-  width:90%;
+/*  background:url(images/logo.png) no-repeat;
+*/  width:90%;
   height:100%;
   text-indent: :-999px;
   font-size: 0px;

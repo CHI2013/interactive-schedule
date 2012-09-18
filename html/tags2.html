@@ -5,122 +5,14 @@
 		<meta charset = "UTF-8">
 		<meta name = "viewport" content="width=device-width, initial-scale=1">
 		<title> CHI'13 Schedule </title>
-		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
+
+	    <script src="lib/jquery.min.js"></script>
+	    <script src="lib/jquery.mobile-1.1.1.min.js"></script>
+	    <script src="/socket.io/socket.io.js"></script>
+	    <script src="lib/phone.js"></script>
+	    <link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
 		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
 		<link rel="stylesheet" href="css/custom.css"/>
-    <script src="lib/jquery.min.js"></script>
-    <script src="lib/jquery.mobile-1.1.1.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="lib/phone.js"></script>
-
-		<script>
-		function createFilter(tags) {
-			// alert(tags);
-
-			$.post("http://192.168.1.5:8000/filters",
-				{
-					"tags": tags
-				},
-				function(data, status)
-				{
-					// alert('Hello');
-					console.log("Updated session: " + data);
-				});
-		}
-
-
-
-		$(document).ready(function() {
-
-	// 	    $('#a1').click(function(e) {
-	// 	 				$.post("http://localhost:8000/filters",
-	// 						{
-	// 							"tags": ["visualization", "infoviz"]
-	// 						},
-	// 						function(data, status)
-	// 						{
-	// 							console.log("Updated session: " + data);
-	// 						});
-	// 	    });
-	// //	});
-	// 	    $('#li2').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["mobile", "devices"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li3').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["crowdsourcing", "mechanical turk"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li4').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["health"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li5').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["design"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li6').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["tabletops"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li7').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["accessibility"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		    		
-	// 	    $('#li8').click(function(e) {
-	// 	    		 				$.post("http://localhost:8000/filters",
-	// 	    							{
-	// 	    								"tags": ["elderly"]
-	// 	    							},
-	// 	    							function(data, status)
-	// 	    							{
-	// 	    								console.log("Updated filters: " + data);
-	// 	    							});
-	// 	    });
-		});
-		</script>
   </head>
   <body>
 				<div data-role="page" id="tags" data-theme="a" data-add-back-btn="true">
@@ -143,8 +35,6 @@
 					</div>
 				</div>
 			</div> <!-- END PAGE -->
-
-	
 
 		</body>
 </html>
