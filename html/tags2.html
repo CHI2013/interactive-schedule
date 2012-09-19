@@ -13,28 +13,49 @@
 	    <link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
 		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
 		<link rel="stylesheet" href="css/custom.css"/>
+
   </head>
   <body>
-				<div data-role="page" id="tags" data-theme="a" data-add-back-btn="true">
-					<div data-role="header">
-						<h1> CHI'13 </h1>
-					</div>					
-				<div data-role="content" id="tag_list">
-					<div class="choice_list">
-						<ul data-role="listview" data-theme="a" data-filter="true">
-							<li><a onclick='createFilter(["visualization", "infoviz"])' id="a1" href="phone.html" data-transition="slidedown">Data Visualization</a></li>
-							<li><a onclick='createFilter(["prototyping"])' href="phone.html" data-transition="slidedown">Prototyping</a></li>
-							<li><a onclick='createFilter(["crowdsourcing"])' href="phone.html" data-transition="slidedown">Crowdsourcing</a></li>
-							<li><a onclick='createFilter(["health"])' href="phone.html" data-transition="slidedown">Health</a></li>
-							<li><a onclick='createFilter(["design"])' href="phone.html" data-transition="slidedown">Design</a></li>
-							<li><a onclick='createFilter(["tabletops"])' href="phone.html" data-transition="slidedown">Table Tops</a></li>
-							<li><a onclick='createFilter(["accessibility"])' href="phone.html" data-transition="slidedown">Accessibility</a></li>
-							<li><a onclick='createFilter(["elderly"])' href="phone.html" data-transition="slidedown">Elderly</a></li>
-						
-						</ul>
-					</div>
-				</div>
-			</div> <!-- END PAGE -->
+		<div data-role="page" id="tags" data-theme="a" data-add-back-btn="true">
+		<script>
+		//script tag needs to be within the <div> tag from which it references its id 
+		
+		$('#tags').live('pageinit', function(event){
+		//	alert("new new");
+ 		// binds new events to this page
+		});	
 
-		</body>
+		//Function to add filters, global scope
+     	function createFilter(tags) 
+		{
+			 alert(tags);
+			$.post("http://localhost:8000/filters",
+				{
+					"tags": tags
+				},
+				function(data, status)
+				{
+					console.log("Updated session: " + data);
+				});
+		}
+		</script>	
+			<div data-role="header">
+				<h1> CHI'13 </h1>
+			</div>					
+			<div data-role="content" id="tag_list">
+				<div class="choice_list">
+					<ul data-role="listview" data-theme="a" data-filter="true">
+						<li><a onclick='createFilter(["visualization", "infoviz"])' id="a1" href="phone.html" data-transition="slidedown">Data Visualization</a></li>
+						<li><a onclick='createFilter(["prototyping"])' href="phone.html" data-transition="slidedown">Prototyping</a></li>
+						<li><a onclick='createFilter(["crowdsourcing"])' href="phone.html" data-transition="slidedown">Crowdsourcing</a></li>
+						<li><a onclick='createFilter(["health"])' href="phone.html" data-transition="slidedown">Health</a></li>
+						<li><a onclick='createFilter(["design"])' href="phone.html" data-transition="slidedown">Design</a></li>
+						<li><a onclick='createFilter(["tabletops"])' href="phone.html" data-transition="slidedown">Table Tops</a></li>
+						<li><a onclick='createFilter(["accessibility"])' href="phone.html" data-transition="slidedown">Accessibility</a></li>
+						<li><a onclick='createFilter(["elderly"])' href="phone.html" data-transition="slidedown">Elderly</a></li>
+					</ul>
+				</div>
+			</div>
+		</div> <!-- END PAGE -->
+	</body>
 </html>

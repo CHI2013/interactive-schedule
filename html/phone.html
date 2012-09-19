@@ -213,19 +213,7 @@
 			});
 		});
 
-    function createFilter(tags) 
-		{
-			 alert(tags);
-			$.post("http://localhost:8000/filters",
-				{
-					"tags": tags
-				},
-				function(data, status)
-				{
-					// alert('Hello');
-					console.log("Updated session: " + data);
-				});
-		}
+
 		</script>
 
 		</body>
