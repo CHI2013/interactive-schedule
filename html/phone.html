@@ -87,101 +87,193 @@
 		    }
 		    return my_array;
 		};
+
+		//  function loadFilters() 
+		// {
+		// 	$.post("http://localhost:8000/filters",
+		// 		{
+		// 			"tags": ""
+		// 		},
+		// 		function(data, status)
+		// 		{
+		// 			console.log("loaded initial filters: " + data);
+		// 		});
+		// }
 		
 		//Code to sync up with the server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		var tiles = document.getElementsByTagName("h3");
-		
+
+		var D = [];
+		var E = [];
+		var F = [];
+		var G = [];
+		var H = [];
+		var I = [];
+
+	//	var counter = 0;
+
+		var Dc = 0;
+		var Ec = 0;
+		var Fc = 0;
+		var Gc = 0;
+		var Hc = 0;
+		var Ic = 0;
+
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
-				 return $.get('/tiles', function(data) {
+				return $.get('/tiles', function(data) {
 		        console.log("Filters loaded!" + data);
-						var arr = [];
-						for (var id in data)
-						{ 
-							var tile = data[id];
-							for(property in tile)
-							{
-								var kind = tile[property];
-								for(submissions in kind)
-								{
-									var submission = kind[submissions];
-									for(sessions in submission)
-									{
-										var session = submission[sessions].title;
-										if(session)								
-										arr.push(session);
 
-									}
-								}
-							}
-						}				
-					  var uniques = removeDups(arr);		
+				if(D[0])
+				{
+					if(Dc < D.length)
+					{
+						var x = tiles[5].innerHTML = D[Dc];
+						Dc = Dc + 1;
 
-						for (i=0; i< 6; i ++){
-							if(arr[i])
-							  var x = tiles[i].innerHTML = arr[i];
-						  else
-						   var x = tiles[i].innerHTML = "Select another tag";
+					}
+					else
+					{
+						Dc = 0;
+						var x = tiles[5].innerHTML = D[Dc];
+					}
+				}
+				
+				if(E[0])
+				{
+					if(Ec < E.length)
+					{
+						var x = tiles[4].innerHTML = E[Ec];
+						Ec = Ec + 1;
+					}
+					else
+					{
+						Ec = 0;
+						var x = tiles[4].innerHTML = E[Ec];
+					}
+				}
 
-						}
-		        return console.log(data);
+				if(F[0])
+				{
+					if(Fc < F.length)
+					{
+						var x = tiles[3].innerHTML = F[Fc];
+				    	Fc = Fc + 1;				    	
+					}
+					else
+					{
+						Fc = 0;
+						var x = tiles[3].innerHTML = F[Fc];
+					}
+				}
+
+				if(G[0])
+				{
+					if(Gc < G.length)
+					{
+						var x = tiles[2].innerHTML = G[Gc];
+				    	Gc = Gc + 1;				    	
+					}
+					else
+					{
+						Gc = 0;
+						var x = tiles[2].innerHTML = G[Gc];
+					}
+				}
+		
+				if(H[0])
+				{
+					if(Hc < H.length)
+					{
+						var x = tiles[1].innerHTML = H[Hc];
+				    	Hc = Hc + 1;				    	
+					}
+					else
+					{
+						Hc = 0;
+						var x = tiles[1].innerHTML = H[Hc];
+					}
+				}
+				
+				if(I[0])
+				{
+					if(Ic < I.length)
+					{
+						var x = tiles[0].innerHTML = I[Ic];
+				    	Ic = Ic + 1;				    	
+				    }
+					else
+					{
+						Ic = 0;
+						var x = tiles[0].innerHTML = I[Ic];
+					}
+				}
+
+				// if(E[counter])
+				//   var x = tiles[1].innerHTML = E[counter];
+				// if(F[counter])
+				//   var x = tiles[2].innerHTML = F[counter];	
+				// if(G[counter])
+				//   var x = tiles[3].innerHTML = G[counter];
+				// if(H[counter])
+				//   var x = tiles[4].innerHTML = H[counter];
+				// if(I[counter])
+				//   var x = tiles[5].innerHTML = I[counter];
+
+				// counter = counter + 1;
+				// if(counter == 2) counter = 0;
 		      });
-    
 		});
 
     socket.on('tilesUpdated', function(data) {
       return $.get('/tiles', function(data) {
         console.log("Filters updated!" + data);
-				var arr = [];
-				for (var id in data)
-				{ 
-					var tile = data[id];
-					for(property in tile)
-					{
-						var kind = tile[property];
-						for(submissions in kind)
-						{
-							var submission = kind[submissions];
-							for(sessions in submission)
-							{
-								var session = submission[sessions].title;
-								if(session)								
-								arr.push(session);
-					  		
+
+			for (var id in data)
+			{ 
+				var tile = data[id];
+				if(tile.type == "filter" && tile.hasOwnProperty("filter"))
+					if(tile.filter.hasOwnProperty("submissions"))
+						for(i = 0; i<tile.filter.submissions.length; i++)
+						{									
+							//console.log("Tile ID: " + id + " submissions: "  + tile.filter.submissions[i].title);
+
+							if(id == "D"){
+								D.push(tile.filter.submissions[i].title);
+								console.log("entered D");
+							}
+							if(id == "E"){
+								E.push(tile.filter.submissions[i].title);
+								console.log("entered E");
+
+							}
+							if(id == "F"){
+								F.push(tile.filter.submissions[i].title);
+								console.log("entered F");
+
+							}
+							if(id == "G"){
+								G.push(tile.filter.submissions[i].title);
+								console.log("entered G");
+
+							}
+							if(id == "H"){
+								H.push(tile.filter.submissions[i].title);
+								console.log("entered H");
+
+							}
+							if(id == "I"){
+								I.push(tile.filter.submissions[i].title);
+								console.log("entered I " + tile.filter.submissions[i].title);
 							}
 						}
-					}
-				}				
-			  var uniques = removeDups(arr);		
-			  
-				for (i=0; i< 6; i ++){
-					if(arr[i])
-					  var x = tiles[i].innerHTML = arr[i];
-				  else
-				   var x = tiles[i].innerHTML = "Add another tag";
-				
-				}
-        return console.log(data);
-      });
-		
-				$.get('/ongoingsessions', function(session) {
-
-				    console.log("5: " + session);
-
-				    for( var property in session)
-				{
-					console.log("4: " + property);
-
-				}
-
-				    var x = document.getElementById("tile2").innerHTML= session[0].Title;
-
-			        console.log("Filters updated!");	
-			    });
-		
-		
+			}
+		    return console.log(data);
 		});
+	});
+
+
 
 		//Code to test  swipe gesture on tile
 		$("#listitem").swiperight(function() {
