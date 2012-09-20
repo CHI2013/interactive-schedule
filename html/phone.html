@@ -16,94 +16,65 @@
   </head>
 
   <body>
-				<div data-role="page" id="home" data-theme="a">
-				<div data-role="header" style="height:10%">
-					<a href="index.html" data-role="button" data-icon="arrow-l">Previous</a>
-					<h1> CHI'13 </h1>
-					<a href="index.html" data-role="button" data-icon="refresh">Now</a>
+		<div data-role="page" id="home" data-theme="a">
+			<div data-role="header" style="height:10%">
+				<a href="index.html" data-role="button" data-icon="arrow-l">Previous</a>
+				<h1> CHI'13 </h1>
+				<a href="index.html" data-role="button" data-icon="refresh">Now</a>
+			</div>
+			<div data-role="content">
+				<div id="branding">
+					<h1> Current Events</h1>
 				</div>
-				<div data-role="content">
-					<div id="branding">
-						<h1> Current Events</h1>
-					</div>
-					<div class="choice_list">
-						<ul data-role="listview" data-insert="true" >
-							<!-- <li class="short"><a href="talk.html" data-transition="slide"><img src="img/add.png"/> <h3>Fancy Talk Title</h3><p>Something about humans...</p></a></li>
-		 -->
-							<li class="short light_blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Select a tag</h3></a>
+			<div class="choice_list">
+					<ul data-role="listview" data-insert="true" >
+						<li class="short light_blue">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Select a tag</h3></a>
+							<a class="light_blue" href="talk.html" data-transition="slide"> </a>
+						</li>
 
-								<a class="light_blue" href="talk.html" data-transition="slide"> </a>
-							</li>
+						<li class="short orange">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Select another tag </h3></a>
+							<a class="orange" href="talk.html" data-transition="slide"> </a>
+						</li>
 
-							<li class="short orange">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Select another tag </h3></a>
+						<li class="short purple">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select another tag</h3></a>
+							<a class="purple" href="talk.html" data-transition="slide"> </a>
+						</li>
 
-								<a class="orange" href="talk.html" data-transition="slide"> </a>
-							</li>
+						<li class="short red">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select another tag</h3></a>
+							<a class="red" href="talk.html" data-transition="slide"> </a>
+						</li>
 
-							<li class="short purple">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select another tag</h3></a>
+						<li class="short blue">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select another tag</h3></a>
+							<a class="blue" href="talk.html" data-transition="slide"> </a>
+						</li>
 
-								<a class="purple" href="talk.html" data-transition="slide"> </a>
-							</li>
+						<li class="short green">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select another tag </h3></a>
 
-							<li class="short red">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select another tag</h3></a>
+							<a class="green" href="talk.html" data-transition="slide"></a>
+						</li>
 
-								<a class="red" href="talk.html" data-transition="slide"> </a>
-							</li>
-
-							<li class="short blue">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select another tag</h3></a>
-
-								<a class="blue" href="talk.html" data-transition="slide"> </a>
-							</li>
-
-							<li class="short green">
-								<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select another tag </h3></a>
-
-								<a class="green" href="talk.html" data-transition="slide"></a>
-							</li>
-
-							<li class="footer" data-icon="info" data-iconpos="bottom">
-								<a href="tags2.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
-							</li>
-		<!-- 					<li  class="short" id="listitem"> Swipe me right! </li>
-		 -->
-						</ul>
-					</div>
+						<li class="footer" data-icon="info" data-iconpos="bottom">
+							<a href="tags2.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
+						</li>
+		<!-- 		<li  class="short" id="listitem"> Swipe me right! </li> -->
+		 			</ul>
 				</div>
-			</div> <!-- END PAGE -->
+			</div>
+		</div> <!-- END PAGE -->
 
 		<script>
-		
-		function removeDups( my_array ) {
-		    my_array.sort();
-		    for ( var i = 1; i < my_array.length; i++ ) {
-		        if ( my_array[i] === my_array[ i - 1 ] ) {
-		                    my_array.splice( i--, 1 );
-		        }
-		    }
-		    return my_array;
-		};
-
-		//  function loadFilters() 
-		// {
-		// 	$.post("http://localhost:8000/filters",
-		// 		{
-		// 			"tags": ""
-		// 		},
-		// 		function(data, status)
-		// 		{
-		// 			console.log("loaded initial filters: " + data);
-		// 		});
-		// }
 		
 		//Code to sync up with the server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		var tiles = document.getElementsByTagName("h3");
 
+		//Array containing all submission tiltes per filter
 		var D = [];
 		var E = [];
 		var F = [];
@@ -111,8 +82,7 @@
 		var H = [];
 		var I = [];
 
-	//	var counter = 0;
-
+		//counter for each specific filter since they may have different lengths
 		var Dc = 0;
 		var Ec = 0;
 		var Fc = 0;
@@ -120,18 +90,19 @@
 		var Hc = 0;
 		var Ic = 0;
 
+		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
 				return $.get('/tiles', function(data) {
 		        console.log("Filters loaded!" + data);
 
+		        // Loop through all titles per filter
 				if(D[0])
 				{
 					if(Dc < D.length)
 					{
 						var x = tiles[5].innerHTML = D[Dc];
 						Dc = Dc + 1;
-
 					}
 					else
 					{
@@ -209,23 +180,12 @@
 						var x = tiles[0].innerHTML = I[Ic];
 					}
 				}
-
-				// if(E[counter])
-				//   var x = tiles[1].innerHTML = E[counter];
-				// if(F[counter])
-				//   var x = tiles[2].innerHTML = F[counter];	
-				// if(G[counter])
-				//   var x = tiles[3].innerHTML = G[counter];
-				// if(H[counter])
-				//   var x = tiles[4].innerHTML = H[counter];
-				// if(I[counter])
-				//   var x = tiles[5].innerHTML = I[counter];
-
-				// counter = counter + 1;
-				// if(counter == 2) counter = 0;
 		      });
 		});
 
+	//Function called after a new filter is posted to server
+	//Populates arrays with all titles for each filter
+	
     socket.on('tilesUpdated', function(data) {
       return $.get('/tiles', function(data) {
         console.log("Filters updated!" + data);
@@ -237,8 +197,6 @@
 					if(tile.filter.hasOwnProperty("submissions"))
 						for(i = 0; i<tile.filter.submissions.length; i++)
 						{									
-							//console.log("Tile ID: " + id + " submissions: "  + tile.filter.submissions[i].title);
-
 							if(id == "D"){
 								D.push(tile.filter.submissions[i].title);
 								console.log("entered D");
@@ -274,7 +232,6 @@
 	});
 
 
-
 		//Code to test  swipe gesture on tile
 		$("#listitem").swiperight(function() {
 		    $.mobile.changePage("talk.html");
@@ -305,8 +262,6 @@
 			});
 		});
 
-
 		</script>
-
-		</body>
+	</body>
 </html>
