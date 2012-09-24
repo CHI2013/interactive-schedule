@@ -92,6 +92,54 @@
 		//variable to sync/unsync
 		var onsync = true;
 
+		$(document).bind('pageinit', function()
+		{
+			return $.get('/tiles', function(data) 
+			{
+	        	updateTiles(data);
+    		})
+		});
+
+		function updateTiles(data){
+			for (var id in data)
+			{ 
+				var tile = data[id];
+				if(tile.type == "filter" && tile.hasOwnProperty("filter"))
+					if(tile.filter.hasOwnProperty("submissions"))
+						for(i = 0; i<tile.filter.submissions.length; i++)
+						{									
+							if(id == "D"){
+								D.push(tile.filter.submissions[i].title);
+								console.log("entered D");
+							}
+							if(id == "E"){
+								E.push(tile.filter.submissions[i].title);
+								console.log("entered E");
+
+							}
+							if(id == "F"){
+								F.push(tile.filter.submissions[i].title);
+								console.log("entered F");
+
+							}
+							if(id == "G"){
+								G.push(tile.filter.submissions[i].title);
+								console.log("entered G");
+
+							}
+							if(id == "H"){
+								H.push(tile.filter.submissions[i].title);
+								console.log("entered H");
+
+							}
+							if(id == "I"){
+								I.push(tile.filter.submissions[i].title);
+								console.log("entered I " + tile.filter.submissions[i].title);
+							}
+						}
+			}
+		};
+
 		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
@@ -194,44 +242,7 @@
     socket.on('tilesUpdated', function(data) {
       return $.get('/tiles', function(data) {
         console.log("Filters updated!" + data);
-
-			for (var id in data)
-			{ 
-				var tile = data[id];
-				if(tile.type == "filter" && tile.hasOwnProperty("filter"))
-					if(tile.filter.hasOwnProperty("submissions"))
-						for(i = 0; i<tile.filter.submissions.length; i++)
-						{									
-							if(id == "D"){
-								D.push(tile.filter.submissions[i].title);
-								console.log("entered D");
-							}
-							if(id == "E"){
-								E.push(tile.filter.submissions[i].title);
-								console.log("entered E");
-
-							}
-							if(id == "F"){
-								F.push(tile.filter.submissions[i].title);
-								console.log("entered F");
-
-							}
-							if(id == "G"){
-								G.push(tile.filter.submissions[i].title);
-								console.log("entered G");
-
-							}
-							if(id == "H"){
-								H.push(tile.filter.submissions[i].title);
-								console.log("entered H");
-
-							}
-							if(id == "I"){
-								I.push(tile.filter.submissions[i].title);
-								console.log("entered I " + tile.filter.submissions[i].title);
-							}
-						}
-			}
+        	updateTiles(data);
 		    return console.log(data);
 		});
 	});
