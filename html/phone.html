@@ -18,9 +18,9 @@
   <body>
 		<div data-role="page" id="home" data-theme="a">
 			<div data-role="header" style="height:10%">
-				<a href="index.html" data-role="button" data-icon="arrow-l">Previous</a>
+				<a href="#" id="previous" data-role="button" data-icon="arrow-l">Previous</a>
 				<h1> CHI'13 </h1>
-				<a href="index.html" data-role="button" data-icon="refresh">Now</a>
+				<a href="#" id="now" data-role="button" data-icon="refresh">Now</a>
 			</div>
 			<div data-role="content">
 				<div id="branding">
@@ -34,28 +34,27 @@
 						</li>
 
 						<li class="short orange">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2"> Select another tag </h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2">Select a tag</h3></a>
 							<a class="orange" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short purple">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select another tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select a tag</h3></a>
 							<a class="purple" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short red">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select another tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select a tag</h3></a>
 							<a class="red" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select another tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select a tag</h3></a>
 							<a class="blue" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short green">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select another tag </h3></a>
-
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select a tag</h3></a>
 							<a class="green" href="talk.html" data-transition="slide"></a>
 						</li>
 
@@ -90,12 +89,17 @@
 		var Hc = 0;
 		var Ic = 0;
 
+		//variable to sync/unsync
+		var onsync = true;
+
 		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
 				return $.get('/tiles', function(data) {
 		        console.log("Filters loaded!" + data);
 
+		        if(onsync)
+		        {
 		        // Loop through all titles per filter
 				if(D[0])
 				{
@@ -180,6 +184,7 @@
 						var x = tiles[0].innerHTML = I[Ic];
 					}
 				}
+				}
 		      });
 		});
 
@@ -231,6 +236,83 @@
 		});
 	});
 
+	//Action for "Previous" button
+		$("#previous").click(function(){
+
+			//stop auto sync
+			onsync = false;
+
+			//update each tile with previous title, make sure not to under/over flow.
+			
+			if(Dc >= 1)
+				Dc = Dc - 1;
+			else
+				Dc = D.length -1;
+
+			if(D[0])
+			var d = tiles[5].innerHTML = D[Dc];
+
+			if(Ec >= 1)
+				Ec = Ec - 1;
+			else
+				Ec = E.length -1;
+			
+			if(E[0])
+			var e = tiles[4].innerHTML = E[Ec];
+
+			if(Fc >= 1)
+				Fc = Fc - 1;
+			else
+				Fc = F.length -1;
+			
+			if(F[0])
+			var f = tiles[3].innerHTML = F[Fc];
+
+			if(Gc >= 1)
+				Gc = Gc - 1;
+			else
+				Gc = G.length -1;
+		
+			if(G[0])
+			var g = tiles[2].innerHTML = G[Gc];
+
+			if(Hc >= 1)
+				Hc = Hc - 1;
+			else
+				Hc = H.length -1;
+			
+			if(H[0])
+			var h = tiles[1].innerHTML = H[Hc];
+
+			if(Ic >= 1)
+				Ic = Ic - 1;
+			else
+				Ic = I.length -1;
+			
+			if(I[0])
+			var x = tiles[0].innerHTML = I[Ic];
+		});
+
+	//Action for "Now" button
+		$("#now").click(function(){
+			//Re-enable automatic syncing
+			onsync = true;
+		});
+
+	//Behavior for tiles to link to tags page when empty
+
+		$(".short").click(function(){
+
+			var h3 = this.getElementsByTagName("h3");
+			var tile_text = h3[0].innerHTML;
+			if(tile_text === "Select a tag")
+			{
+				var href = $(this.getElementsByTagName("a")[0]).attr({
+					'href': "tags2.html",
+					'data-transition': "slideup"
+				});
+			}
+		});
 
 		//Code to test  swipe gesture on tile
 		$("#listitem").swiperight(function() {
