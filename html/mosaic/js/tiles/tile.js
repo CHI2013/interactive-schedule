@@ -1,19 +1,21 @@
-var TileId;
+var tileId;
+var tile;
 
 $(document).ready(function() {
-    TileId = window.location.hash.replace('#', '');
+    tileId = window.location.hash.replace('#', '');
 
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
     });
 
     socket.on('tick', function(data) {
-        tick(data[TileId])
+        tick(data[tileId])
     });
 
     var getTile = function() {
-        return $.get('/tiles/' + TileId, function(data) {
-            init(data);
+        return $.get('/tiles/' + tileId, function(data) {
+            tile = data;
+            init();
         });
     };
 

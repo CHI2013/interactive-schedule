@@ -1,7 +1,4 @@
-var Tile;
-
-function init(tile) {
-    Tile = tile;
+function init() {
     var filter = tile.filter;
     console.log("Initializing tile " + filter.tileId);
 
@@ -64,7 +61,7 @@ function showVideo(ti) {
         $('#video').fadeIn(250, function() {
             jwplayer('player').setup({
                 flashplayer: '/lib/jwplayer/player.swf',
-                file: '/videos/' + Tile.filter.submissions[ti].video + '.mp4',
+                file: '/videos/' + tile.filter.submissions[ti].video + '.mp4',
                 width: $('#video').width(),
                 height: $('#video').height(),
                 mute: true,
