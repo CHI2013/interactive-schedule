@@ -92,7 +92,7 @@ class GlanceServer
                     res.send {'status': 'error'}, 500
                 else
                     matches = s.matchArray data, query
-                    filter = {'query': query, 'submissions': matches, 'timestamp': new Date(), 'tile': tile}
+                    filter = {'query': query, 'submissions': matches, 'timestamp': new Date(), 'tileId': tile}
                     @tiles[tile]['filter'] = filter
                     @tickIndex[tile] = -1
                     res.send {'status': 'ok', 'tile': tile}

@@ -1,0 +1,77 @@
+h1 {
+    position: absolute;
+    top: 5px;
+    left: 15px;
+    margin: 0;
+    font-variant: small-caps;
+    font-size: 36px;
+}
+
+#tileD h2 { color: #3F876D;}
+#tileE h2 { color: #975500; }
+#tileF h2 { color: #441FA8; }
+#tileG h2 { color: #A32213; }
+#tileH h2 { color: #2872A4; }
+#tileI h2 { color: #446112; }
+
+#progress_bar svg {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    height: 20px;
+}
+
+#progress_bar circle {
+    fill: #fff; 
+    opacity: 0.4;
+}
+
+#progress_bar circle.active { opacity: 1; }
+
+#submissions, #video { 
+    position: absolute; 
+    top: 50px;
+    bottom: 50px;
+    left: 15px;
+    right: 15px;
+}
+
+.submission {
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.submission .inner { 
+    padding: 15px; 
+    font-family: "Franklin Gothic Medium";
+}
+
+#first { display: block !important; }
+
+.submission h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: normal;
+    max-height: 100px;
+    overflow: hidden;
+}
+        
+.submission h3 {
+    font-size: 25px;
+    font-weight: normal;
+    color: #333;
+    margin: 18px 0;
+}
+
+.submission h4, #first h2 { 
+    margin: 0;
+    font-size: 22px;
+    font-weight: normal;
+    color: #666;
+}
+
+#first h2 { margin-bottom: 15px; }

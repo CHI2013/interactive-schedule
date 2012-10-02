@@ -8,7 +8,9 @@
     <script src="js/jquery.svgdom.min.js"></script>
     <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
     <script src="data.js"></script>
+    <script src="js/titleCaps.js"></script>
     <script src="js/tiles.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
     var tile = {
         width:  640,
@@ -82,44 +84,44 @@
         }
         
         /* Color Brewers */
-        #filter1 { background: #8DD3C7; }
-        #filter1 h3 { color: #3F876D;}
-        #map svg .filter1 { 
+        #filterD { background: #8DD3C7; }
+        #filterD h3 { color: #3F876D;}
+        #map svg .filterD { 
             fill: #8DD3C7; 
             stroke: #8DD3C7;
         }
         
-        #filter2 { background: #FDB462; }
-        #filter2 h3 { color: #975500; }
-        #map svg .filter2 { 
+        #filterE { background: #FDB462; }
+        #filterE h3 { color: #975500; }
+        #map svg .filterE { 
             fill: #FDB462; 
             stroke: #FDB462;
         }
         
-        #filter3 { background: #BEBADA; }
-        #filter3 h3 { color: #441FA8; }
-        #map svg .filter3 { 
+        #filterF { background: #BEBADA; }
+        #filterF h3 { color: #441FA8; }
+        #map svg .filterF { 
             fill: #BEBADA; 
             stroke: #BEBADA;
         }
         
-        #filter4 { background: #FB8072; }
-        #filter4 h3 { color: #A32213; }
-        #map svg .filter4 { 
+        #filterG { background: #FB8072; }
+        #filterG h3 { color: #A32213; }
+        #map svg .filterG { 
             fill: #FB8072; 
             stroke: #FB8072;
         }
         
-        #filter5 { background: #80B1D3; }
-        #filter5 h3 { color: #2872A4; }
-        #map svg .filter5 { 
+        #filterH { background: #80B1D3; }
+        #filterH h3 { color: #2872A4; }
+        #map svg .filterH { 
             fill: #80B1D3; 
             stroke: #80B1D3;
         }
         
-        #filter6 { background: #B3DE69; }
-        #filter6 h3 { color: #446112; }
-        #map svg .filter6 { 
+        #filterI { background: #B3DE69; }
+        #filterI h3 { color: #446112; }
+        #map svg .filterI { 
             fill: #B3DE69; 
             stroke: #B3DE69;
         }
@@ -257,11 +259,11 @@
 <body>
     <table>
         <tr>
-            <td id="filter1" class="blank filter">
+            <td id="filterD" class="blank filter">
                 
             </td>
             
-            <td id="filter2" class="blank filter">
+            <td id="filterE" class="blank filter">
                 
             </td>
             
@@ -271,7 +273,7 @@
         </tr>
 
         <tr> 
-            <td id="filter3" class="blank filter">
+            <td id="filterF" class="blank filter">
                 
             </td>
 
@@ -279,7 +281,7 @@
                 <img src="imgs/metro-1.png" />
             </td>
             
-            <td id="filter4" class="blank filter">
+            <td id="filterG" class="blank filter">
 
             </td>
         </tr>                
@@ -333,11 +335,11 @@
                 </div>
             </td>
             
-            <td id="filter5" class="blank filter">
+            <td id="filterH" class="blank filter">
                
             </td>
             
-            <td id="filter6" class="blank filter">
+            <td id="filterI" class="blank filter">
                
             </td>
         </tr>

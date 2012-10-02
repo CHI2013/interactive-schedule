@@ -1,0 +1,18 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    border: none
+}
+
+body {
+    font-family: "Helvetica Neue";
+    background: #1f1620;
+}
+
+#tileD { background: #8DD3C7; }
+#tileE { background: #FDB462; }
+#tileF { background: #BEBADA; }
+#tileG { background: #FB8072; }
+#tileH { background: #80B1D3; }
+#tileI { background: #B3DE69; }

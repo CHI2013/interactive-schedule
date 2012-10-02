@@ -9,9 +9,13 @@
      <!--
         var mode = window.screen.width > 1024 ? 'desktop' : window.screen.width > 480 ? 'tablet' : 'phone';
 
+        // alert(window.screen.width);
+
         // When resizing, reposition all the tiles by getting rid 
         // of columns or rows at a time.
-        $(window).resize(function(evt) {
+        $(document).ready(function() {
+            // alert($('.tile').width() + 'x' + $('.tile').height())    
+
             if(mode != 'desktop')
                 return;
 
@@ -20,6 +24,8 @@
 
             var tileMinWidth  = 400;
             var tileMinHeight = 250;
+
+            alert(w);
 
             // Defaults
             $('.row1, .row2, .row3, .col1, .col2, .col3').show();
@@ -32,8 +38,9 @@
                 $('.col3').hide();
                 $('.col2').css('left', '400px');
             }
-
+            alert(w);
             if(w < 2*tileMinWidth) {
+                alert('hello');
                 $('.col1').hide();
                 $('.col2').css('left', '0px');
             }
@@ -47,8 +54,8 @@
                 $('.row1').hide();
                 $('.row2').css('top', '0px');
             }
+        })
 
-        });
      //-->
      </script>
 </head>
