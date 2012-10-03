@@ -1,0 +1,43 @@
+#left {
+    position: absolute;
+    top: 15px;
+    bottom: 15px;
+    left: 15px;
+    right: 50%;
+}
+
+#right {
+    position: absolute;
+    top: 15px;
+    bottom: 15px;
+    left: 50%;
+    right: 15px;
+}
+
+.tweet {
+    display: block;
+    background: #352537;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 15px;
+    color: #eee;
+    font-family: "Gill Sans";
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.tweet .userpic {
+    float: left;
+    margin: 0 15px 0 5px; 
+}
+.tweet .userpic img { border-radius: 5px; }
+.tweet .byline { 
+    margin: 0 0 10px 70px; 
+}
+.tweet .byline .name { font-weight: bold; }
+.tweet .byline .username, .tweet .byline .date {
+    color: #aaa;
+    font-size: 12px;
+}
+.tweet .byline .date { float: right; }
+.tweet .text { margin-left: 70px; }
