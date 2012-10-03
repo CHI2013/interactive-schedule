@@ -20,9 +20,11 @@
     bottom: 50%;
     left: 0;
     right: 15px;
-    padding: 20px;
+    padding: 15px;
+    overflow: hidden;
     background: #f6eebf;
     border-radius: 10px;
+    font-family: 'Magra', sans-serif;
     font-size: 36px;
 }
 

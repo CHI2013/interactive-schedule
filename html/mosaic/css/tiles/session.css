@@ -3,8 +3,9 @@ h1 {
     top: 5px;
     left: 15px;
     margin: 0;
+    font-family: 'Signika', sans-serif;
     font-variant: small-caps;
-    font-size: 36px;
+    font-size: 30px;
 }
 
 #tileD h2 { color: #3F876D;}
@@ -30,7 +31,7 @@ h1 {
 
 #submissions, #video { 
     position: absolute; 
-    top: 50px;
+    top: 45px;
     bottom: 50px;
     left: 15px;
     right: 15px;
@@ -47,7 +48,7 @@ h1 {
 
 .submission .inner { 
     padding: 15px; 
-    font-family: "Franklin Gothic Medium";
+    font-family: 'Magra', sans-serif;
 }
 
 #first { display: block !important; }
