@@ -14,6 +14,24 @@
     right: 15px;
 }
 
+#announcement {
+    position: absolute;
+    top: 0;
+    bottom: 50%;
+    left: 0;
+    right: 15px;
+    padding: 20px;
+    background: #f6eebf;
+    border-radius: 10px;
+    font-size: 36px;
+}
+
+#logo { 
+    width: 95%; 
+    position: absolute;
+    top: 55%;
+}
+
 .tweet {
     display: block;
     background: #352537;
