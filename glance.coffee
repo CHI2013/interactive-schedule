@@ -47,14 +47,24 @@ class GlanceServer
         for tile, val of @tiles
             if val.type == 'filter'
                 @availableTiles.push tile            
+
+    cleanTile: (tileId) ->
+        delete @tiles[tileId]['filter']
+        delete @tiles[tileId]['timestamp']
+        delete @tiles[tileId]['total']
+        @availableTiles.push tileId            
     
     setupSocketIO: () ->
         @iosocket.sockets.on 'connection', (sock) =>
             console.log "Connection!"
             
     sendTick: () ->
-        for tile, i of @tickIndex
-            @tickIndex[tile] = ++i
+        for tileId, i of @tickIndex
+            @tickIndex[tileId] = ++i
+            if(@tickIndex[tileId] >= @tiles[tileId]['total'])
+                @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
+                @cleanTile(tileId)
+                delete @tickIndex[tileId]
 
         @iosocket.sockets.emit 'tick', @tickIndex
         @tickCount++
@@ -83,8 +93,8 @@ class GlanceServer
             if @availableTiles.length == 0
                 res.send {'status': 'error', 'message': 'No empty tiles'}, 500
                 return
-            tile = @availableTiles.pop()
-            console.log tile
+            tileId = @availableTiles.pop()
+            console.log tileId
             query = req.body
             console.log query
             @getOngoingSubmissions (err, data) =>
@@ -92,11 +102,14 @@ class GlanceServer
                     res.send {'status': 'error'}, 500
                 else
                     matches = s.matchArray data, query
-                    filter = {'query': query, 'submissions': matches, 'timestamp': new Date(), 'tileId': tile}
-                    @tiles[tile]['filter'] = filter
-                    @tickIndex[tile] = -1
-                    res.send {'status': 'ok', 'tile': tile}
+                    filter = {'query': query, 'submissions': matches, 'tileId': tileId}
+                    @tiles[tileId]['filter'] = filter
+                    @tiles[tileId]['timestamp'] = new Date()
+                    @tiles[tileId]['total'] = matches.length
+                    @tickIndex[tileId] = -1
+                    res.send {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
+                    @iosocket.sockets.emit 'newTile', {'tileId': tileId}
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsubmissions', (req, res) =>

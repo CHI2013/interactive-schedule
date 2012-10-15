@@ -1,4 +1,7 @@
 function init() {
+    if(!tile.hasOwnProperty('filter'))
+        return;
+
     var filter = tile.filter;
     console.log("Initializing tile " + filter.tileId);
 
@@ -34,6 +37,9 @@ function init() {
 }
 
 function tick(ti) {
+    if(!tile.hasOwnProperty('filter'))
+        return;
+
     console.log($('body').attr('id') + ' tick ' + ti);
 
     $('.submission.active').each(function(index, self) {
@@ -78,4 +84,12 @@ function showVideo(ti) {
             });
         })
     });
+}
+
+function doneTile() {
+    $('body').attr('id', '');
+    $('h1').text('');
+    $('#submissions').html('');
+    $('#progress_bar').svg('destroy');
+    $('#progress_bar').html('');
 }

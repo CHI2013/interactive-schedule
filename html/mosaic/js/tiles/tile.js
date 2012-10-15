@@ -9,7 +9,8 @@ $(document).ready(function() {
     });
 
     socket.on('tick', function(data) {
-        tick(data[tileId])
+        if(data.hasOwnProperty(tileId))
+            tick(data[tileId])
     });
 
     var getTile = function() {
@@ -19,7 +20,8 @@ $(document).ready(function() {
         });
     };
 
-    socket.on('tilesUpdated', function(data) { getTile(); });
+    socket.on('newTile',  function(data) { if(data.tileId == tileId) getTile(); });
+    socket.on('doneTile', function(data) { if(data.tileId == tileId) doneTile(); });
 
     getTile();
 })
