@@ -9,10 +9,10 @@
 		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
 		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
 		<link rel="stylesheet" href="css/custom.css"/>
- 		<script src="lib/jquery.min.js"></script>
-  		<script src="lib/jquery.mobile-1.1.1.min.js"></script>
+ 		<script src="../lib/jquery.min.js"></script>
+  		<script src="../lib/jquery.mobile-1.1.1.min.js"></script>
     	<script src="/socket.io/socket.io.js"></script>
-    	<script src="lib/phone.js"></script>
+    	<script src="../lib/phone.js"></script>
   </head>
 
   <body>
@@ -59,7 +59,7 @@
 						</li>
 
 						<li class="footer" data-icon="info" data-iconpos="bottom">
-							<a href="tags2.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
+							<a href="tags.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
 						</li>
 		<!-- 		<li  class="short" id="listitem"> Swipe me right! </li> -->
 		 			</ul>
@@ -319,7 +319,7 @@
 			if(tile_text === "Select a tag")
 			{
 				var href = $(this.getElementsByTagName("a")[0]).attr({
-					'href': "tags2.html",
+					'href': "tags.html",
 					'data-transition': "slideup"
 				});
 			}
