@@ -38,6 +38,9 @@ class GlanceServer
                     process.exit 1
                 @config = JSON.parse data
                 cb()
+        else
+            console.log "No config file provided!"
+            process.exit 1
                     
     setupTiles: () ->
         if not @config.tiles?
