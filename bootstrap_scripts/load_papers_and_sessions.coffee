@@ -29,10 +29,98 @@ session_reader = csv.createCsvFileReader process.argv[3], {
     'comment': '',
 }
 
+days = {
+        'day_1': {
+                'type': 'day',
+                'number': 1,
+                'name': 'Saturday',
+                'timeslots': ['timeslot_1', 'timeslot_2', 'timeslot_3', 'timeslot_4'],
+                'date': [2012, 5, 5]
+            },
+        'day_2': {
+                'type': 'day',
+                'number': 2,
+                'name': 'Sunday',
+                'timeslots': ['timeslot_5', 'timeslot_6', 'timeslot_7', 'timeslot_8'],
+                'date': [2012, 5, 6]
+            },
+        'day_3': {
+                'type': 'day',
+                'number': 3,
+                'name': 'Monday',
+                'timeslots': ['timeslot_9', 'timeslot_10', 'timeslot_11', 'timeslot_12'],
+                'date': [2012, 5, 7]
+            },
+        'day_4': {
+                'type': 'day',
+                'number': 4,
+                'name': 'Tuesday',
+                'timeslots': ['timeslot_13', 'timeslot_14', 'timeslot_15', 'timeslot_16'],
+                'date': [2012, 5, 8]
+            },
+        'day_5': {
+                'type': 'day',
+                'number': 5,
+                'name': 'Wednesday',
+                'timeslots': ['timeslot_17', 'timeslot_18', 'timeslot_19', 'timeslot_20'],
+                'date': [2012, 5, 9]
+            },
+        'day_6': {
+                'type': 'day',
+                'number': 6,
+                'name': 'Thursday',
+                'timeslots': ['timeslot_21', 'timeslot_22', 'timeslot_23', 'timeslot_24'],
+                'date': [2012, 5, 10]
+            }
+    }
+
+timeslots = {}
+
+for id, day of days
+    timeslots[day.timeslots[0]] = {
+        'type': 'timeslot',
+        'number': 1,
+        'name': 'Morning',
+        'sessions': [],
+        'start': [9, 30],            
+        'end': [10, 50]
+    }
+    timeslots[day.timeslots[1]] = {
+        'type': 'timeslot',
+        'number': 2,
+        'name': 'Before Lunch',
+        'sessions': [],
+        'start': [11, 30],
+        'end': [12, 50]
+    }
+    timeslots[day.timeslots[2]] = {
+        'type': 'timeslot',
+        'number': 3,
+        'name': 'After Lunch',
+        'sessions': [],
+        'start': [14, 30],
+        'end': [15, 50]
+    }
+    timeslots[day.timeslots[3]] = {
+        'type': 'timeslot',
+        'number': 4,
+        'name': 'Afternoon',
+        'sessions': [],
+        'start': [16, 30],
+        'end': [17, 50]
+    }
+
 session_reader.addListener 'data', (data) ->
     date = new Date(data.Date + ' ' + data.Time)
     startTime = [date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes()]
     data.startTime = startTime
+    
+    for id, day of days
+        if day.date[2] == startTime[2]
+            for timeslot in day.timeslots
+                if timeslots[timeslot].start[0] == startTime[3]
+                    timeslots[timeslot].sessions.push 'session_'+data['ID']
+    console.log timeslots
     
     data.type = 'session'
     if data['Submission IDs'] != '"'
@@ -44,9 +132,10 @@ session_reader.addListener 'data', (data) ->
     chidb.insert data, 'session_'+data['ID'], (err, body) ->
         if err?
             console.log err
+        else
+            
     
 session_reader.addListener 'end', () ->
-    console.log submissionsToSessions
     paper_reader = csv.createCsvFileReader process.argv[2], {
         'columnsFromHeader': true,
         'separator': ',',
@@ -69,3 +158,15 @@ session_reader.addListener 'end', () ->
         chidb.insert submission, 'submission_'+submission.id, (err, body) ->
             if err?
                 console.log err
+    
+    paper_reader.addListener 'end', () ->
+        for timeslotId, timeslot of timeslots
+            chidb.insert timeslot, timeslotId, (err, body) ->
+                if err?
+                    console.log err
+        for dayId, day of days
+            chidb.insert day, dayId, (err, body) ->
+                if err?
+                    console.log err
+            
+    

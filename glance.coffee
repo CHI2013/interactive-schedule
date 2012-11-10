@@ -153,6 +153,50 @@ class GlanceServer
                         res.send body
 
         
+        #Returns a list of all days
+        @app.get '/day', (req, res) =>
+            @db.view 'day', 'all', (err, body) =>
+                if err?
+                    res.send 'Could not load days', 500
+                    return
+                res.send body.rows
+                
+        #Returns a specific day with a given ID
+        @app.get '/day/:id', (req, res) =>
+            @db.get req.params.id, (err, body) ->
+                if err?
+                    res.send 'Could not load given day', 500
+                else
+                    if not body.type?
+                        res.send 'No day with given id', 404
+                        return
+                    if body.type != 'day'
+                        res.send 'No day with given id', 404
+                    else
+                        res.send body
+                        
+        #Returns a list of all timeslots
+        @app.get '/timeslot', (req, res) =>
+            @db.view 'timeslot', 'all', (err, body) =>
+                if err?
+                    res.send 'Could not load days', 500
+                    return
+                res.send body.rows
+
+        #Returns a specific timeslot with a given ID
+        @app.get '/timeslot/:id', (req, res) =>
+            @db.get req.params.id, (err, body) ->
+                if err?
+                    res.send 'Could not load given timeslot', 500
+                else
+                    if not body.type?
+                        res.send 'No timeslot with given id', 404
+                        return
+                    if body.type != 'timeslot'
+                        res.send 'No timeslot with given id', 404
+                    else
+                        res.send body
+        
         #Returns a list of all sessions
         @app.get '/session', (req, res) =>
             @db.view 'session', 'all', (err, body) =>
@@ -217,7 +261,6 @@ class GlanceServer
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
         return [2012, 5, 9, 12, 10]
-        
         
     getOngoingSessions: (cb) ->
         time = @getTime()

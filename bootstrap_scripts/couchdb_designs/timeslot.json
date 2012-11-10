@@ -1,0 +1,12 @@
+{
+    "_id" : "_design/session",
+    "views" : {
+        "all" : {
+            "map" :  "function(doc) { 
+                        if (doc.type == 'timeslot') {
+                            emit(null, doc);
+                        }
+                      }"
+        }
+    } 
+}

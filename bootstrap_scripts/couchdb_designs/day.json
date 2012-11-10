@@ -1,0 +1,19 @@
+{
+    "_id" : "_design/session",
+    "views" : {
+        "all" : {
+            "map" :  "function(doc) { 
+                        if (doc.type == 'day') {
+                            emit(null, doc);
+                        }
+                      }"
+        },
+        "byday": {
+            "map": "function(doc) {
+                        if(doc.type === 'day') {
+                            emit(doc.number, doc); 
+                        }
+                    }"
+        }
+    } 
+}
