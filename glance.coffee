@@ -155,7 +155,7 @@ class GlanceServer
                         
         #Redirects to the vdeo of a specific submission with a given ID
         @app.get '/submission/:id/video', (req, res) =>
-            @db.get req.params.id, (err, body) ->
+            @db.get req.params.id, (err, body) =>
                 if err?
                     res.send 'Could not load given submission', 500
                 else
