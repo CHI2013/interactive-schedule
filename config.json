@@ -2,6 +2,7 @@
     "name": "Lobby",
     "db": "chi2013",
     "tickFrequency": 25000,
+    "videoDir": "/videos",
     "tiles": {
         "A": {"type": "feed"},
         "B": {"type": "map"},

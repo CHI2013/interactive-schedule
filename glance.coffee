@@ -151,6 +151,24 @@ class GlanceServer
                         res.send 'No submission with given id', 404
                     else
                         res.send body
+                        
+                        
+        #Redirects to the vdeo of a specific submission with a given ID
+        @app.get '/submission/:id/video', (req, res) =>
+            @db.get req.params.id, (err, body) ->
+                if err?
+                    res.send 'Could not load given submission', 500
+                else
+                    if not body.type?
+                        res.send 'No submission with given id', 404
+                        return
+                    if body.type != 'submission'
+                        res.send 'No submission with given id', 404
+                    else
+                        if body.video?
+                            res.redirect(@config.videoDir + '/' + body.video);
+                        else
+                            res.send 'No video for submission', 404
 
         
         #Returns a list of all days
