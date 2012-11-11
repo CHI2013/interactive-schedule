@@ -151,10 +151,15 @@ session_reader.addListener 'end', () ->
         submission.title = data.Title
         if data['Author list']?
             submission.authors = data['Author list'].split(',')
+        
+        if data['(optional) Video Figure']? and data['(optional) Video Figure'] != '"'
+            video = data['(optional) Video Figure']
+            video = video.replace '-file3', ''
+            submission.video = video
+            
         submission.contributionType = data['Paper or Note']
         submission.session = submissionsToSessions[submission.id]
         submission.tags = giveMeTags()
-        submission.video = "video-"+Math.floor(Math.random()*10)
         chidb.insert submission, 'submission_'+submission.id, (err, body) ->
             if err?
                 console.log err
