@@ -1,12 +1,12 @@
 csv = require 'ya-csv'
 nano = require('nano')('http://127.0.0.1:5984')
+videos = require('./videos')
 
 chidb = nano.db.use('chi2013');
 
 submissionsToSessions = {}
 
 tags = "theory,crowdsourcing,infovis,multi-surface,visualization,design,health,business,global,systems,toolkits,cscw,ubiquitous computing,tabletops,sense-making,augmented reality,performance,elderly,multicultural,participatory design,BCI,music,accessibility,science,gender HCI,prototyping,fitts' law,hypertext,www".split ','
-
 
 randomNumbers = () ->
     r1 = Math.floor Math.random()*tags.length
@@ -120,7 +120,6 @@ session_reader.addListener 'data', (data) ->
             for timeslot in day.timeslots
                 if timeslots[timeslot].start[0] == startTime[3]
                     timeslots[timeslot].sessions.push 'session_'+data['ID']
-    console.log timeslots
     
     data.type = 'session'
     if data['Submission IDs'] != '"'
@@ -152,10 +151,13 @@ session_reader.addListener 'end', () ->
         if data['Author list']?
             submission.authors = data['Author list'].split(',')
         
-        if data['(optional) Video Figure']? and data['(optional) Video Figure'] != '"'
-            video = data['(optional) Video Figure']
-            video = video.replace '-file3', ''
-            submission.video = video
+        if videos.videos[submission.id]?
+            submission.video = videos.videos[submission.id]
+        #if data['(optional) Video Figure']? and data['(optional) Video Figure'] != '"'
+        #    video = data['(optional) Video Figure']
+        #    video = video.replace '-file3', ''
+        #    submission.video = video
+        #    console.log video
             
         submission.contributionType = data['Paper or Note']
         submission.session = submissionsToSessions[submission.id]

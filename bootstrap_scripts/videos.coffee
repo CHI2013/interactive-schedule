@@ -1,0 +1,14 @@
+root = exports ? window
+
+videosStr = "paper0104.mov,paper0340.wmv,paper0515.mp4,paper0854.wmv,paper1126.wmv,paper1366.mov,paper1766.wmv,paper0104.wmv,paper0359.mp4,paper0517.mov,paper0868.mov,paper1147.wmv,paper1366.wmv,paper1768.mp4,paper0118.avi,paper0360.wmv,paper0521.avi,paper0868.wmv,paper1158.mp4,paper1371.wmv,paper1788.mp4,paper0118.mov,paper0365.wmv,paper0531.wmv,paper0933.mp4,paper1171.wmv,paper1374.wmv,paper1817.wmv,paper0120.mp4,paper0373.mp4,paper0534.mov,paper0986.mov,paper1189.mp4,paper1377.wmv,paper1818.wmv,paper0125.mp4,paper0379.mov,paper0554.mov,paper0989.mp4,paper1189.wmv,paper1392.wmv,paper1830.mp4,paper0125.wmv,paper0405.mp4,paper0564.mp4,paper0989.wmv,paper1193.wmv,paper1448.avi,paper1830.wmv,paper0131.wmv,paper0412.mov,paper0580.wmv,paper0990.wmv,paper1196.avi,paper1485.mp4,paper1837.wmv,paper0132.mp4,paper0412.wmv,paper0592.wmv,paper0992.mov,paper1210.wmv,paper1487.mp4,paper1838.avi,paper0132.wmv,paper0418.wmv,paper0594.wmv,paper0992.wmv,paper1218.mp4,paper1487.wmv,paper1848.wmv,paper0135.wmv,paper0423.mp4,paper0622.mov,paper0995.mov,paper1223.mp4,paper1525.wmv,paper1859.mp4,paper0136.wmv,paper0444.wmv,paper0633.avi,paper1012.mp4,paper1224.mp4,paper1533.mp4,paper1859.wmv,paper0141.wmv,paper0449.mp4,paper0633.mp4,paper1027.wmv,paper1229.wmv,paper1562.mp4,paper1878.mp4,paper0150.wmv,paper0449.wmv,paper0634.mov,paper1043.wmv,paper1234.mp4,paper1562.wmv,paper1880.wmv,paper0174.mp4,paper0463.mp4,paper0634.wmv,paper1044.wmv,paper1234.wmv,paper1563.wmv,paper1882.wmv,paper0174.wmv,paper0463.wmv,paper0657.mp4,paper1052.avi,paper1239.mp4,paper1585.wmv,paper1910.wmv,paper0178.mp4,paper0464.mp4,paper0689.mov,paper1052.wmv,paper1253.mov,paper1620.mp4,paper1912.mp4,paper0209.avi,paper0464.wmv,paper0689.wmv,paper1063.wmv,paper1253.wmv,paper1621.mp4,paper1915.mp4,paper0214.wmv,paper0465.mp4,paper0712.wmv,paper1064.mov,paper1271.avi,paper1621.wmv,paper1916.wmv,paper0231.mp4,paper0481.wmv,paper0718.wmv,paper1064.mp4,paper1274.wmv,paper1646.mov,paper1952.wmv,paper0231.wmv,paper0484.mov,paper0726.wmv,paper1067.mov,paper1280.mp4,paper1646.wmv,paper1959.wmv,paper0236.mp4,paper0484.wmv,paper0730.mp4,paper1067.wmv,paper1280.wmv,paper1676.wmv,paper1967.mp4,paper0236.wmv,paper0485.wmv,paper0730.wmv,paper1070.mp4,paper1283.mov,paper1677.wmv,paper1967.wmv,paper0251.wmv,paper0489.mp4,paper0740.mp4,paper1070.wmv,paper1285.wmv,paper1695.wmv,paper1970.mov,paper0263.mov,paper0489.wmv,paper0760.wmv,paper1073.mp4,paper1320.avi,paper1700.wmv,paper1987.mp4,paper0263.wmv,paper0495.mp4,paper0767.mov,paper1075.wmv,paper1351.wmv,paper1719.wmv,paper1987.wmv,paper0282.mov,paper0495.wmv,paper0767.wmv,paper1119.mp4,paper1357.wmv,paper1752.wmv,paper2001.mp4,paper0306.wmv,paper0499.wmv,paper0814.wmv,paper1126.mp4,paper1359.wmv,paper1754.mp4,paper2022.wmv"
+
+videoList = videosStr.split ','
+
+videos = {}
+
+for video in videoList
+    console.log video
+    videos[""+video[..video.length-5]] = video
+
+console.log videos
+root.videos = videos
