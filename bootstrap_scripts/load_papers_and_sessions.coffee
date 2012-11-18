@@ -149,15 +149,19 @@ session_reader.addListener 'end', () ->
         submission.type = 'submission'
         submission.title = data.Title
         if data['Author list']?
-            submission.authors = data['Author list'].split(',')
+            submission.authors = data['Author list'].split(',').map (name) ->
+                name.trim()
         
         if videos.videos[submission.id]?
             submission.video = videos.videos[submission.id]
-        #if data['(optional) Video Figure']? and data['(optional) Video Figure'] != '"'
-        #    video = data['(optional) Video Figure']
-        #    video = video.replace '-file3', ''
-        #    submission.video = video
-        #    console.log video
+
+        if data['Keywords']?
+            keywords = data['Keywords'].split(/[\n\t,;\\]+/).map (word) ->
+                word.trim().toLowerCase().replace '.', ''
+            submission.keywords = []
+            for keyword in keywords
+                if keyword.length != 0
+                    submission.keywords.push keyword
             
         submission.contributionType = data['Paper or Note']
         submission.session = submissionsToSessions[submission.id]
