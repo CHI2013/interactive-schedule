@@ -14,6 +14,13 @@
                             emit(doc.number, doc); 
                         }
                     }"
+        },
+        "bydate": {
+            "map": "function(doc) {
+                        if(doc.type === 'day') {
+                            emit(doc.date, doc); 
+                        }
+                    }"
         }
     } 
 }

@@ -263,7 +263,31 @@ class GlanceServer
                                     else
                                         tags[tag] = [row.value.id]
                     res.send {'tags': tags, 'totalItems': count}
-            
+        
+        
+        #Returns the ongoing timeslot (if any)
+        @app.get '/currentTimeSlot', (req, res) =>
+            time = @getTime()
+            start = time[..2]
+            end = time[..2]
+            @db.view 'day', 'bydate', {"startkey": start, "endkey": end}, (err, body) =>
+                if err?
+                    res.send 'Could not load given time', 500
+                else
+                    if body.rows.length != 1
+                        res.send 'No data for given time', 500
+                    else
+                        day = body.rows[0].value
+                        @db.fetch {'keys': day.timeslots}, (err, body) ->
+                            if err?
+                                res.send 'Could not load given time', 500
+                            else
+                                for timeslot in body.rows
+                                    if timeslot.doc.start[0] <= time[3] && timeslot.doc.end[0] >= time[3]
+                                        res.send timeslot.doc
+                                        return
+                                res.send 'No ongoing timeslot', 404
+                                
         
     connectCouchDB: (cb) ->
         nano = nano 'http://localhost:5984'
@@ -287,7 +311,7 @@ class GlanceServer
         clock = time[3]+":"+time[4]
         hour = ""+time[3]
         minute = ""+time[4]
-
+                
         @db.view 'session', 'bydate', {"startkey": from, "endkey": to}, (err, body) ->
             if err?
                 cb err, null
