@@ -78,7 +78,17 @@ class GlanceServer
         dir = __dirname + '/html'
         app.use express.static dir
         return app
-
+        
+    connectCouchDB: (cb) ->
+        nano = nano 'http://localhost:5984'
+        nano.db.get @dbName, (err, body) =>
+            if err
+                console.log "No " + @dbName +" database in CouchDB"
+                process.exit 1
+            else
+                @db = nano.use @dbName
+                console.log "Connected to CouchDB and opened the " + @dbName + " database."
+                cb()
 
     setupRest: () ->
         #Get the filter of a given tile (e.g. F)
@@ -113,22 +123,6 @@ class GlanceServer
                     res.send {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
-        
-        #Returns a list of all ongoing sessions
-        @app.get '/ongoingsubmissions', (req, res) =>
-            @getOngoingSubmissions (err, data) ->
-                if err?
-                    res.send 'Could not load ongoing submissions', 500
-                else
-                    res.send data
-        
-        #Returns a list of all ongoing sessions
-        @app.get '/ongoingsessions', (req, res) =>
-            @getOngoingSessions (err, data) ->
-                if err?
-                    res.send 'Could not load ongoing sessions', 500
-                else
-                    res.send data
         
         #Returns a list of all sessions
         @app.get '/submission', (req, res) =>
@@ -237,90 +231,117 @@ class GlanceServer
                     else
                         res.send body
         
-        #Returns a list of all tags of ongoing sessions each tag has a list of sessions matching that tag. 
-        #Also a count of all ongoing sessions is returned (which can be used e.g. to size tags in a tag cloud)
-        @app.get '/ongoingtags', (req, res) =>
-            time = @getTime()
-            from = [time[0], time[1], time[2]]
-            to = [time[0], time[1], time[2]+1]
-            clock = time[3]+":"+time[4]
-            hour = ""+time[3]
-            minute = ""+time[4]
-            
-            @db.view 'session', 'bydate', {"startkey": from, "endkey": to}, (err, body) ->
+##################################
+##More specialized queries below##
+##################################
+        
+        #Returns a list of all ongoing sessions
+        @app.get '/ongoingsubmissions', (req, res) =>
+            @getOngoingSubmissions (err, data) ->
                 if err?
-                    console.log err
+                    res.send 'Could not load ongoing submissions', 500
+                else
+                    res.send data
+
+        #Returns a list of all ongoing sessions
+        @app.get '/ongoingsessions', (req, res) =>
+            @getOngoingSessions (err, data) ->
+                if err?
+                    res.send 'Could not load ongoing sessions', 500
+                else
+                    res.send data
+
+        #Returns a list of all tags of ongoing submissions each tag has a list of submissions matching that tag. 
+        #Also a count of all ongoing submissions is returned (which can be used e.g. to size tags in a tag cloud)
+        @app.get '/ongoingtags', (req, res) =>
+            @getOngoingSubmissions (err, data) ->
+                if err?
+                    res.send 'Could not load ongoing sessions', 500
                 else
                     tags = {}
                     count = 0
-                    for row in body.rows
-                        if row.value.start < clock and row.value.end > clock
-                            if row.value.tags?
-                                for tag in row.value.tags
-                                    count++
-                                    if tags[tag]?
-                                        tags[tag].push row.value.id
-                                    else
-                                        tags[tag] = [row.value.id]
+                    for submission in data
+                        if submission.tags?
+                            for tag in submission.tags
+                                count++
+                                if tags[tag]?
+                                    tags[tag].push submission._id
+                                else
+                                    tags[tag] = [submission._id]
                     res.send {'tags': tags, 'totalItems': count}
-        
+                    
+
+        #Returns a list of all keywords of ongoing submissions each keyword has a list of keywords matching that tag. 
+        #Also a count of all ongoing submissions is returned (which can be used e.g. to size keywords in a tag cloud)
+        @app.get '/ongoingkeywords', (req, res) =>
+            @getOngoingSubmissions (err, data) ->
+                if err?
+                    res.send 'Could not load ongoing sessions', 500
+                else
+                    keywords = {}
+                    count = 0
+                    for submission in data
+                        if submission.keywords?
+                            for keyword in submission.keywords
+                                count++
+                                if keywords[keyword]?
+                                    keywords[keyword].push submission._id
+                                else
+                                    keywords[keyword] = [submission._id]
+                    res.send {'tags': keywords, 'totalItems': count}
+  
         
         #Returns the ongoing timeslot (if any)
         @app.get '/currentTimeSlot', (req, res) =>
-            time = @getTime()
-            start = time[..2]
-            end = time[..2]
-            @db.view 'day', 'bydate', {"startkey": start, "endkey": end}, (err, body) =>
-                if err?
-                    res.send 'Could not load given time', 500
+            @getCurrentTimeSlot (error, doc) =>
+                if error?
+                    res.send "Could not load current timeslot", 500
                 else
-                    if body.rows.length != 1
-                        res.send 'No data for given time', 500
+                    if not doc?
+                        res.send "No ongoing timeslot", 404
                     else
-                        day = body.rows[0].value
-                        @db.fetch {'keys': day.timeslots}, (err, body) ->
-                            if err?
-                                res.send 'Could not load given time', 500
-                            else
-                                for timeslot in body.rows
-                                    if timeslot.doc.start[0] <= time[3] && timeslot.doc.end[0] >= time[3]
-                                        res.send timeslot.doc
-                                        return
-                                res.send 'No ongoing timeslot', 404
-                                
-        
-    connectCouchDB: (cb) ->
-        nano = nano 'http://localhost:5984'
-        nano.db.get @dbName, (err, body) =>
-            if err
-                console.log "No " + @dbName +" database in CouchDB"
-                process.exit 1
-            else
-                @db = nano.use @dbName
-                console.log "Connected to CouchDB and opened the " + @dbName + " database."
-                cb()
+                        res.send doc
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
         return [2012, 5, 9, 12, 10]
         
-    getOngoingSessions: (cb) ->
+    getCurrentTimeSlot: (cb) ->
         time = @getTime()
-        from = [time[0], time[1], time[2]]
-        to = [time[0], time[1], time[2]+1]
-        clock = time[3]+":"+time[4]
-        hour = ""+time[3]
-        minute = ""+time[4]
-                
-        @db.view 'session', 'bydate', {"startkey": from, "endkey": to}, (err, body) ->
+        start = time[..2]
+        end = time[..2]
+        @db.view 'day', 'bydate', {"startkey": start, "endkey": end}, (err, body) =>
             if err?
                 cb err, null
             else
-                results = []
-                for row in body.rows
-                    if row.value.Time < clock and row.value["End Time"] > clock
-                        results.push row.value
-                cb null, results
+                if body.rows.length != 1
+                    cb new Error "No data for given time", null
+                else
+                    day = body.rows[0].value
+                    @db.fetch {'keys': day.timeslots}, (err, body) ->
+                        if err?
+                            cb err, null
+                        else
+                            for timeslot in body.rows
+                                if timeslot.doc.start[0] <= time[3] && timeslot.doc.end[0] >= time[3]
+                                    cb null, timeslot.doc
+                                    return
+                            cb null, null
+    
+    getOngoingSessions: (cb) ->
+        @getCurrentTimeSlot (error, doc) =>
+            if error?
+                cb error, null
+            else
+                if not doc?
+                    cb new Error "No data for given time", null
+                else
+                    @db.fetch {'keys': doc.sessions}, (err, body) ->
+                        if err?
+                            cb err, null
+                        else
+                            result = body.rows.map (row) -> row.doc
+                            cb null, result
                 
     getOngoingSubmissions: (cb) ->
         @getOngoingSessions (err, sessions) =>

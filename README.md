@@ -66,6 +66,26 @@ The glance server provides a basic REST based API.
      * GET on _http://server.url:8000/session_: returns all sessions
      * GET on _http://server.url:8000/session/[sessionID]_: returns a specific session
      * GET on _http://server.url:8000/ongoingsessions_: returns all sessions that are currently ongoing (time hardcoded in server for now)
+ * __Submissions__
+   + represents the submissions to the conference
+   + REST api
+     * GET on _http://server.url:8000/submission_: returns all submissions
+     * GET on _http://server.url:8000/submission/[submissionID]_: returns a specific submission
+     * GET on _http://server.url:8000/submission/[submissionID]/video_: redirects to the optional video material of a submission
+     * GET on _http://server.url:8000/ongoingsubmissions_: returns all submissions that are currently ongoing (timehardcoded in server for now)
+ * __Timeslots__
+   + represents a timeslot in a day
+   + each timeslot contains a set of sessions
+   + REST api
+     * GET on _http://server.url:8000/timeslot_: returns all timeslots
+     * GET on _http://server.url:8000/timeslot/[timeslotID]_: returns a specific timeslot
+     * GET on _http://server.url:8000/currenttimeslot_: returns the current ongoing timeslot
+ * __Days__
+   + Represents the days of the conference
+   + Each day contains 4 timeslots (morning, before lunch, after lunch, afternoon)
+   + REST api
+     * GET on _http://server.url:8000/day_: returns all days
+     * GET on _http://server.url:8000/day/[dayID]_: returns a specific day
  * __Filters__
    + Filters are applied by posting a query to the server. The server will associate an available tile with the given filter.
    + When posting a query to the server the filter is stored in the data structure of its associated tile including the query, the submissions that match the query and a timestamp.
@@ -77,6 +97,11 @@ The glance server provides a basic REST based API.
    + It is possible to retrieve all tags of submissions in currently ongoing sessions to build a tag-cloud
    + REST api
      * GET on _http://server.url:8000/ongoingtags_: returns all tags of submissions in ongoing sessions
+ * __Keywords__
+    + All submissions have author keywords
+    + It is possible to retrieve all keywords of submissions in currently ongoing sessions to build a tag-cloud
+    + REST api
+      * GET on _http://server.url:8000/ongoingkeywords_: returns all keywords of submissions in ongoing sessions
      
      
 ###Events
