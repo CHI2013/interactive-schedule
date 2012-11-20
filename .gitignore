@@ -2,5 +2,7 @@ node_modules
 .DS_Store
 
 html/lib/phone.js
+bootstrap_scripts/paper_sessions.csv
+bootstrap_scrupts/paper_submissions.csv
 
 erl_crash.dump
