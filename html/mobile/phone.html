@@ -29,37 +29,42 @@
 			<div class="choice_list">
 					<ul data-role="listview" data-insert="true" >
 						<li class="short light_blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile1">Select a tag</h3> <!-- <p class="rating four"> 4 stars </p> --> </a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a filter</h3> <!-- <p class="rating four"> 4 stars </p> --> </a>
 							<a class="light_blue" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short orange">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile2">Select a tag</h3><!--  <p class="rating one"> 1 stars </p> --> </a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="D" submissionId="0">Select a filter</h3><!--  <p class="rating one"> 1 stars </p> --> </a>
 							<a class="orange" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short purple">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile3">Select a tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="E" submissionId="0">Select a filter</h3></a>
 							<a class="purple" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short red">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile4">Select a tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="F" submissionId="0">Select a filter</h3></a>
 							<a class="red" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile5">Select a tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="G" submissionId="0">Select a filter</h3></a>
 							<a class="blue" href="talk.html" data-transition="slide"> </a>
 						</li>
 
 						<li class="short green">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="tile6">Select a tag</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="H" submissionId="0">Select a filter</h3></a>
 							<a class="green" href="talk.html" data-transition="slide"></a>
 						</li>
 
+						<li class="short dark_green">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="I" submissionId="0">Select a filter</h3></a>
+							<a class="dark_green" href="talk.html" data-transition="slide"></a>
+						</li>
+
 						<li class="footer" data-icon="info" data-iconpos="bottom">
-							<a href="tags.html" data-transition="slideup">  <h3 id="footer">Tags </h3></a>
+							<a href="tags.html" data-transition="slideup">  <h3 id="footer">Filters </h3></a>
 						</li>
 		<!-- 		<li  class="short" id="listitem"> Swipe me right! </li> -->
 		 			</ul>
@@ -68,274 +73,192 @@
 		</div> <!-- END PAGE -->
 
 		<script>
-		
-		//Code to sync up with the server
+
+	//Code to sync up with the server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		var tiles = document.getElementsByTagName("h3");
+		var filters =[];
 
-		//Array containing all submission tiltes per filter
-		var D = [];
-		var E = [];
-		var F = [];
-		var G = [];
-		var H = [];
-		var I = [];
+		var tiles2 = [];
 
-		//counter for each specific filter since they may have different lengths
-		var Dc = 0;
-		var Ec = 0;
-		var Fc = 0;
-		var Gc = 0;
-		var Hc = 0;
-		var Ic = 0;
+		//Temporary call to function to fake preexisting data
+		createFilter(["visualization", "infoviz"]);
 
-		//variable to sync/unsync
-		var onsync = true;
+		//Logical structure for each tile data
+		function Tile (id){
+			this.id = id;
+			this.text = "";
+			this.total = 0;
+			this.current = 0;
+			this.submissionId = 0;
+			this.submissions = {};
+		};
 
-		$(document).bind('pageinit', function()
-		{
-			return $.get('/tiles', function(data) 
-			{
-	        	updateTiles(data);
-    		})
-		});
+		Tile.prototype.updateCurrent = function(current){
+			this.current = current;
+		};
 
-		function updateTiles(data){
-			for (var id in data)
-			{ 
-				var tile = data[id];
-				if(tile.type == "filter" && tile.hasOwnProperty("filter"))
-					if(tile.filter.hasOwnProperty("submissions"))
-						for(i = 0; i<tile.filter.submissions.length; i++)
-						{									
-							if(id == "D"){
-								D.push(tile.filter.submissions[i].title);
-								console.log("entered D");
-							}
-							if(id == "E"){
-								E.push(tile.filter.submissions[i].title);
-								console.log("entered E");
+		Tile.prototype.getCurrent = function(){
+			return this.current;
+		};
 
-							}
-							if(id == "F"){
-								F.push(tile.filter.submissions[i].title);
-								console.log("entered F");
+		Tile.prototype.updateTotal = function(total){
+			this.total = total;
+		};
+		Tile.prototype.getTotal = function(){
+			return this.total;
+		};
 
-							}
-							if(id == "G"){
-								G.push(tile.filter.submissions[i].title);
-								console.log("entered G");
-
-							}
-							if(id == "H"){
-								H.push(tile.filter.submissions[i].title);
-								console.log("entered H");
-
-							}
-							if(id == "I"){
-								I.push(tile.filter.submissions[i].title);
-								console.log("entered I " + tile.filter.submissions[i].title);
-							}
-						}
+		//Creates 7 Tile objects
+		function createTiles(){
+			var ids = ["A","B","C","D","E","F","G","H","I"];
+			for (var i=2; i< ids.length; i++){
+				var tile = new Tile(ids[i]);
+				tiles2.push(tile);
 			}
 		};
 
+		//Called at load
+		createTiles();
+
+		//Load existing JSON data from /tiles and assign it to logical tiles
+		function loadData(){
+			$.get('/tiles', function(data){
+				for(id in data){
+					if(data[id].type == "filter" && data[id].hasOwnProperty("filter"))
+					{
+						var filter = data[id];
+						for(var i = 0; i<tiles2.length;i++)
+						{	
+							var tile = tiles2[i];
+							if(tile.id === filter.filter.tileId)
+							{
+								tile.total = filter.total;
+								tile.submissions = filter.filter.submissions;
+							}
+						}
+					}
+				}
+				showSubmissions();
+			});
+		}
+
+		//Load logical tiles' data into visual tiles
+		function showSubmissions(){
+			for(var i = 0; i< tiles2.length; i++)
+			{
+				var tile = tiles2[i];
+				if(tile.total !=0)
+				{
+				tile.text = tile.submissions[tile.current].title;
+				tile.submissionId = tile.submissions[tile.current].id;
+				tile.current += 1;
+				//tiles is the visual tiles, tiles2 are the logical tiles
+				tiles[i].innerHTML = tile.text;
+				tiles[i].setAttribute("submissionId", tile.submissionId)
+				}
+
+			}
+		};
+
+		//Update visual tiles after change on logical tiles
+		function updateSubmissions(tileId, talkId){
+			for(var i = 0; i< tiles2.length; i++)
+			{
+				var tile = tiles2[i];
+				if(tile.id == tileId)
+				{
+				if(tile.total != 0)
+				{
+					tile.text= tile.submissions[talkId].title;
+					tile.submissionId = tile.submissions[tile.current].id;
+				}
+				tile.current = talkId;
+
+				//tiles is the visual tiles, tiles2 are the logical tiles
+				tiles[i].innerHTML = tile.text;
+				tiles[i].setAttribute("submissionId", tile.submissionId)
+
+				}
+
+			}
+		};
+
+		//Function used to simulate something was already on the server
+		function createFilter(tags) 
+			{
+				$.post("http://localhost:8000/filters",
+				// Add your ip here to test with mobile device
+				//$.post("http://169.254.125.64:8000/filters",
+					{
+						"tags": tags
+					},
+					function(data, status)
+					{
+						loadData();
+					});
+			}
+		
+
+	
 		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
-				return $.get('/tiles', function(data) {
-		        console.log("Filters loaded!" + data);
-
-		        if(onsync)
-		        {
-		        // Loop through all titles per filter
-				if(D[0])
-				{
-					if(Dc < D.length)
-					{
-						var x = tiles[5].innerHTML = D[Dc];
-						Dc = Dc + 1;
-					}
-					else
-					{
-						Dc = 0;
-						var x = tiles[5].innerHTML = D[Dc];
-					}
-				}
-				
-				if(E[0])
-				{
-					if(Ec < E.length)
-					{
-						var x = tiles[4].innerHTML = E[Ec];
-						Ec = Ec + 1;
-					}
-					else
-					{
-						Ec = 0;
-						var x = tiles[4].innerHTML = E[Ec];
-					}
-				}
-
-				if(F[0])
-				{
-					if(Fc < F.length)
-					{
-						var x = tiles[3].innerHTML = F[Fc];
-				    	Fc = Fc + 1;				    	
-					}
-					else
-					{
-						Fc = 0;
-						var x = tiles[3].innerHTML = F[Fc];
-					}
-				}
-
-				if(G[0])
-				{
-					if(Gc < G.length)
-					{
-						var x = tiles[2].innerHTML = G[Gc];
-				    	Gc = Gc + 1;				    	
-					}
-					else
-					{
-						Gc = 0;
-						var x = tiles[2].innerHTML = G[Gc];
-					}
-				}
-		
-				if(H[0])
-				{
-					if(Hc < H.length)
-					{
-						var x = tiles[1].innerHTML = H[Hc];
-				    	Hc = Hc + 1;				    	
-					}
-					else
-					{
-						Hc = 0;
-						var x = tiles[1].innerHTML = H[Hc];
-					}
-				}
-				
-				if(I[0])
-				{
-					if(Ic < I.length)
-					{
-						var x = tiles[0].innerHTML = I[Ic];
-				    	Ic = Ic + 1;				    	
-				    }
-					else
-					{
-						Ic = 0;
-						var x = tiles[0].innerHTML = I[Ic];
-					}
-				}
-				}
-		      });
+		    if(count.isEmpty)
+		    for(var id in count){
+		    	 updateSubmissions(id, count[id]);
+		    }
+					
 		});
+	
 
 	//Function called after a new filter is posted to server
 	//Populates arrays with all titles for each filter
 	
-    socket.on('tilesUpdated', function(data) {
-      return $.get('/tiles', function(data) {
-        console.log("Filters updated!" + data);
-        	updateTiles(data);
-		    return console.log(data);
-		});
-	});
-
-	//Action for "Previous" button
-		$("#previous").click(function(){
-
-			//stop auto sync
-			onsync = false;
-
-			//update each tile with previous title, make sure not to under/over flow.
-			
-			if(Dc >= 1)
-				Dc = Dc - 1;
-			else
-				Dc = D.length -1;
-
-			if(D[0])
-			var d = tiles[5].innerHTML = D[Dc];
-
-			if(Ec >= 1)
-				Ec = Ec - 1;
-			else
-				Ec = E.length -1;
-			
-			if(E[0])
-			var e = tiles[4].innerHTML = E[Ec];
-
-			if(Fc >= 1)
-				Fc = Fc - 1;
-			else
-				Fc = F.length -1;
-			
-			if(F[0])
-			var f = tiles[3].innerHTML = F[Fc];
-
-			if(Gc >= 1)
-				Gc = Gc - 1;
-			else
-				Gc = G.length -1;
-		
-			if(G[0])
-			var g = tiles[2].innerHTML = G[Gc];
-
-			if(Hc >= 1)
-				Hc = Hc - 1;
-			else
-				Hc = H.length -1;
-			
-			if(H[0])
-			var h = tiles[1].innerHTML = H[Hc];
-
-			if(Ic >= 1)
-				Ic = Ic - 1;
-			else
-				Ic = I.length -1;
-			
-			if(I[0])
-			var x = tiles[0].innerHTML = I[Ic];
+    	socket.on('tilesUpdated', function(data) {
+   	    	loadData();
 		});
 
-	//Action for "Now" button
-		$("#now").click(function(){
-			//Re-enable automatic syncing
-			onsync = true;
-		});
-
-	//Behavior for tiles to link to tags page when empty
-
-		$(".short").click(function(){
-
-			var h3 = this.getElementsByTagName("h3");
-			var tile_text = h3[0].innerHTML;
-			if(tile_text === "Select a tag")
+		socket.on('doneTile', function(data) { 
+			for(var i = 0; i<tiles2.length;i++)
 			{
-				var href = $(this.getElementsByTagName("a")[0]).attr({
-					'href': "tags.html",
-					'data-transition': "slideup"
-				});
-			}
-			else
-			{
-				var href = $(this.getElementsByTagName("a")[0]).attr({
-					'href': "#",
-					'data-transition': "slide"
-				});
+				if(data.tileId == tiles2[i].id) 
+					doneTile(data.tileId, i); 
 			}
 		});
 
-		//Code to test  swipe gesture on tile
-		$("#listitem").swiperight(function() {
-		    $.mobile.changePage("talk.html");
+		//function called after we iterate through all session events
+		function doneTile(tileId,index){
+			tile = tiles2[index];
+			tile.total = 0;
+			tile.submissions = {};
+			tile.current = 0;
+			tile.text = "Select a filter";
+			tile.submissionId = 0;
+			updateSubmissions(tileId,0);
+		}
+
+		//onclick handler for the tiles
+		//calls iOS function with the id of the selected submission
+		$("li.short h3").on("click", function(){
+			var id = $(this).attr("id");
+			var submissionId = $(this).attr("submissionId")
+			console.log(submissionId);
+			if(submissionId != 0)
+			addSubmission(submissionId);
 		});
+
+		//Function to send to Native iOS app to add to schedule
+
+		function addSubmission(id){
+			alert("called iOS");
+		}
+
+
+		//Helper function(s)
+		var isEmpty = function(obj) {
+  		return Object.keys(obj).length === 0;
+		}
 
 		//Change tile status icon
 		$(function(){
