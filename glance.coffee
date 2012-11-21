@@ -345,6 +345,8 @@ class GlanceServer
                 
     getOngoingSubmissions: (cb) ->
         @getOngoingSessions (err, sessions) =>
+            if err?
+                cb err, null
             submissionIDs = []
             for session in sessions
                 for submission in session['Submission IDs']
