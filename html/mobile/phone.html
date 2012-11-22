@@ -75,7 +75,10 @@
 		<script>
 
 	//Code to sync up with the server
+		//local server
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+		//cloud server
+		//var socket = io.connect("http://92.243.30.77", {port: 8000});
 		var tiles = document.getElementsByTagName("h3");
 		var filters =[];
 

@@ -132,5 +132,23 @@ Example:
         });
     });
         
-  
+  ### Mobile Interface
+
+  The main file for the mobile interface is located under glance/mobile/phone.html
+
+  Once the server is running you can use it to post filters and view submissions related to them.
+
+  Once submissions are being display, a tap event on the tile triggers the function to send the selected submission ID to the future Obj-C function to add to the schedule on the iOS app.
+
+Line 253
+ function addSubmission(id){
+      alert("called iOS");
+  }
+
+  As explained here https://developer.apple.com/library/mac/#documentation/AppleApplications/Conceptual/SafariJSProgTopics/Tasks/ObjCFromJavaScript.html#//apple_ref/doc/uid/30001215-BBCBFJCD , we should use this function to communicate both apps.
+
+  Currently it only offers "add" capabilities but more will come in the future.
+
+
+
 
