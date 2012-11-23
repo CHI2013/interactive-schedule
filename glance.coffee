@@ -77,8 +77,6 @@ class GlanceServer
         app.use express.bodyParser()
         dir = __dirname + '/html'
         app.use express.static dir
-        app.use (req, res, next) ->
-            res.header 'Access-Control-Allow-Origin', '*'
         return app
         
     connectCouchDB: (cb) ->
