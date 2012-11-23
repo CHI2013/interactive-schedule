@@ -1,0 +1,44 @@
+body {
+	font-family: Helvetica, sans-serif;
+	margin: 0;
+}
+
+h2 {
+	color: white;
+	background-color: black;
+	padding: 2px;
+	margin: 0;
+}
+
+a {
+	color: #222;
+	text-decoration: none;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	list-style: none;
+	padding: 3px;
+	background-color: #aaa;
+	border-bottom: 1px solid;
+}
+
+ul ul li {
+	background-color: #ddd;
+	padding-left: 20px;
+}
+
+#add {
+	content: url("add.png");
+}
+#remove {
+	content: url("remove.png");
+}
+
+#authors {
+	font-style: italic;
+}

@@ -9,28 +9,25 @@
 		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
 		$(document).ready(function() {
 			var query = window.location.search;
-			query = query.substring(1, query.length);
-			getSession(query);
+			getEvent(query.substring(1, query.length));
 		});
-
-		function getSession(sessionId) {
-			$.get(GlanceServer+'/session/'+sessionId, function(data) {
-				$('#title').append(data.Date + " "+data.Time+" "+ data.Title);
-				var sessionList = data["Submission IDs"];
-				for (i in sessionList) {
-					var eventId = sessionList[i];
-					$('#list').append("<li id='"+eventId+"'></li>");
-					getEvent(eventId);
-				}
-			});
-		}
 
 		function getEvent(eventId) {
 			$.get(GlanceServer+'/submission/submission_'+eventId, function(data) {
+				$('#title').append(data.title);
+				for (i in data.authors) {
+					$('#authors').append((i > 0 ? ", ":"")+data.authors[i]);
+				}
+				for (i in data.keywords) {
+					$('#keywords').append((i > 0 ? ", ":"")+data.keywords[i]);
+				}
+				for (i in data.tags) {
+					$('#tags').append((i > 0 ? ", ":"")+data.tags[i]);
+				}
+
 				var add = "<span id='add' onclick='addToPersonalProgram("+'"'+eventId+'"'+")'>[add]</span> ";
 				var remove = "<span id='remove' onclick='removeFromPersonalProgram("+'"'+eventId+'"'+")'>[remove]</span> ";
-				var link = "<a href='event.html?"+eventId+"'>"+data.title+"</a>"
-				$('#'+eventId).append(add+remove+link);
+				$('#program').append(add+remove);
 			});
 		}
 
@@ -42,7 +39,10 @@
 </head>
 <body>
 	<h2 id="title"></h2>
-	<ul id="list">
+	<p id="authors"></p>
+	<p id="keywords"><b>Keywords:</b> </p>
+	<p id="tags"><b>Tags:</b> </p>
+	<p id="program">Personal program: </p>
 	<ul>
 </body>
 </html>
