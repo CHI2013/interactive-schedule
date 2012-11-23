@@ -6,7 +6,16 @@
 	<title>Test API</title>
  	<script src="jquery.min.js"></script>
 	<script type="text/javascript">
-		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		var glanceHost = "92.243.30.77:8080";
+
+		function queryURL(url) {
+			if (window.location.host == glanceHost)
+				return '/'+url;
+			else
+				// cross-site request => use JSONP
+				return 'http://'+glanceHost+'/'+url+'?callback=?';	
+		}
+
 		$(document).ready(function() {
 			var query = window.location.search;
 			query = query.substring(1, query.length);
@@ -14,7 +23,7 @@
 		});
 
 		function getSession(sessionId) {
-			$.get(GlanceServer+'/session/'+sessionId, function(data) {
+			$.getJSON(queryURL('session/'+sessionId), function(data) {
 				$('#title').append(data.Date + " "+data.Time+" "+ data.Title);
 				var sessionList = data["Submission IDs"];
 				for (i in sessionList) {
@@ -26,7 +35,7 @@
 		}
 
 		function getEvent(eventId) {
-			$.get(GlanceServer+'/submission/submission_'+eventId, function(data) {
+			$.getJSON(queryURL('submission/submission_'+eventId), function(data) {
 				var add = "<span id='add' onclick='addToPersonalProgram("+'"'+eventId+'"'+")'>[add]</span> ";
 				var remove = "<span id='remove' onclick='removeFromPersonalProgram("+'"'+eventId+'"'+")'>[remove]</span> ";
 				var link = "<a href='event.html?"+eventId+"'>"+data.title+"</a>"

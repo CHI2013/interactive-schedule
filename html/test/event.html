@@ -6,14 +6,23 @@
 	<title>Test API</title>
  	<script src="jquery.min.js"></script>
 	<script type="text/javascript">
-		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		var glanceHost = "92.243.30.77:8080";
+
+		function queryURL(url) {
+			if (window.location.host == glanceHost)
+				return '/'+url;
+			else
+				// cross-site request => use JSONP
+				return 'http://'+glanceHost+'/'+url+'?callback=?';	
+		}
+
 		$(document).ready(function() {
 			var query = window.location.search;
 			getEvent(query.substring(1, query.length));
 		});
 
 		function getEvent(eventId) {
-			$.get(GlanceServer+'/submission/submission_'+eventId, function(data) {
+			$.getJSON(queryURL('submission/submission_'+eventId), function(data) {
 				$('#title').append(data.title);
 				for (i in data.authors) {
 					$('#authors').append((i > 0 ? ", ":"")+data.authors[i]);

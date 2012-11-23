@@ -6,13 +6,22 @@
 	<title>Test API</title>
  	<script src="jquery.min.js"></script>
 	<script type="text/javascript">
-		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		var glanceHost = "92.243.30.77:8080";
+
+		function queryURL(url) {
+			if (window.location.host == glanceHost)
+				return '/'+url;
+			else
+				// cross-site request => use JSONP
+				return 'http://'+glanceHost+'/'+url+'?callback=?';	
+		}
+
 		$(document).ready(function() {
 			getDays();
 		});
 
 		function getDays() {
-			$.get(GlanceServer+'/day', function(data) {
+			$.getJSON(queryURL('day'), function(data) {
 				$('#title').append("Days");
 				for (id in data) {
 					var day = data[id].value;
@@ -30,7 +39,7 @@
 		}
 
 		function getTimeslot(slotId) {
-			$.get(GlanceServer+'/timeslot/'+slotId, function(data) {
+			$.getJSON(queryURL('timeslot/'+slotId), function(data) {
 				$('#'+slotId).append("<a href='timeslot.html?"+slotId+"'>"+data.name+"</a>");
 			});
 		}
