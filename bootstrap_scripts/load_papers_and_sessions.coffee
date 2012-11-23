@@ -122,7 +122,7 @@ session_reader.addListener 'data', (data) ->
                     timeslots[timeslot].sessions.push 'session_'+data['ID']
     
     data.type = 'session'
-    if data['Submission IDs'] != '"'
+    if data['Submission IDs'] && data['Submission IDs'] != '"'
         data['Submission IDs'] = data['Submission IDs'].split ' '
     else
         data['Submission IDs'] = []
@@ -146,6 +146,8 @@ session_reader.addListener 'end', () ->
     paper_reader.addListener 'data', (data) ->
         submission = {}
         submission.id = data.ID
+        if !submission.id
+            return
         submission.type = 'submission'
         submission.title = data.Title
         if data['Author list']?
