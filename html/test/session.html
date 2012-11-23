@@ -1,0 +1,40 @@
+<html>
+<head>
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content="width=device-width, initial-scale=1">
+	<title>Test API</title>
+ 	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		$(document).ready(function() {
+			var query = window.location.search;
+			query = query.substring(1, query.length);
+			getSession(query);
+		});
+
+		function getSession(sessionId) {
+			$.get(GlanceServer+'/session/'+sessionId, function(data) {
+				$('#title').append(data.Date + " "+data.Time+" "+ data.Title);
+				var sessionList = data["Submission IDs"];
+				for (i in sessionList) {
+					var eventId = sessionList[i];
+					$('#list').append("<li id='"+eventId+"'></li>");
+					getEvent(eventId);
+				}
+			});
+		}
+
+		function getEvent(eventId) {
+			$.get(GlanceServer+'/submission/'+eventId, function(data) {
+				$('#'+eventId).append(eventId);
+			});
+		}
+
+	</script>
+</head>
+<body>
+	<h2 id="title"></h2>
+	<ul id="list">
+	<ul>
+</body>
+</html>

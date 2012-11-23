@@ -1,0 +1,39 @@
+<html>
+<head>
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content="width=device-width, initial-scale=1">
+	<title>Test API</title>
+ 	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		$(document).ready(function() {
+			var query = window.location.search;
+			getTimeslot(query.substring(1, query.length));
+		});
+
+		function getTimeslot(slotId) {
+			$.get(GlanceServer+'/timeslot/'+slotId, function(data) {
+				// would be good to have the name of the day
+				$('#title').append(data.name + " " + data.start[0]+":"+data.start[1] + " - " + data.end[0]+":"+data.end[1]);
+				for (i in data.sessions) {
+					var sessionId = data.sessions[i];
+					$('#list').append("<li id='"+sessionId+"'></li>");
+					getSession(sessionId);
+				}
+			});
+		}
+
+		function getSession(sessionId) {
+			$.get(GlanceServer+'/session/'+sessionId, function(data) {
+				$('#'+sessionId).append("<a href='session.html?"+sessionId+"'>"+data.Title+"</a>");
+			});
+		}
+
+	</script>
+</head>
+<body>
+	<h2 id="title"></h2>
+	<ul id="list">
+	<ul>
+</body>
+</html>

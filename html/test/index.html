@@ -1,0 +1,44 @@
+<html>
+<head>
+	<meta charset = "UTF-8">
+	<meta name = "viewport" content="width=device-width, initial-scale=1">
+	<title>Test API</title>
+ 	<script src="jquery.min.js"></script>
+	<script type="text/javascript">
+		var GlanceServer = ""; // "http://92.243.30.77:8000"; 
+		$(document).ready(function() {
+			getDays();
+		});
+
+		function getDays() {
+			$.get(GlanceServer+'/day', function(data) {
+				$('#title').append("Days");
+				for (id in data) {
+					var day = data[id].value;
+					$('#list').append("<li>"+day.name+" "+day.date[2]+"/"+day.date[1]+"/"+day.date[0]+"</li>");
+					slotsHTML = "<ul>";
+					for (timeslot in day.timeslots) {
+						var slot = day.timeslots[timeslot];
+						slotsHTML += "<li id='"+slot+"'></li>";
+						getTimeslot(slot);
+					}
+					slotsHTML += "</ul>";
+					$('#list').append(slotsHTML);
+				}
+			});
+		}
+
+		function getTimeslot(slotId) {
+			$.get(GlanceServer+'/timeslot/'+slotId, function(data) {
+				$('#'+slotId).append("<a href='timeslot.html?"+slotId+"'>"+data.name+"</a>");
+			});
+		}
+
+	</script>
+</head>
+<body>
+	<h2 id="title"></h2>
+	<ul id="list">
+	<ul>
+</body>
+</html>
