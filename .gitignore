@@ -6,3 +6,5 @@ bootstrap_scripts/paper_sessions.csv
 bootstrap_scripts/paper_submissions.csv
 
 erl_crash.dump
+
+html/qunit/tests.js
