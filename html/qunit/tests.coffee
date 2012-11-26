@@ -31,11 +31,15 @@ asyncTest "Get submissons", 2, () ->
         ok data.length > 0, "Length of submissons are greater than zero"
         start()
         
-asyncTest "Get tiles", 2, () ->
+asyncTest "Get tiles", 3, () ->
     $.getJSON queryURL('tiles'), (data) ->
         ok data?, "Got some data"
         ok Object.keys(data).length > 0, "Length of tiles are greater than zero"
-        start()
+        for key, tile of data
+            $.getJSON queryURL('tiles/'+key), (data) ->
+                ok data?, "It was possible to fetch a tile"
+                start()
+            break
         
 asyncTest "Post a filter", 2, () ->
     query = {"tag":["visualization"]}
