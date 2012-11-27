@@ -224,7 +224,23 @@
 			    for(var id in count)
 			    {
 			    	 updateSubmissions(id, count[id]);
+
+
+			    	 
+			    for(var i = 0; i<tiles.length;i++)
+			    {
+			    	if(id == tiles[i].getAttribute("id"))
+			    	{
+			    		$('#'+id).fadeTo(250, 0.5, function() {
+      					// Animation complete.
+   						 });
+			    		$('#'+id).fadeTo(250, 1, function() {
+      					// Animation complete.
+   						 });
+			    	}
 			    }
+			    }
+
 			   }	
 		});
 	
