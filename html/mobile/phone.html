@@ -2,7 +2,6 @@
 <html>
   <head> 
     <title>Phone</title>
-
 		<meta charset = "UTF-8">
 		<meta name = "viewport" content="width=device-width, initial-scale=1">
 		<title> CHI'13 Schedule </title>
@@ -79,10 +78,16 @@
 		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		//cloud server
 		//var socket = io.connect("http://92.243.30.77", {port: 8000});
+		
+		//visual tiles
 		var tiles = document.getElementsByTagName("h3");
 		var filters =[];
-
+		//logical tiles
 		var tiles2 = [];
+
+		//infamous global variable to sync
+		var onsync = true;
+		var missed =[];
 
 		//Temporary call to function to fake preexisting data
 		createFilter(["visualization", "infoviz"]);
@@ -112,6 +117,14 @@
 			return this.total;
 		};
 
+		Tile.prototype.reset = function(){
+			this.text = "Select a filter";
+			this.total = 0;
+			this.current = 0;
+			this.submissionId = 0;
+			this.submissions = {};
+		};
+
 		//Creates 7 Tile objects
 		function createTiles(){
 			var ids = ["A","B","C","D","E","F","G","H","I"];
@@ -138,10 +151,16 @@
 							{
 								tile.total = filter.total;
 								tile.submissions = filter.filter.submissions;
+
+								if (tile.total > 0){
+								tile.text = tile.submissions[tile.current].title;
+								tile.submissionId = tile.submissions[tile.current].id;									
+								}
 							}
 						}
 					}
 				}
+
 				showSubmissions();
 			});
 		}
@@ -151,48 +170,43 @@
 			for(var i = 0; i< tiles2.length; i++)
 			{
 				var tile = tiles2[i];
-				if(tile.total !=0)
+				if(tile.total >0)
 				{
-				tile.text = tile.submissions[tile.current].title;
-				tile.submissionId = tile.submissions[tile.current].id;
-				tile.current += 1;
 				//tiles is the visual tiles, tiles2 are the logical tiles
 				tiles[i].innerHTML = tile.text;
 				tiles[i].setAttribute("submissionId", tile.submissionId)
 				}
-
 			}
 		};
 
-		//Update visual tiles after change on logical tiles
+		//Update logical tiles then visual tiles
 		function updateSubmissions(tileId, talkId){
+			//loop used to find the tile with the right id
 			for(var i = 0; i< tiles2.length; i++)
 			{
 				var tile = tiles2[i];
 				if(tile.id == tileId)
 				{
-				if(tile.total != 0)
-				{
-					tile.text= tile.submissions[talkId].title;
-					tile.submissionId = tile.submissions[tile.current].id;
-				}
+				//assign new text and id to logical tile
+				tile.text= tile.submissions[talkId].title;
+				tile.submissionId = tile.submissions[tile.current].id;
+				//assign new current value to logical tile
 				tile.current = talkId;
 
+				//update visual tiles
 				//tiles is the visual tiles, tiles2 are the logical tiles
 				tiles[i].innerHTML = tile.text;
 				tiles[i].setAttribute("submissionId", tile.submissionId)
-
 				}
-
 			}
 		};
 
 		//Function used to simulate something was already on the server
 		function createFilter(tags) 
 			{
-				//$.post("http://localhost:8000/filters",
+				$.post("http://localhost:8000/filters",
 				// Add your ip here to test with mobile device
-				$.post("http://92.243.30.77:8000/filters",
+		//		$.post("http://92.243.30.77:8000/filters",
 					{
 						"tags": tags
 					},
@@ -202,43 +216,46 @@
 					});
 			}
 		
-
-	
 		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
-		    if(count.isEmpty)
-		    for(var id in count){
-		    	 updateSubmissions(id, count[id]);
-		    }
-					
+		    if(!count.isEmpty && onsync == true)
+			   {
+			    for(var id in count)
+			    {
+			    	 updateSubmissions(id, count[id]);
+			    }
+			   }	
 		});
 	
 
-	//Function called after a new filter is posted to server
-	//Populates arrays with all titles for each filter
-	
+		//Function called after a new filter is posted to server
+		//Populates arrays with all titles for each filter
     	socket.on('tilesUpdated', function(data) {
    	    	loadData();
 		});
 
 		socket.on('doneTile', function(data) { 
-			for(var i = 0; i<tiles2.length;i++)
+			if(onsync)
 			{
-				if(data.tileId == tiles2[i].id) 
-					doneTile(data.tileId, i); 
+				console.log("entered donetile");
+				for(var i = 0; i<tiles2.length;i++)
+				{
+					if(data.tileId == tiles2[i].id) 
+						doneTile(data.tileId, i); 
+				}
 			}
+			else{
+				missed.push(data.tileId);
+			}				
 		});
 
 		//function called after we iterate through all session events
 		function doneTile(tileId,index){
 			tile = tiles2[index];
-			tile.total = 0;
-			tile.submissions = {};
-			tile.current = 0;
-			tile.text = "Select a filter";
-			tile.submissionId = 0;
-			updateSubmissions(tileId,0);
+			tile.reset();
+			tiles[index].innerHTML = tile.text;
+			tiles[index].setAttribute("submissionId", tile.submissionId)
 		}
 
 		//onclick handler for the tiles
@@ -251,8 +268,31 @@
 			addSubmission(submissionId);
 		});
 
-		//Function to send to Native iOS app to add to schedule
+		$("#previous").on("click", function(){
+			onsync = false;
+			var tile;
+			for(var i = 0; i< tiles2.length; i++){
+				tile = tiles2[i];
+				if(tile.current>0){
+					tile.current = tile.current -1 ; 
+					updateSubmissions(tile.id, tile.current);
+				}
+			};
+		});
 
+		$("#now").on("click", function(){
+			console.log("on now");
+			onsync = true;
+			loadData();
+			for(var i = 0; i<missed.length; i++)
+				for(var j =0; j<tiles2.length; j++){
+					if(missed[i] == tiles2[j].id)
+						doneTile(missed[i],j)
+				}
+		});
+
+
+		//Function to send to Native iOS app to add to schedule
 		function addSubmission(id){
 			alert("called iOS");
 		}
