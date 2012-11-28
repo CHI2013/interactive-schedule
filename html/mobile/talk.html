@@ -24,16 +24,20 @@
 						{	
 							var tile = tiles2[i];
 							if(tile.id == globalId)
-								console.log(tile.submissions);
 							for(var j = 0; j<tile.submissions.length; j++)
 							{
 								if(tile.submissions[j].id == globalSubId){
 									var submission = tile.submissions[j];
 									$('#title').text(submission.title);
 									$('#type').text(submission.contributionType);
+
+									var authors = submission.authors;
+									for(var k = 0; k < authors.length; k++)
+									{
+										$('#authors').append('<li>'+ authors[k] +'</li>');
+									}
 								}
 							}
-
 						}
 					}
 
@@ -43,9 +47,9 @@
 					<p id="type"> Contribution type </p>
 					<p> Authors: </p>
 						<ul id="authors">
-							<li> Beth Yost </li>
+						<!-- 	<li> Beth Yost </li>
 							<li> Yonca Haciahmetoglu </li>
-							<li> Chris North  </li>
+							<li> Chris North  </li> -->
 						</ul>
 				</div>
 				<div class="ui-block-b">
