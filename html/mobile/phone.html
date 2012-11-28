@@ -320,9 +320,14 @@
 		$("li.short h3").on("click", function(){
 			var id = $(this).attr("id");
 			var submissionId = $(this).attr("submissionId")
-			console.log(submissionId);
+			//if tile has text select to add to schedule
 			if(submissionId != 0)
 			addSubmission(submissionId);
+
+			//redirect to select filter page if tile is empty
+			if($(this).html() == "Select a filter"){
+					$.mobile.changePage("tags.html");	
+			}
 		});
 
 		$("#previous").on("click", function (){
@@ -347,7 +352,6 @@
 						doneTile(missed[i],j)
 				}
 		});
-
 
 		//Function to send to Native iOS app to add to schedule
 		function addSubmission(id){
