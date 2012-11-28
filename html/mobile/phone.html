@@ -28,7 +28,12 @@
 			<div class="choice_list">
 					<ul data-role="listview" data-insert="true" >
 						<li class="short light_blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a filter</h3> <!-- <p class="rating four"> 4 stars </p> --> </a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a filter</h3>
+
+							 <!-- <p class="rating four"> 4 stars </p> --> </a>
+    					<!-- 	<div class="circle"></div>
+    						<div class="circle"></div>
+ -->
 							<a class="light_blue" href="talk.html" data-transition="slide"> </a>
 						</li>
 
@@ -170,13 +175,28 @@
 			for(var i = 0; i< tiles2.length; i++)
 			{
 				var tile = tiles2[i];
-				if(tile.total >0)
+				if(tile.total > 0)
 				{
 				//tiles is the visual tiles, tiles2 are the logical tiles
 				tiles[i].innerHTML = tile.text;
-				tiles[i].setAttribute("submissionId", tile.submissionId)
+				tiles[i].setAttribute("submissionId", tile.submissionId);
+				tiles[i].setAttribute("total", tile.total);
+				showBreadCrumbs();
 				}
 			}
+		};
+
+		function showBreadCrumbs(){
+		 	for(var i =0; i < tiles.length; i ++){
+		 		var total =tiles[i].getAttribute("total");
+		 		var id = tiles[i].getAttribute("id");
+		 		if(total)
+		 		for(var j=0, temp = 100; j<total; j++)
+		 		{
+		 		$('#'+id).parent().append('<div class="circle" style="left:'+temp+'px;"></div>');
+		 		temp +=35;
+		 		}
+		 	}
 		};
 
 		//Update logical tiles then visual tiles
@@ -197,8 +217,29 @@
 				//tiles is the visual tiles, tiles2 are the logical tiles
 				tiles[i].innerHTML = tile.text;
 				tiles[i].setAttribute("submissionId", tile.submissionId)
+				
+				//Code to update highlighted crumb
+				//Get this tile's crumbs
+				var crumbs = $('#'+tileId).parent().children('.circle');
+
+				//Highlight current
+				//crumbs[talkId].classList.remove('circle');
+				//crumbs[talkId].classList.toggle('circle_selected');
+
+				for(var j =0; j<crumbs.length;j++){
+					if(talkId != j)
+					crumbs[j].style.backgroundColor = 'gray';
+					else{
+					crumbs[talkId].style.backgroundColor = 'white';
+
+					}
+
+				}
+
 				}
 			}
+
+
 		};
 
 		//Function used to simulate something was already on the server
@@ -225,8 +266,6 @@
 			    {
 			    	 updateSubmissions(id, count[id]);
 
-
-			    	 
 			    for(var i = 0; i<tiles.length;i++)
 			    {
 			    	if(id == tiles[i].getAttribute("id"))
@@ -243,7 +282,6 @@
 
 			   }	
 		});
-	
 
 		//Function called after a new filter is posted to server
 		//Populates arrays with all titles for each filter
@@ -254,11 +292,12 @@
 		socket.on('doneTile', function(data) { 
 			if(onsync)
 			{
-				console.log("entered donetile");
 				for(var i = 0; i<tiles2.length;i++)
 				{
-					if(data.tileId == tiles2[i].id) 
-						doneTile(data.tileId, i); 
+					if(data.tileId == tiles2[i].id)
+					{ 
+						doneTile(data.tileId, i);
+					}
 				}
 			}
 			else{
@@ -272,6 +311,8 @@
 			tile.reset();
 			tiles[index].innerHTML = tile.text;
 			tiles[index].setAttribute("submissionId", tile.submissionId)
+			//remove breadcrumbs
+			$('#'+tileId).parent().children('div').remove('.circle');
 		}
 
 		//onclick handler for the tiles
@@ -284,7 +325,7 @@
 			addSubmission(submissionId);
 		});
 
-		$("#previous").on("click", function(){
+		$("#previous").on("click", function (){
 			onsync = false;
 			var tile;
 			for(var i = 0; i< tiles2.length; i++){
