@@ -17,10 +17,32 @@
 		<div data-role="content">
 			<div class="ui-grid-a" id="talk_info">
 				<div class="ui-block-a">
-					<h1> Beyond visual acuity </h1>
-					<p><strong> The perceptual scalability of information visualizations for large displays </strong></p>
+					<script>
+
+					function loadInfo(){
+						for(var i = 0; i< tiles2.length; i++)
+						{	
+							var tile = tiles2[i];
+							if(tile.id == globalId)
+								console.log(tile.submissions);
+							for(var j = 0; j<tile.submissions.length; j++)
+							{
+								if(tile.submissions[j].id == globalSubId){
+									var submission = tile.submissions[j];
+									$('#title').text(submission.title);
+									$('#type').text(submission.contributionType);
+								}
+							}
+
+						}
+					}
+
+					loadInfo();
+					</script>
+					<h1 id="title"> Submission Title </h1>
+					<p id="type"> Contribution type </p>
 					<p> Authors: </p>
-						<ul>
+						<ul id="authors">
 							<li> Beth Yost </li>
 							<li> Yonca Haciahmetoglu </li>
 							<li> Chris North  </li>

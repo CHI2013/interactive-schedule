@@ -31,40 +31,37 @@
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a filter</h3>
 
 							 <!-- <p class="rating four"> 4 stars </p> --> </a>
-    					<!-- 	<div class="circle"></div>
-    						<div class="circle"></div>
- -->
-							<a class="light_blue" href="talk.html" data-transition="slide"> </a>
+ 							<a class="light_blue" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short orange">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="D" submissionId="0">Select a filter</h3><!--  <p class="rating one"> 1 stars </p> --> </a>
-							<a class="orange" href="talk.html" data-transition="slide"> </a>
+							<a class="orange" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short purple">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="E" submissionId="0">Select a filter</h3></a>
-							<a class="purple" href="talk.html" data-transition="slide"> </a>
+							<a class="purple" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short red">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="F" submissionId="0">Select a filter</h3></a>
-							<a class="red" href="talk.html" data-transition="slide"> </a>
+							<a class="red" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short blue">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="G" submissionId="0">Select a filter</h3></a>
-							<a class="blue" href="talk.html" data-transition="slide"> </a>
+							<a class="blue" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short green">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="H" submissionId="0">Select a filter</h3></a>
-							<a class="green" href="talk.html" data-transition="slide"></a>
+							<a class="green" href="#" data-transition="slide"></a>
 						</li>
 
 						<li class="short dark_green">
 							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="I" submissionId="0">Select a filter</h3></a>
-							<a class="dark_green" href="talk.html" data-transition="slide"></a>
+							<a class="dark_green" href="#" data-transition="slide"></a>
 						</li>
 
 						<li class="footer" data-icon="info" data-iconpos="bottom">
@@ -90,9 +87,12 @@
 		//logical tiles
 		var tiles2 = [];
 
-		//infamous global variable to sync
+		//infamous global variables
 		var onsync = true;
 		var missed =[];
+
+		var globalId = "";
+		var globalSubId = 0;
 
 		//Temporary call to function to fake preexisting data
 		//createFilter(["visualization", "infoviz"]);
@@ -353,6 +353,19 @@
 				}
 		});
 
+		//When a details button is pressed send submission info to talk.html via global namespace
+		$("li a:nth-child(2)").on("click", function(){
+			var $button = $(this).parent().children("div").children("div").children("a").children('h3');
+			globalId = $button.attr("id");
+			globalSubId = $button.attr("submissionId");
+
+			//disable button unless there's a valid session displayed
+			if(globalSubId.length > 1 )
+			$(this).attr("href","talk.html");
+			else
+			$(this).attr("href","#");
+
+		});
 		//Function to send to Native iOS app to add to schedule
 		function addSubmission(id){
 			alert("called iOS");
