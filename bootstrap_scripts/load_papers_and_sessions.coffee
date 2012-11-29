@@ -156,6 +156,8 @@ session_reader.addListener 'end', () ->
         
         if videos.videos[submission.id]?
             submission.video = videos.videos[submission.id]
+        else if videos.videos[submission.id[0..4] + "0" + submission.id[5..]]?
+            submission.video = videos.videos[submission.id[0..4] + "0" + submission.id[5..]]
 
         if data['Keywords']?
             keywords = data['Keywords'].split(/[\n\t,;\\]+/).map (word) ->
