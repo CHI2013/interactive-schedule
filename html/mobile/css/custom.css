@@ -273,7 +273,10 @@ background-position: -2px -182px;
 
 h3{
 	opacity: 1;
+    white-space: nowrap;
+    overflow: auto;
 }
+
 
 .circle {
     width: 15px;

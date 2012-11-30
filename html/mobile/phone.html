@@ -75,9 +75,9 @@
 
 	//Code to sync up with the server
 		//local server
-		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+		//var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		//cloud server
-		//var socket = io.connect("http://92.243.30.77", {port: 8000});
+		var socket = io.connect("http://92.243.30.77", {port: 8000});
 		
 		//visual tiles
 		var tiles = document.getElementsByTagName("h3");
@@ -188,17 +188,23 @@
 		 	for(var i =0; i < tiles.length; i ++){
 		 		var total =tiles[i].getAttribute("total");
 		 		var id = tiles[i].getAttribute("id");
+		 		//remove pre-existing breadcrumbs
+				$('#'+id).parent().children('div').remove('.circle');	
+
 		 		if(total)
 		 		for(var j=0, temp = 100; j<total; j++)
 		 		{
-		 		$('#'+id).parent().append('<div class="circle" style="left:'+temp+'px;"></div>');
-		 		temp +=35;
-		 		}
+			 		$('#'+id).parent().append('<div class="circle" style="left:'+temp+'px;"></div>');
+			 		temp +=30;
+			 	}
 		 	}
 		};
 
 		//Update logical tiles then visual tiles
 		function updateSubmissions(tileId, talkId){
+
+			console.log("AAA");
+			console.log("ID: " + tileId  + "  " + "current" + talkId);
 			//loop used to find the tile with the right id
 			for(var i = 0; i< tiles2.length; i++)
 			{
@@ -219,6 +225,8 @@
 				//Code to update highlighted crumb
 				//Get this tile's crumbs
 				var crumbs = $('#'+tileId).parent().children('.circle');
+				console.log(crumbs);
+				console.log(crumbs.length);
 
 				//Highlight current
 				//crumbs[talkId].classList.remove('circle');
@@ -263,6 +271,7 @@
 			    for(var id in count)
 			    {
 			    	 updateSubmissions(id, count[id]);
+			    	 console.log("Called update for id: " +  id);
 
 			    for(var i = 0; i<tiles.length;i++)
 			    {
@@ -309,6 +318,8 @@
 			tile.reset();
 			tiles[index].innerHTML = tile.text;
 			tiles[index].setAttribute("submissionId", tile.submissionId)
+			tiles[index].setAttribute("total", tile.total)
+
 			//remove breadcrumbs
 			$('#'+tileId).parent().children('div').remove('.circle');
 		}
