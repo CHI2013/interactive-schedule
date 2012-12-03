@@ -67,7 +67,7 @@ function showVideo(ti) {
         $('#video').fadeIn(250, function() {
             jwplayer('player').setup({
                 flashplayer: '/lib/jwplayer/player.swf',
-                file: '/videos/' + tile.filter.submissions[ti].video + '.mp4',
+                file: '/videos/' + tile.filter.submissions[ti].video,
                 width: $('#video').width(),
                 height: $('#video').height(),
                 mute: true,
