@@ -304,7 +304,7 @@ class GlanceServer
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
-        return [2012, 5, 9, 12, 10]
+        return [2012, 5, 9, 11, 35]
         
     getCurrentTimeSlot: (cb) ->
         time = @getTime()

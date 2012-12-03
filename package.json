@@ -10,6 +10,7 @@
     "nano": "*",
     "ya-csv": "*",
     "socket.io": "*",
-    "searchjs": "*"
+    "searchjs": "*",
+    "simplesets": "*"
   }
 }

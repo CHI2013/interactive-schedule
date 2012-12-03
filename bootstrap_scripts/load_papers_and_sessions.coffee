@@ -1,6 +1,7 @@
 csv = require 'ya-csv'
 nano = require('nano')('http://127.0.0.1:5984')
 videos = require('./videos')
+sets = require 'simplesets'
 
 chidb = nano.db.use('chi2013');
 
@@ -124,16 +125,17 @@ session_reader.addListener 'data', (data) ->
     data.type = 'session'
     if data['Submission IDs'] && data['Submission IDs'] != '"'
         data['Submission IDs'] = data['Submission IDs'].split ' '
+        data['Submission IDs'] = data['Submission IDs'].filter (x) -> x[..4] == 'paper' #Ignore anything that isn't a paper
     else
         data['Submission IDs'] = []
     for submission in data['Submission IDs']
         submissionsToSessions[submission] = data['ID']
+    
     chidb.insert data, 'session_'+data['ID'], (err, body) ->
         if err?
             console.log err
-        else
-            
-    
+
+sessionsToClean = {} 
 session_reader.addListener 'end', () ->
     paper_reader = csv.createCsvFileReader process.argv[2], {
         'columnsFromHeader': true,
@@ -154,13 +156,16 @@ session_reader.addListener 'end', () ->
             submission.authors = data['Author list'].split(',').map (name) ->
                 name.trim()
         
+        
+        #Check for video
+        hasVideo = true
         if videos.videos[submission.id]?
             submission.video = videos.videos[submission.id]
         else if videos.videos[submission.id[0..4] + "0" + submission.id[5..]]?
             submission.video = videos.videos[submission.id[0..4] + "0" + submission.id[5..]]
         else
+            hasVideo = false
             console.log "Ignoring submission", submission.id, "as it has no video"
-            return
 
         if data['Keywords']?
             keywords = data['Keywords'].split(/[\n\t,;\\]+/).map (word) ->
@@ -173,9 +178,34 @@ session_reader.addListener 'end', () ->
         submission.contributionType = data['Paper or Note']
         submission.session = submissionsToSessions[submission.id]
         submission.tags = giveMeTags()
-        chidb.insert submission, 'submission_'+submission.id, (err, body) ->
+
+        if hasVideo
+            chidb.insert submission, 'submission_'+submission.id, (err, body) ->
+                if err?
+                    console.log err
+        else #If no video add to list of submissions that have to be removed from the given session
+            sId = 'session_' + submission.session
+            if not sessionsToClean[sId]?
+                sessionsToClean[sId] = []
+            sessionsToClean[sId].push submission.id
+        
+    cleanSessionsForSubmissionsWithoutVideo = (sessionsToClean) ->
+        if sessionsToClean.length == 0
+            return
+        sessionToClean = sessionsToClean.pop()
+        chidb.get sessionToClean.session, (err, body) ->
             if err?
                 console.log err
+            else
+                s1 = new sets.Set body['Submission IDs']
+                s2 = new sets.Set sessionToClean.submissions
+                difference = s1.difference(s2).array()
+                body['Submission IDs'] = difference
+                chidb.insert body, sessionToClean.session, (err, body) ->
+                    if err?
+                        console.log err
+                    else
+                        cleanSessionsForSubmissionsWithoutVideo sessionsToClean
     
     paper_reader.addListener 'end', () ->
         for timeslotId, timeslot of timeslots
@@ -186,5 +216,10 @@ session_reader.addListener 'end', () ->
             chidb.insert day, dayId, (err, body) ->
                 if err?
                     console.log err
-            
-    
+        sessionList = []
+        
+        #Clean sessions for submissions without videos
+        for session, submissions of sessionsToClean
+            sessionList.push {'session': session, 'submissions': submissions}
+        setTimeout cleanSessionsForSubmissionsWithoutVideo, 1000, sessionList
+        
