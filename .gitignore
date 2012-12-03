@@ -10,3 +10,5 @@ erl_crash.dump
 html/qunit/tests.js
 
 glance80.coffee
+
+html/lib/findBiggestTimeSlot.js
