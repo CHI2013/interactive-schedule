@@ -372,17 +372,10 @@ class GlanceServer
         @getOngoingSessions (err, sessions) =>
             if err?
                 cb err, null
-            submissionIDs = []
+            submissions = []
             for session in sessions
-                for submission in session['Submission IDs']
-                    submissionIDs.push "submission_"+submission
-            result = []
-            @db.fetch {"keys":submissionIDs}, (err, submissions) =>
-                for submission in submissions.rows
-                    if submission.error?
-                        continue
-                    else
-                        result.push submission.doc
-                cb null, result
+                for submission in session.submissions
+                    submissions.push submission
+            cb null, submissions
 
 server = new GlanceServer()
