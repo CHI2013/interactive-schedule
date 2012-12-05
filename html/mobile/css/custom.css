@@ -89,9 +89,14 @@ color:#fff !important;
 
 }
 
+
+a.ui-link-inherit{
+    padding: 0px 0px 0px 0px;
+}
+
 .ui-grid-a .ui-block-a, .ui-grid-a .ui-block-b {
 
-width: 48%;
+width: 99%;
 
 padding:1%;
 
@@ -99,19 +104,61 @@ padding:1%;
 
 
 .ui-li-thumb{
-	margin: 10px 0px 0px 10px;
+	margin: 6px 0px 0px 10px;
+
 }
 
+/*.ul-li-thumb {
+    margin-right: 0px;
+    padding-top: 80px !important;
+}*/
+
+
+.ui-li .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li {
+    padding-top: 5px;
+    padding-bottom: 0px;
+}
 
 .ui-li-has-thumb .ui-btn-inner a.ui-link-inherit, .ui-li-static.ui-li-has-thumb{
 	padding-left: 66px;
 }
+
+.-ui-btn-up-a{
+    border-left-style: none;
+}
+
+.ui-li-link-alt {
+    border-left-width: 0px;
+}
+
+.ui-btn-icon-left > .ui-btn-inner > .ui-icon, .ui-btn-icon-right > .ui-btn-inner > .ui-icon{
+    margin-top: 0px;
+}
+
+span.ui-icon.ui-icon-arrow-l.ui-icon-shadow{
+    margin-top: -9px;
+}
+
+span.ui-icon.ui-icon-refresh.ui-icon-shadow{
+    margin-top: -9px;
+}
+
+.ui-li-link-alt .ui-btn-inner {
+    /*visibility: hidden;*/
+    opacity: 1;
+}
 .short{
-	height: 60px;
+	height: 55px;
+}
+
+.keyword{
+    height: 40px;
+    margin-left: 5px;
 }
 
 .footer{
-	height: 50px;
+	height: 30px;
+    padding: none;
 	
 }
 .light_blue{
@@ -145,10 +192,6 @@ padding:1%;
   text-indent: :-999px;
   font-size: 0px;
 
-}
-.ul-li-thumb {
-	margin-right: 0px;
-	padding-top: 100px !important;
 }
 
 .ui-li-heading{
@@ -271,16 +314,34 @@ background-position: -2px -182px;
 
 }
 
+h1{
+    font-size: 1.25em;
+    width:100%;
+}
+
+.mainTitle{
+    width:45%;
+}
+
 h3{
 	opacity: 1;
     white-space: nowrap;
     overflow: auto;
+    border-style: dotted;
+    border-width: 2px;
+    border-color: rgba(166,166,166,.75);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px; 
 }
 
+h3 .ui-li-heading{
+
+}
 
 .circle {
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     -webkit-border-radius: 25px;
     -moz-border-radius: 25px;
     border-radius: 25px; 
@@ -289,7 +350,7 @@ h3{
     border-width: 2px;
     margin-right: auto;
     margin-left: auto;
-    margin-top: 20px;
+    margin-top: 15px;
     z-index: -1;
     display:inline;
     position: absolute;
