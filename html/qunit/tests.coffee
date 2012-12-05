@@ -1,11 +1,7 @@
-glanceHost = "localhost:8000"
+glanceHost = window.location.host
 
 queryURL = (url) ->
-    if (window.location.host == glanceHost)
-        return '/'+url;
-    else
-	    #cross-site request => use JSONP
-        return 'http://'+glanceHost+'/'+url+'?callback=?'
+    return '/'+url
 
 asyncTest "Get days", 2, () ->
     $.getJSON queryURL('day'), (data) ->
