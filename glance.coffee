@@ -90,6 +90,29 @@ class GlanceServer
                 console.log "Connected to CouchDB and opened the " + @dbName + " database."
                 cb()
 
+    ###
+    Given a query this method will return a tile.
+    If the query provides a tile (that is available) this will be used.
+    Note that the tile key on the query will be removed from the query as a sideeffect!
+    ###
+    getTile: (query) ->
+        if query.tile?
+            found = false
+            newAvailableTiles = []
+            for tile in @availableTiles
+                if tile == query.tile
+                    found = true
+                    tileId = query.tile
+                else
+                    newAvailableTiles.push tile
+            @availableTiles = newAvailableTiles
+            if not found
+                tileId = @availableTiles.pop()
+            delete query.tile
+        else
+            tileId = @availableTiles.pop()
+        return tileId
+    
     setupRest: () ->
         #Get the filter of a given tile (e.g. F)
         @app.get '/tiles/:id', (req, res) =>
@@ -102,14 +125,15 @@ class GlanceServer
             res.send @tiles
         
         #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
+        #IF the query contains a named tile this will be used IF it is available, otherwise it will be given another tile.
         @app.post '/filters', (req, res) =>
             if @availableTiles.length == 0
                 res.send {'status': 'error', 'message': 'No empty tiles'}, 500
                 return
-            tileId = @availableTiles.pop()
-            console.log tileId
+            
             query = req.body
-            console.log query
+            tileId = @getTile query
+            
             @getOngoingSubmissions (err, data) =>
                 if err?
                     res.send {'status': 'error'}, 500
