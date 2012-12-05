@@ -328,6 +328,30 @@ class GlanceServer
                                     return
                             cb null, null
     
+    inlineSubmissionsForSession: (session, cb) ->
+        submissionIDs = []
+        for submission in session['Submission IDs']
+            submissionIDs.push "submission_"+submission
+        @db.fetch {"keys": submissionIDs}, (err, submissions) =>
+            if err?
+                cb err
+            submissionDocs = []
+            for submission in submissions.rows
+                if submission.error?
+                    continue                                
+                submissionDocs.push submission.doc
+            session.submissions = submissionDocs
+            cb null
+            
+    inlineSubmissionsForSessions: (sessions, count, cb) ->
+        if count == sessions.length
+            cb()
+            return
+        @inlineSubmissionsForSession sessions[count], (err) =>
+            count++
+            @inlineSubmissionsForSessions sessions, count, () =>
+                cb()
+                
     getOngoingSessions: (cb) ->
         @getCurrentTimeSlot (error, doc) =>
             if error?
@@ -336,12 +360,13 @@ class GlanceServer
                 if not doc?
                     cb new Error "No data for given time", null
                 else
-                    @db.fetch {'keys': doc.sessions}, (err, body) ->
+                    @db.fetch {'keys': doc.sessions}, (err, body) =>
                         if err?
                             cb err, null
                         else
                             result = body.rows.map (row) -> row.doc
-                            cb null, result
+                            @inlineSubmissionsForSessions result, 0, () =>
+                                cb null, result
                 
     getOngoingSubmissions: (cb) ->
         @getOngoingSessions (err, sessions) =>
