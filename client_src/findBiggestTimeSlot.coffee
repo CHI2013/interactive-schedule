@@ -11,4 +11,8 @@ $(document).ready () ->
                 timeslots[timeslot.id] = 0
                 for session in timeslot.value.sessions
                     timeslots[timeslot.id] += sessions[session]
-            console.log timeslots
+            totals = []
+            for id, count of timeslots
+                if count > 0
+                    totals.push count
+            console.log (totals.reduce (x, y) -> x + y) / totals.length
