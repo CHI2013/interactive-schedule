@@ -48,3 +48,18 @@ asyncTest "Post a filter", 2, () ->
         $.getJSON queryURL('tiles/'+data.tileId), (data) ->
             ok JSON.stringify data.filter.query == JSON.stringify query, "Tile updated with the proper filter"
             start()
+            
+asyncTest "Get ongoing sessions", 3, () ->
+    $.getJSON queryURL('ongoingSessions'), (data) ->
+        ok data?, "Got some data"
+        ok Object.keys(data).length > 0, "Length of ongoing sessions are greater than zero"
+        for session in data
+            ok session.submissions?, "Submissions have been inlined"
+            break
+        start()
+        
+asyncTest "Get ongoing submissions", 2, () ->
+    $.getJSON queryURL('ongoingSubmissions'), (data) ->
+        ok data?, "Got some data"
+        ok Object.keys(data).length > 0, "Length of ongoing submissions are greater than zero"
+        start()  
