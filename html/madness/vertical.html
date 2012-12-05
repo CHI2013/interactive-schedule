@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"> 
 <head> 
-    <script src="/js/jquery-1.7.1.min.js"></script>
-    <script src="/js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="jwplayer/jwplayer.js"></script>
+    <script src="/lib/jquery-1.7.1.min.js"></script>
+    <script src="/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/lib/jwplayer/jwplayer.js"></script>
+    <link rel="stylesheet" type="text/css" href="/lib/twitter.css" />
+    <script type="text/javascript" src="/lib/twitter.js"></script>
     <style type="text/css">
         body { 
             font-family: "Helvetica Neue"; 
@@ -15,7 +17,7 @@
             display: block;
             height: 1920px;
             width: 1080px;
-            background: #444;
+            background: #1f1620;
             margin: 0;
             padding: 0;
             position: relative;
@@ -65,12 +67,12 @@
         
         #twitter {
             position: absolute;
-            top: 1500px;
+            top: 1480px;
             left: 0;
             display: block;
-            height: 350px;
+            height: 400px;
             width: 100%;
-            background: #444;
+            background: #1f1620;
             overflow: hidden;
         }
         
@@ -84,199 +86,59 @@
             font-size: 25px;
             font-family: "Trebuchet MS";
         }
-        
+
         .tweet {
-            display: block;
-            background: #333;
-            padding: 10px;
-            margin: 10px;
+            float: left;
             width: 310px;
-            height: 125px;
-            color: #eee;
-            font-family: "Gill Sans";
-            font-size: 17px;
-            font-weight: 300;
-            float: left;
-            border-radius: 10px;
+            height: 100px;
+            margin: 7px;
         }
-        
-        .tweet .userpic {
-            float: left;
-            margin: 0 15px 0 5px; 
-        }
-        .tweet .userpic img { border-radius: 5px; }
-        .tweet .byline { float: right; }
     </style>
     <script type="text/javascript">
         var rooms  = ['251', '252a', '252b', '253', 'bordeaux', '243', '242b', '242a', '241',
                       'havane', '351', '352a', '352b', '353'];
         var currentRoom = 0; 
+        var currentSessions = [];
+        var currentSubmission = 0;
 
-        var data = [
-            [{
-                            "title": "Early and Repeated Exposure to Examples Improves Creative Work",
-                            "authors": "Chinmay Kulkarni, Steven P Dow, Scott R Klemmer ",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-6.mp4",
-                        },
-                        {
-                            "title": "A Platform for Large-Scale Machine Learning on Web Design",
-                            "authors": "Arvind Satyanarayan, Maxine Lim, Scott R Klemmer",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-2.mp4",
-                        }],
-            [{
-                            "title": "d.tour: Style-based Exploration of Design Example Galleries",
-                            "authors": "Daniel Ritchie, Ankita Arvind Kejriwal, Scott R Klemmer",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-7.mp4",
-                        },
-                        {
-                "title": "Bricolage: Example-Based Retargetting for Web Design",
-                "authors": "Ranjitha Kumar, Jerry O. Talton, Salman Ahmad, Scott R. Klemmer",
-                "affiliation": "Stanford University",
-                "video": "/videos/video-0.mp4",
-            }],
-            [{
-                            "title": "Voice-enabled structured medical reporting",
-                            "authors": "Mary-Marshall Teel, Rachael Sokolowski, David Rosenthal, Matt Belge",
-                            "affiliation": "Lernout & Hauspie Speech Products",
-                            "video": "/videos/video-7.mp4"
-                        },
-                        {
-                            "title": "MedSpeak: report creation with continuous speech recognition",
-                            "authors": "Jennifer Lai, John Vergo",
-                            "affiliation": "IBM Watson Research Center",
-                            "video": "/videos/video-3.mp4"
-                        }],
-            [{
-                            "title": "Waterbot: exploring feedback and persuasive techniques",
-                            "authors": "Ernesto Arroyo, Leonardo Bonanni, Ted Selker",
-                            "affiliation": "MIT Media Lab",
-                            "video": "/videos/video-2.mp4"
-                        },
-                        {
-                            "title": "Fast track article: Disaggregated water sensing from a single, pressure-based sensor: An extended analysis of HydroSense using staged experiments",
-                            "authors": "Eric Larson, Jon Froehlich, Tim Campbell, Conor Haggerty, Les Atlas, James Fogarty",
-                            "affiliation": "Electrical Engineering, University of Washington; Computer Science and Engineering, University of Washington",
-                            "video": "/videos/video-8.mp4"
-                        }],
-            [{
-                            "title": "The Design and Evaluation of Prototype Eco-Feedback Displays for Fixture-Level Water Usage Data.",
-                            "authors": "Jon Froehlich, Leah Findlater, Marilyn Ostergren, Solai Ramanathan, Josh Peterson, Inness Wragg, Eric Larson, Fabia Fu, Mazhengmin Bai, Shwetak N. Patel, James A. Landay",
-                            "affiliation": "University of Washington; University of Maryland",
-                            "video": "/videos/video-4.mp4"
-                        },
-                        {
-                            "title": "TheLightWave: Using Compact Fluorescent Lights as Sensors",
-                            "authors": "Sidhant Gupta, Ke-Yu Chen, Matthew S. Reynolds, Shwetak N. Patel",
-                            "affiliation": "University of Washington; Duke University",
-                            "video": "/videos/video-8.mp4"
-                        }],
-            [{
-                            "title": "Crowdsourcing user studies with Mechanical Turk",
-                            "authors": "Aniket Kittur, Ed H. Chi and Bongwon Suh",
-                            "affiliation": "PARC",
-                            "video": "/videos/video-3.mp4"
-                        },
-                        {
-                            "title": "Crowds in Two Seconds: Enabling Realtime Crowd-Powered Interfaces",
-                            "authors": "Michael Bernstein, Joel Brandt, Rob Miller, and David Karger",
-                            "affiliation": "MIT CSAIL; Adobe Systems",
-                            "video": "/videos/video-9.mp4"
-                        }],
-            [{
-                            "title": "Soylent: A Word Processor with a Crowd Inside",
-                            "authors": "Michael Bernstein, Greg Little, Rob Miller, Bjoern Hartmann, Mark Ackerman, David Karger, David Crowell, and Katrina Panovich",
-                            "affiliation": "MIT CSAIL; University of California, Berkeley; University of Michigan",
-                            "video": "/videos/video-5.mp4"
-                        },
-                        {
-                            "title": "PingPong++: Community Customization in Games and Entertainment",
-                            "authors": "Xiao Xiao, Michael Bernstein, Lining Yao, David Lakatos, Lauren Gust, Kojo Acquah, and Hiroshi Ishii",
-                            "affiliation": "MIT Media Lab; MIT CSAIL",
-                            "video": "/videos/video-9.mp4"
-                        }],
-            [{
-                            "title": "Beyond visual acuity: the perceptual scalability of information visualizations for large displays",
-                            "authors": "Beth Yost, Yonca Haciahmetoglu, Chris North",
-                            "affiliation": "PARC",
-                            "video": "/videos/video-4.mp4"
-                        },
-                        {
-                            "title": "Color Naming Models for Color Selection, Image Editing and Palette Design",
-                            "authors": "Jeffrey Heer and Maureen Stone",
-                            "affiliation": "Stanford University; Tableau Software",
-                            "video": "/videos/video-10.mp4"
-                        }],
-            [{
-                            "title": "Interpretation and Trust: Designing Model-Driven Visualizations for Text Analysis",
-                            "authors": "Jason Chuang, Daniel Ramage, Christopher D. Manning, Jeffrey Heer",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-6.mp4"
-                        },
-                        {
-                            "title": "Arc Length-based Aspect Ratio Selection",
-                            "authors": "Justin Talbot, John Gerth, Pat Hanrahan",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-10.mp4"
-                        }],
-            [{
-                            "title": "The validity of a virtual human experience for interpersonal skills education",
-                            "authors": "Kyle Johnsen, Andrew Raij, Amy Stevens, D. Scott Lind, Benjamin",
-                            "affiliation": "Stanford University",
-                            "video": "/videos/video-5.mp4"
-                        },
-                        {
-                            "title": "Teachers as simulation programmers: minimalist learning and reuse",
-                            "authors": "Mary Beth Rosson, Cheryl D. Seals",
-                            "affiliation": "Virginia Tech",
-                            "video": "/videos/video-1.mp4"
-                        }]
-        ];
-        
-        var countdown = 20;
-        var counter = setInterval(counterFn, 1000);
-        function counterFn() {
-            if(countdown == 20)
-                $('.map').attr('src', 'imgs/wendy-metro/' + rooms[currentRoom] + '.png');
+        $(document).ready(function() {
+            $.getJSON('http://' + window.location.hostname + ':8000/ongoingsessions', function(data) {
+                currentSessions = data;
+            });
+        });
 
-            if(countdown == 20 || countdown == 10) {
-                var paper = (countdown == 20) ? data[currentRoom][0] : data[currentRoom][1];
+        function progress() {
+            // TODO: order of sessions != order of rooms
+            var room    = rooms[currentRoom];
+            var session = currentSessions[currentRoom];
+            var paper   = session.submissions[currentSubmission];
 
-                $('#slide h2').text(paper.title);
-                $('#slide h3').text(paper.authors);
-                $('#slide h4').text(paper.affiliation);
+            $('.map').attr('src', 'imgs/wendy-metro/' + room + '.png');
+            $('#slide h2').text(paper.title);
+            $('#slide h3').text(paper.authors.join(', '));
+            // $('#slide h4').text(paper.affiliation);
 
-                jwplayer('video').setup({
-                    'flashplayer': 'jwplayer/player.swf',
-                    'id': '_video',
-                    'width': 1080,
-                    'height': 610,
-                    'file': paper.video,
-                    mute: true,
-                    controlbar: "none",
-                    duration: 10
-                    // autostart: true
-                  });
-                jwplayer('video').seek(15);
-                // jwplayer('video').play(true);
-            }
+            jwplayer('video').setup({
+                'flashplayer': '/lib/jwplayer/player.swf',
+                'id': '_video',
+                'width': 1080,
+                'height': 610,
+                file: '/videos/' + paper.video,
+                mute: true,
+                controlbar: "none",
+                duration: 30,
+                autostart: true,
+                onComplete: function(complete) {
+                    currentSubmission++;
+                    if(currentSubmission > session.submissions.length) {
+                        currentRoom++;
+                        currentSubmission = 0;
+                    }
+                    
+                    progress();
+                }
+              });            
 
-            if (--countdown <= 0) {
-                ++currentRoom;      
-                if(currentRoom >= rooms.length) clearInterval(counter); 
-               
-                countdown = 20;
-            }
-        }
-        
-        var tweet = 5;
-        var twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
-        function twitterFn() {
-            $('div.tweet:eq(' + (--tweet) + ')').fadeIn();
-            clearInterval(twitter);
-            twitter = setInterval(twitterFn, Math.floor((Math.random()*7)+1) * 1000);
         }
     </script>
 </head> 
@@ -301,47 +163,6 @@
         </div>
 
         <div id="twitter">
-            <div class="tweet" style="display: none;">
-                <div class="userpic"><img src="https://si0.twimg.com/profile_images/1766403894/Me_-_Guitar_on_head_-_DSC_9672_crop_normal.png" /></div>
-                <div class="text">&#147;@mdgreenb Thinking I'll do a Mountain Lion clean install during the week between the #chi2013 deadline and classes. Also, new phone then.&#148; </div>
-                <div class="byline">--@Noleli</div>
-                <br clear="all" />
-            </div>
-            
-            <div class="tweet" style="display: none;">
-                <div class="userpic"><img src="https://si0.twimg.com/profile_images/1454028655/2008_07_me_IMG_2355_normal.JPG" /></div>
-                <div class="text">&#147;Should @acmchi2012 have said "Hey y'all" or "tout le monde" when announcing the #chi2013 cfp http://chi2013.acm.org/cfp-papers-notes.shtml ?&#148; </div>
-                <div class="byline">--@DrAnnaLCox</div>
-                <br clear="all" />
-            </div>
-            
-            <div class="tweet" style="display: none;">
-                <div class="userpic"><img src="https://si0.twimg.com/profile_images/281164020/039_31742_Bill-Murray-Posters_normal.jpg" /></div>
-                <div class="text">&#147;In case you didn't notice, the #chi2013 cfp is up! #cscw2013 @sigchi &#148; </div>
-                <div class="byline">--@clifflampe</div>
-                <br clear="all" />
-            </div>
-            
-            <div class="tweet" style="display: none;">
-                <div class="userpic"><img src="https://si0.twimg.com/profile_images/1233071179/msbernst_headcrop_normal" /></div>
-                <div class="text">&#147;I'm thrilled to be joining the faculty of Stanford's Computer Science department!&#148; </div>
-                <div class="byline">--@msbernst</div>
-                <br clear="all" />
-            </div>
-            
-            <div class="tweet" style="display: none;">
-                 <div class="userpic"><img src="https://si0.twimg.com/profile_images/1410247055/edchi-smile_normal.png" /></div>
-                 <div class="text">&#147;Many people's lectures make me feel we don't know anything. Stu's lecture today made me feel we have capacity to know everything. #chi2012&#148; </div>
-                 <div class="byline">--@edchi</div>
-                 <br clear="all" />
-             </div>
-            
-            <div class="tweet">
-                <div class="userpic"><img src="https://si0.twimg.com/profile_images/1342742070/logo_normal.jpeg" /></div>
-                <div class="text">&#147;@CHIFilter #chi2011 has begun! Follow @CHIFilter and @ reply this account for your CHI-specific tweets.&#148; </div>
-                <div class="byline">--@CHIFilter</div>
-                <br clear="all" />
-            </div>
             
         </div>
     </div>   
