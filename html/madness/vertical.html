@@ -24,7 +24,7 @@
             overflow: none;
         }
         
-        .map { 
+        #map { 
             width: 100%;
             position: absolute;
             top: 650px;
@@ -39,7 +39,7 @@
             width: 570px;
             height: 290px;
             padding: 25px;
-            background: #333;
+            background: #352537;
             color: #eee;
             border-radius: 25px;
             font-family: "Trebuchet MS";
@@ -49,7 +49,19 @@
         #slide h1 { 
             margin: 0;
             padding: 0;
-            font-size: 18px;
+            font-size: 18pt;
+            font-weight: 100;
+            color: #f8d577;
+        }
+
+        #slide h2 {
+            font-weight: bold;
+            font-size: 24pt;
+        }
+
+        #slide h3 {
+            font-weight: 100;
+            font-size: 18pt;
         }
         
         #video-container {
@@ -93,10 +105,33 @@
             height: 100px;
             margin: 7px;
         }
+
+        #timeline {
+            width: 100%;
+            height: 15px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        #timeline div {
+            float: left;
+            border: 2px solid #352537;
+            background-color: #f8d577;
+            opacity: 0.5;
+            border-radius: 10px;
+            box-sizing: border-box;
+            height: 100%;
+            margin: 0px;
+        }
+
+        .selected { opacity: 1 !important; }
+        .long   { width: 25%; }
+        .short  { width: 12.5%; }
+        .altchi { width: 18.75%; }
     </style>
     <script type="text/javascript">
-        var rooms  = ['251', '252a', '252b', '253', 'bordeaux', '243', '242b', '242a', '241',
-                      'havane', '351', '352a', '352b', '353'];
+        var rooms  = ['251', '252a', '252b', '253', 'bleu', '243', '242b', '242a', '241',
+                      'havane', '351', '352a', '352b', '353', '343', '342b', '342a', '341', 'bordeaux'];
         var currentRoom = 0; 
         var currentSessions = [];
         var currentSubmission = 0;
@@ -115,23 +150,29 @@
             var session = currentSessions[currentRoom];
             var paper   = session.submissions[currentSubmission];
 
-            console.log(room);
-            console.log(session);
-            console.log(paper);
-
             var nextRoom = function() {
                 currentRoom++;
                 currentSubmission = 0;
             }
 
-            if(!paper) {
+            if(!session || !paper) {
                 nextRoom();
                 progress();
             }
 
-            $('.map').attr('src', 'imgs/wendy-metro/' + room + '.png');
+            // Refactor to do session stuff only once
+            $('#map').attr('src', 'imgs/wendy-metro/' + room + '.png');
+            var timeline = '';
+            for(var i = 0; i < session.submissions.length; i++) {
+                var type = (session.submissions[i].contributeType == 'Paper') ? 'long' : 'short';
+                timeline += '<div class="' + type + '"></div>';
+            }
+            $('#timeline').html(timeline);
+
+            $('#slide h1').text(session.Title);
             $('#slide h2').text(paper.title);
             $('#slide h3').text(paper.authors.join(', '));
+            $('#timeline div:eq(' + currentSubmission + ')').addClass('selected');
             // $('#slide h4').text(paper.affiliation);
 
             jwplayer('video').setup({
@@ -162,12 +203,12 @@
     <div id="vertical">
         <div id="video-container"><div id="video"></div></div>
 
-        <img src="imgs/wendy-metro.png" class="map" />
+        <img src="imgs/wendy-metro.png" id="map" />
 
         <div id="slide">
-            <!-- <h1>Pen &amp; Paper</h1> -->
+            <h1></h1>
 
-            <div id="session">
+            <div id="timeline">
 
             </div>
 
