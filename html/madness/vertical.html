@@ -152,6 +152,9 @@
 
             var nextRoom = function() {
                 currentRoom++;
+                if(currentRoom >= rooms.length || currentRoom >= currentSessions.length)
+                    currentRoom = 0;
+
                 currentSubmission = 0;
             }
 
@@ -183,7 +186,7 @@
                 file: '/videos/' + paper.video,
                 mute: true,
                 controlbar: "none",
-                duration: 5,
+                duration: 30,
                 autostart: true,
                 events: {
                     onComplete: function(complete) {
