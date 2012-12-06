@@ -6,19 +6,20 @@
 		<meta name = "viewport" content="width=device-width, initial-scale=1">
 		<title> CHI'13 Schedule </title>
 		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
-		<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
+		<link rel="stylesheet" href="css/jquery.	mobile-1.1.1.min.css" />
 		<link rel="stylesheet" href="css/custom.css"/>
  		<script src="../lib/jquery.min.js"></script>
   		<script src="../lib/jquery.mobile-1.1.1.min.js"></script>
     	<script src="/socket.io/socket.io.js"></script>
     	<script src="../lib/phone.js"></script>
+    	<script src="../lib/jCProgress-1.0.3.js"></script>    	
   </head>
 
   <body>
 		<div data-role="page" id="home" data-theme="a">
 			<div data-role="header" style="height:10%">
 				<a href="#" id="previous" data-role="button" data-icon="arrow-l">Previous</a>
-				<h1> CHI'13 </h1>
+				<h1 class="mainTitle"> CHI'13 </h1>
 				<a href="#" id="now" data-role="button" data-icon="refresh">Now</a>
 			</div>
 			<div data-role="content">
@@ -27,44 +28,44 @@
 				</div>
 			<div class="choice_list">
 					<ul data-role="listview" data-insert="true" >
-						<li class="short violet">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a filter</h3> </a>
+						<!-- <li class="short violet">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a keyword</h3> </a>
  							<a class="violet" href="#" data-transition="slide"> </a>
-						</li>
+						</li> -->
 
 						<li class="short light_blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="D" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="D" submissionId="0">Select a keyword</h3></a>
 							<a class="light_blue" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short orange">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="E" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="E" submissionId="0">Select a keyword</h3></a>
 							<a class="orange" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short purple">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="F" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="F" submissionId="0">Select a keyword</h3></a>
 							<a class="purple" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short red">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="G" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="G" submissionId="0">Select a keyword</h3></a>
 							<a class="red" href="#" data-transition="slide"> </a>
 						</li>
 
 						<li class="short blue">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="H" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="H" submissionId="0">Select a keyword</h3></a>
 							<a class="blue" href="#" data-transition="slide"></a>
 						</li>
 
 						<li class="short green">
-							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="I" submissionId="0">Select a filter</h3></a>
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="I" submissionId="0">Select a keyword</h3></a>
 							<a class="green" href="#" data-transition="slide"></a>
 						</li>
 
-						<li class="footer" data-icon="info" data-iconpos="bottom">
+					<!-- 	<li class="footer" data-icon="info" data-iconpos="bottom">
 							<a href="tags.html" data-transition="slideup">  <h3 id="footer">Filters </h3></a>
-						</li>
+						</li> -->
 		<!-- 		<li  class="short" id="listitem"> Swipe me right! </li> -->
 		 			</ul>
 				</div>
@@ -75,9 +76,9 @@
 
 	//Code to sync up with the server
 		//local server
-		//var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
 		//cloud server
-		var socket = io.connect("http://92.243.30.77", {port: 8000});
+		//var socket = io.connect("http://92.243.30.77", {port: 8000});
 		
 		//visual tiles
 		var tiles = document.getElementsByTagName("h3");
@@ -121,7 +122,7 @@
 		};
 
 		Tile.prototype.reset = function(){
-			this.text = "Select a filter";
+			this.text = "Select a keyword";
 			this.total = 0;
 			this.current = 0;
 			this.submissionId = 0;
@@ -131,7 +132,7 @@
 		//Creates 7 Tile objects
 		function createTiles(){
 			var ids = ["A","B","C","D","E","F","G","H","I"];
-			for (var i=2; i< ids.length; i++){
+			for (var i=3; i< ids.length; i++){
 				var tile = new Tile(ids[i]);
 				tiles2.push(tile);
 			}
@@ -334,8 +335,11 @@
 			addSubmission(submissionId);
 
 			//redirect to select filter page if tile is empty
-			if($(this).html() == "Select a filter"){
+			if($(this).html() == "Select a keyword"){
 					$.mobile.changePage("tags.html");	
+					var $details = $(this).parent().parent().parent().parent().children('a')
+					console.log($details);
+					$details.css("borderstyle", "solid");
 			}
 		});
 

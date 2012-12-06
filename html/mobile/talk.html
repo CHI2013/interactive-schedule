@@ -12,7 +12,7 @@
 <body>
 	<div id="talk" data-role="page" data-add-back-btn="true">
 		<div data-role="header">
-			<h1> CHI'13 </h1>
+			<h1 class="mainTitle"> CHI'13 </h1>
 		</div>
 		<div data-role="content">
 			<div class="ui-grid-a" id="talk_info">
@@ -43,6 +43,7 @@
 
 					loadInfo();
 					</script>
+					<div>
 					<h1 id="title"> Submission Title </h1>
 					<p id="type"> Contribution type </p>
 					<p> Authors: </p>
@@ -51,10 +52,12 @@
 							<li> Yonca Haciahmetoglu </li>
 							<li> Chris North  </li> -->
 						</ul>
-				</div>
-				<div class="ui-block-b">
+					<p>Location: "Hall A" </p>
+					<p> Schedule: Mon 11:00am </p>
+					</div>
+			<!-- 	<div class="ui-block-b">
 				<p><img src="img/thumbnail.gif" alt="Talk info"/></p>
-				</div>
+				</div> -->
 			</div> <!-- END GRID A -->
 
 		</div>
@@ -64,7 +67,7 @@
 		</div>
 		<hr/>
 		<div id="notation">
-			<form>
+		<!-- 	<form>
 			<label for="select-choice-0" class="select"><h2> Interest in attending</h2></label>
 				<select name="rate_talk" id="rate_talk" data-native-menu="false" data-theme="c" >
 				   <option value="one" class="one"> Download Paper</option>
@@ -73,7 +76,7 @@
 				   <option value="four" class="four"> Will Attend </option>
 				</select>
 			</form>
-
+ -->
 	<div id="action_button">
 		<a href="#" data-role="button" data-iconpos="right" data-icon="plus" onclick="alert('Added to your schedule')"> Add </a>
 	</div>
