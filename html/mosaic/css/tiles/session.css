@@ -8,12 +8,12 @@ h1 {
     font-size: 30px;
 }
 
-#tileD h2 { color: #3F876D;}
-#tileE h2 { color: #975500; }
-#tileF h2 { color: #441FA8; }
-#tileG h2 { color: #A32213; }
-#tileH h2 { color: #2872A4; }
-#tileI h2 { color: #446112; }
+#tileD h2 { color: #074080;}
+#tileE h2 { color: #4a6436; }
+#tileF h2 { color: #763f40; }
+#tileG h2 { color: #835b2f; }
+#tileH h2 { color: #3a6057; }
+#tileI h2 { color: #4b3f52; }
 
 #progress_bar svg {
     position: absolute;
@@ -43,7 +43,7 @@ h1 {
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .submission .inner { 
