@@ -143,9 +143,13 @@ span.ui-icon.ui-icon-refresh.ui-icon-shadow{
     margin-top: -9px;
 }
 
+span.ui-icon.ui-icon-minus.ui-icon-shadow{
+    margin-top: -9px;
+}
+
 .ui-li-link-alt .ui-btn-inner {
     /*visibility: hidden;*/
-    opacity: 1;
+    opacity: .1;
 }
 .short{
 	height: 55px;
@@ -199,7 +203,9 @@ span.ui-icon.ui-icon-refresh.ui-icon-shadow{
 	margin: 0.3em;
 }
 
-
+.changer{
+    display: none;
+}
  /* Rating styling */
  #home .rating{
 
@@ -379,3 +385,20 @@ h3 .ui-li-heading{
 
 }
 
+.jCProgress {
+     position: absolute;
+     z-index: 9999999;
+     /*  margin-top:-15px; /* offset from the center */
+}
+
+.jCProgress > div.percent {
+     font: 18px/27px 'BebasRegular', Arial, sans-serif;
+     color:#ebebeb;
+     text-shadow: 1px 1px 1px #1f1f1f;
+
+     position:absolute;
+     margin-top:40px;
+     margin-left:22px;
+     text-align: center;
+     width:60px;
+}

@@ -18,9 +18,10 @@
   <body>
 		<div data-role="page" id="home" data-theme="a">
 			<div data-role="header" style="height:10%">
-				<a href="#" id="previous" data-role="button" data-icon="arrow-l">Previous</a>
+				<a href="#" id="previous" data-role="button" data-icon="minus">Stop</a>
 				<h1 class="mainTitle"> CHI'13 </h1>
-				<a href="#" id="now" data-role="button" data-icon="refresh">Now</a>
+				<div id="p1" ></div>
+				<a href="#" id="now" data-role="button" data-icon="refresh">Sync</a>
 			</div>
 			<div data-role="content">
 				<div id="branding">
@@ -93,8 +94,11 @@
 		var globalId = "";
 		var globalSubId = 0;
 
+		var tagTileId = ""
 		//Temporary call to function to fake preexisting data
 		//createFilter(["visualization", "infoviz"]);
+
+		var myplugin;
 
 		//Logical structure for each tile data
 		function Tile (id){
@@ -174,7 +178,8 @@
 			for(var i = 0; i< tiles2.length; i++)
 			{
 				var tile = tiles2[i];
-				if(tile.total > 0)
+				if(tile.total > 0 && tile.id == tiles[i].getAttribute(
+					"id"))
 				{
 				//tiles is the visual tiles, tiles2 are the logical tiles
 				tiles[i].innerHTML = tile.text;
@@ -204,7 +209,6 @@
 		//Update logical tiles then visual tiles
 		function updateSubmissions(tileId, talkId){
 
-			console.log("AAA");
 			console.log("ID: " + tileId  + "  " + "current" + talkId);
 			//loop used to find the tile with the right id
 			for(var i = 0; i< tiles2.length; i++)
@@ -226,8 +230,6 @@
 				//Code to update highlighted crumb
 				//Get this tile's crumbs
 				var crumbs = $('#'+tileId).parent().children('.circle');
-				console.log(crumbs);
-				console.log(crumbs.length);
 
 				//Highlight current
 				//crumbs[talkId].classList.remove('circle');
@@ -256,7 +258,8 @@
 				// Add your ip here to test with mobile device
 		//		$.post("http://92.243.30.77:8000/filters",
 					{
-						"tags": tags
+						"tags": tags,
+						"tileId": tagTileId
 					},
 					function(data, status)
 					{
@@ -264,6 +267,23 @@
 					});
 			}
 		
+		
+
+		function createTimer(){
+  myplugin = $('#p1').cprogress({
+	       percent: 10, // starting position
+	       img1: 'img/v1.png', // background
+	       img2: 'img/v2.png', // foreground
+	       speed: 200, // speed (timeout)
+	       PIStep : 0.05, // every step foreground area is bigger about this val
+	       limit: 20, // end value
+	       loop : false, //if true, no matter if limit is set, progressbar will be running
+	       showPercent : true, //show hide percent
+	       onInit: function(){console.log('onInit');},
+	       onProgress: function(p){console.log('onProgress',p);}, //p=current percent
+	       onComplete: function(p){console.log('onComplete',p);}
+	  });
+		}
 		//Function triggered by the server every X milliseconds
 		socket.on('tick', function(count) {
 		    console.log("Tick " + count);
@@ -274,21 +294,28 @@
 			    	 updateSubmissions(id, count[id]);
 			    	 console.log("Called update for id: " +  id);
 
-			    for(var i = 0; i<tiles.length;i++)
-			    {
-			    	if(id == tiles[i].getAttribute("id"))
-			    	{
-			    		$('#'+id).fadeTo(250, 0.5, function() {
-      					// Animation complete.
-   						 });
-			    		$('#'+id).fadeTo(250, 1, function() {
-      					// Animation complete.
-   						 });
-			    	}
+				    for(var i = 0; i<tiles.length;i++)
+				    {
+				    	if(id == tiles[i].getAttribute("id"))
+				    	{
+				    		$('#'+id).fadeTo(250, 0.5, function() {
+	      					// Animation complete.
+	   						 });
+				    		$('#'+id).fadeTo(250, 1, function() {
+	      					// Animation complete.
+	   						 });
+				    	}
+				    }
 			    }
-			    }
+			   }
 
-			   }	
+			if(!myplugin)
+				createTimer();
+			else{
+				myplugin.reset()
+			}
+		
+		
 		});
 
 		//Function called after a new filter is posted to server
@@ -336,14 +363,18 @@
 
 			//redirect to select filter page if tile is empty
 			if($(this).html() == "Select a keyword"){
+					tagTileId = id;
 					$.mobile.changePage("tags.html");	
-					var $details = $(this).parent().parent().parent().parent().children('a')
-					console.log($details);
-					$details.css("borderstyle", "solid");
+					// var $details = $(this).parent().parent().parent().parent().children('a');
+					// console.log($details);
+					// $details.css("visibility", "visible");
 			}
 		});
 
 		$("#previous").on("click", function (){
+			
+			$("#previous .ui-btn-text").text("Previous");
+			$("#previous .ui-icon").addClass("ui-icon-arrow-l").removeClass("ui-icon-minus");
 			onsync = false;
 			var tile;
 			for(var i = 0; i< tiles2.length; i++){
@@ -356,9 +387,13 @@
 		});
 
 		$("#now").on("click", function(){
-			console.log("on now");
+			
+			$("#previous .ui-btn-text").text("Stop");
+			$("#previous .ui-icon").addClass("ui-icon-minus").removeClass("ui-icon-arrow-l");
+
 			onsync = true;
 			loadData();
+
 			for(var i = 0; i<missed.length; i++)
 				for(var j =0; j<tiles2.length; j++){
 					if(missed[i] == tiles2[j].id)

@@ -12,3 +12,5 @@ html/qunit/tests.js
 glance80.coffee
 
 html/lib/findBiggestTimeSlot.js
+
+*.mp4
