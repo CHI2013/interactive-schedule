@@ -1,0 +1,13 @@
+.tile {
+    width: 50%;
+    height: 20%;
+}
+
+.row1 { top: 0; }
+.row2 { top: 20%; }
+.row3 { top: 40%; }
+.row4 { top: 60%; }
+.row5 { top: 80%; }
+
+.col1 { left:0; }
+.col2 { left: 50%; }
