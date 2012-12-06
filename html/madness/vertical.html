@@ -104,6 +104,8 @@
         $(document).ready(function() {
             $.getJSON('http://' + window.location.hostname + ':8000/ongoingsessions', function(data) {
                 currentSessions = data;
+
+                progress();
             });
         });
 
@@ -112,6 +114,20 @@
             var room    = rooms[currentRoom];
             var session = currentSessions[currentRoom];
             var paper   = session.submissions[currentSubmission];
+
+            console.log(room);
+            console.log(session);
+            console.log(paper);
+
+            var nextRoom = function() {
+                currentRoom++;
+                currentSubmission = 0;
+            }
+
+            if(!paper) {
+                nextRoom();
+                progress();
+            }
 
             $('.map').attr('src', 'imgs/wendy-metro/' + room + '.png');
             $('#slide h2').text(paper.title);
@@ -126,16 +142,16 @@
                 file: '/videos/' + paper.video,
                 mute: true,
                 controlbar: "none",
-                duration: 30,
+                duration: 5,
                 autostart: true,
-                onComplete: function(complete) {
-                    currentSubmission++;
-                    if(currentSubmission > session.submissions.length) {
-                        currentRoom++;
-                        currentSubmission = 0;
+                events: {
+                    onComplete: function(complete) {
+                        currentSubmission++;
+                        if(currentSubmission >= session.submissions.length)
+                            nextRoom();
+                        
+                        progress();
                     }
-                    
-                    progress();
                 }
               });            
 
