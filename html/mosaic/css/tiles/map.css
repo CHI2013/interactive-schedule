@@ -16,8 +16,8 @@ html, body {
 .metro_stop {
     display: block;
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: 10px;
+    left: 10px;
     width: 25px;
     height: 25px;
     border-radius: 50%;
@@ -32,7 +32,7 @@ html, body {
 .label {
     position: absolute;
     top: 35px;
-    left: 5px;
+    left: 10px;
     width: 25px;
     text-align: center;
     font-size: 10pt;
@@ -46,8 +46,8 @@ html, body {
 
 .timeline {
     position: absolute;
-    top: 5px;
-    left: 40px;
+    top: 10px;
+    left: 45px;
     display: block;
     width: 500px;
     height: 20px;
