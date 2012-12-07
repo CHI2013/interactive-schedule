@@ -167,7 +167,7 @@
             $('#map').attr('src', 'imgs/wendy-metro/' + room + '.png');
             var timeline = '';
             for(var i = 0; i < session.submissions.length; i++) {
-                var type = (session.submissions[i].contributeType == 'Paper') ? 'long' : (session.submissions[i].contributeType == 'Note') ? 'short' : 'altchi';
+                var type = (session.submissions[i].contributionType == 'Paper') ? 'long' : (session.submissions[i].contributionType == 'Note') ? 'short' : 'altchi';
                 timeline += '<div class="' + type + '"></div>';
             }
             $('#timeline').html(timeline);

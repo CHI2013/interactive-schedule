@@ -16,7 +16,7 @@ $(document).ready(function() {
 
             for(var j = 0; j < session.submissions.length; j++) {
                 var sub = session.submissions[j];
-                var type = (sub.contributeType == 'Paper') ? 'long' : (sub.contributeType == 'Note') ? 'short' : 'altchi';
+                var type = (sub.contributionType == 'Paper') ? 'long' : (sub.contributionType == 'Note') ? 'short' : 'altchi';
                 timeline += '<div id="' + sub.id + '" class="submission ' + type + '"></div>';
             }
 

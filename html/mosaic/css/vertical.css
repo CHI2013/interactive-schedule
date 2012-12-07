@@ -1,13 +1,37 @@
+html, body {
+    width: 1080px !important;
+    height: 1920px !important;
+    border-collapse: collapse;
+    overflow: auto;
+}
+
 .tile {
-    width: 50%;
-    height: 20%;
+    width: 540px;
+    height: 384px;
 }
 
 .row1 { top: 0; }
-.row2 { top: 20%; }
-.row3 { top: 40%; }
-.row4 { top: 60%; }
-.row5 { top: 80%; }
+.row2 { top: 384px; }
+.row3 { top: 768px; }
+.row4 { top: 1152px; }
+.row5 { top: 1536px; }
 
-.col1 { left:0; }
-.col2 { left: 50%; }
+.col1 { left: 0; }
+.col2 { left: 540px; }
+
+#map {
+  position: absolute;
+  top: 384px;
+  left: 540px;
+  height: 768px;
+  width: 540px;
+  border: 1px solid #999;
+}
+
+#announcement {
+    position: absolute;
+    top: 1536px;
+    left: 0;
+    height: 384px;
+    width: 1080px;
+}

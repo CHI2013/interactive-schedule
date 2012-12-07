@@ -6,7 +6,7 @@
     "tiles": {
         "A": {"type": "feed"},
         "B": {"type": "map"},
-        "C": {"type": "filter"},
+        "C": {"type": "map"},
         "D": {"type": "filter"},
         "E": {"type": "filter"},
         "F": {"type": "filter"},

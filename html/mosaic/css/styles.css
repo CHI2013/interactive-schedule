@@ -13,21 +13,28 @@ body {
 .tile {
     position: absolute;
     display: block;
-    width: 33%;
-    height: 33%;
-    min-width: 400px;
-    min-height: 250px;
+    width: 640px;
+    height: 360px;
+/*    min-width: 400px;
+    min-height: 250px;*/
     border: 1px solid #999;
     margin: 0;
     padding: 0;
 }
 
 .row1 { top: 0; }
-.row2 { top: 33%; }
-.row3 { top: 66%; }
+.row2 { top: 360px; }
+.row3 { top: 720px; }
 
 .col1 { left:0; }
-.col2 { left: 33%; }
-.col3 { left: 66%; }
+.col2 { left: 640px; }
+.col3 { left: 1280px; }
 
-#map { background: #000; }
+#map {
+  position: absolute;
+  top: 0;
+  left: 640px;
+  height: 720px;
+  width: 640px;
+  border: 1px solid #999;
+}
