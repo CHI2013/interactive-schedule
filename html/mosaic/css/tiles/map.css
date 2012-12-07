@@ -1,0 +1,103 @@
+html, body {
+    /* Vertical Layout */
+    display: block;
+    height: 1080px !important;
+    width: 384px;
+    /*overflow: auto;*/
+    border: 1px solid #fff;
+}
+
+.room {
+    display: block;
+    height: 72px;
+    position: relative;
+}
+
+.metro_stop {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.red_line    .metro_stop { background-color: #d81823; }
+.green_line  .metro_stop { background-color: #3da22c; }
+.purple_line .metro_stop { background-color: #6a379a; }
+.blue_line   .metro_stop { background-color: #2f76b3; }
+
+.label {
+    position: absolute;
+    top: 45px;
+    left: 10px;
+    width: 30px;
+    text-align: center;
+    font-size: 14pt;
+    opacity: 0.6;
+}
+
+.red_line    .label { color: #d81823; }
+.green_line  .label { color: #3da22c; }
+.purple_line .label { color: #6a379a; }
+.blue_line   .label { color: #2f76b3; }
+
+.timeline {
+    position: absolute;
+    top: 12px;
+    left: 50px;
+    display: block;
+    width: 330px;
+    height: 20px;
+}
+
+.session {
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    height: 5px;
+    width: 100%;
+    background-color: #352537;
+    z-index: -100;
+}
+
+.submission {
+    float: left;
+    border: 2px solid #352537;
+    background-color: #352537;
+    border-radius: 10px;
+    box-sizing: border-box;
+    height: 15px;
+    margin: 5px 0px;
+}
+
+.selected { opacity: 1 !important; }
+.long   { width: 25%; }
+.short  { width: 12.5%; }
+.altchi { width: 18.75%; }
+
+.tile {
+    float: left;
+    height: 7px;
+    width: 7px;
+    margin: 2px 3px;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.tileD { border-color: #A6CEE3; }
+.tileE { border-color: #B2DF8A; }
+.tileF { border-color: #FB9A99; }
+.tileG { border-color: #FDBF6F; }
+.tileH { border-color: #8DD3C7; }
+.tileI { border-color: #CAB2D6; }
+
+.tileD.selected { background-color: #A6CEE3; }
+.tileE.selected { background-color: #B2DF8A; }
+.tileF.selected { background-color: #FB9A99; }
+.tileG.selected { background-color: #FDBF6F; }
+.tileH.selected { background-color: #8DD3C7; }
+.tileI.selected { background-color: #CAB2D6; }
+

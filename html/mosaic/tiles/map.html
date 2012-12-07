@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+    <link rel="stylesheet" type="text/css" href="../css/tile.css" />
+    <link rel="stylesheet" type="text/css" href="../css/tiles/map.css" />
+    <link href='http://fonts.googleapis.com/css?family=Orienta' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Magra:400,700' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="../js/jquery.svg.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.svgdom.min.js"></script>
+
+    <script type="text/javascript" src="../js/tiles/tile.js"></script>    
+    <script type="text/javascript" src="../js/tiles/map.js"></script>    
+</head>
+<body>
+
+    <div id="243" class="room green_line">
+        <div class="metro_stop"></div>
+        <div class="label">243</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission long"></div>
+            <div class="submission long"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="242" class="room green_line">
+        <div class="metro_stop"></div>
+        <div class="label">242</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short">
+                <div class="tile tileD selected"></div>
+                <div class="tile tileE"></div>
+                <div class="tile tileF"></div>
+                <div class="tile tileG"></div>
+                <div class="tile tileH"></div>
+                <div class="tile tileI"></div>
+            </div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="241" class="room green_line">
+        <div class="metro_stop"></div>
+        <div class="label">241</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission short"></div>
+            <div class="submission short"></div>
+            <div class="submission short"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="bordeaux" class="room red_line">
+        <div class="metro_stop"></div>
+        <div class="label">Bordeaux</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="341" class="room red_line">
+        <div class="metro_stop"></div>
+        <div class="label">341</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="342" class="room red_line">
+        <div class="metro_stop"></div>
+        <div class="label">342</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>  
+
+    <div id="343" class="room red_line">
+        <div class="metro_stop"></div>
+        <div class="label">343</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>  
+
+    <div id="353" class="room purple_line">
+        <div class="metro_stop"></div>
+        <div class="label">353</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="352" class="room purple_line">
+        <div class="metro_stop"></div>
+        <div class="label">352</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+
+    <div id="351" class="room purple_line">
+        <div class="metro_stop"></div>
+        <div class="label">351</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+
+    <div id="havane" class="room purple_line">
+        <div class="metro_stop"></div>
+        <div class="label">Havane</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="251" class="room blue_line">
+        <div class="metro_stop"></div>
+        <div class="label">251</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+
+    <div id="252" class="room blue_line">
+        <div class="metro_stop"></div>
+        <div class="label">252</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>  
+
+    <div id="253" class="room blue_line">
+        <div class="metro_stop"></div>
+        <div class="label">253</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>  
+
+    <div id="bleu" class="room blue_line">
+        <div class="metro_stop"></div>
+        <div class="label">Bleu</div>
+
+        <div class="timeline">
+            <div class="session"> </div>
+
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+            <div class="submission short"></div>
+            <div class="submission long"></div>
+        </div>
+    </div>
+</body>
+</html>
