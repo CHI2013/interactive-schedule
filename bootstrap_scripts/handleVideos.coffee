@@ -34,10 +34,14 @@ toUpdate = {}
 
 insert = (session, submissions) ->
     chidb.get session, (err, body) ->
+        if err?
+            console.log err
         body['Submission IDs'] = submissions
         chidb.insert body, body._id, (err, body) ->
             if err?
                 console.log err
+            else
+                console.log 'updated', body.id
 
 req = http.get options, (res) ->
     res.setEncoding 'utf8'
