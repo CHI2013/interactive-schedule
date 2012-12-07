@@ -41,8 +41,12 @@ insert = (session, submissions) ->
 
 req = http.get options, (res) ->
     res.setEncoding 'utf8'
+    data = ""
     res.on 'data', (chunk) ->
-        for session in JSON.parse chunk
+        data += chunk
+        
+    res.on 'end', () ->
+        for session in JSON.parse data
             for submission in session.submissions
                 if submission.video == 'NoVideo.mp4'
                     if submission.contributionType == 'Note'
