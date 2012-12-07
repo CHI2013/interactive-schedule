@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+  <head> 
+    <title>Phone</title>
+		<meta charset = "UTF-8">
+		<meta name = "viewport" content="width=device-width, initial-scale=1">
+		<title> CHI'13 Schedule </title>
+		<link rel="stylesheet" href="css/jquery.mobile.structure-1.1.1.css" />
+		<link rel="stylesheet" href="css/jquery.	mobile-1.1.1.min.css" />
+		<link rel="stylesheet" href="css/custom.css"/>
+ 		<script src="../lib/jquery.min.js"></script>
+  		<script src="../lib/jquery.mobile-1.1.1.min.js"></script>
+    	<script src="/socket.io/socket.io.js"></script>
+    	<script src="../lib/phone.js"></script>
+    	<script src="../lib/jCProgress-1.0.3.js"></script>    	
+  </head>
+
+  <body>
+		<div data-role="page" id="home" data-theme="a">
+			<div data-role="header" style="height:10%">
+				<a href="#" id="previous" data-role="button" data-icon="minus">Stop</a>
+				<h1 class="mainTitle"> CHI'13 </h1>
+				<div id="p1" ></div>
+				<a href="#" id="now" data-role="button" data-icon="refresh">Sync</a>
+			</div>
+			<div data-role="content">
+				<div id="branding">
+					<h1> Current Events</h1>
+				</div>
+			<div class="choice_list">
+					<ul  id="tileList" data-role="listview" data-insert="true" >
+						<!-- <li class="short violet">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="C" submissionId="0">Select a keyword</h3> </a>
+ 							<a class="violet" href="#" data-transition="slide"> </a>
+						</li> -->
+
+						<li class="short light_blue">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="D" submissionId="0">Select a keyword</h3></a>
+							<a class="light_blue details-btn" href="#" data-transition="slide"> </a>
+						</li>
+
+						<li class="short orange">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="E" submissionId="0">Select a keyword</h3></a>
+							<a class="orange details-btn" href="#" data-transition="slide"> </a>
+						</li>
+
+						<li class="short purple">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="F" submissionId="0">Select a keyword</h3></a>
+							<a class="purple details-btn" href="#" data-transition="slide"> </a>
+						</li>
+
+						<li class="short red">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="G" submissionId="0">Select a keyword</h3></a>
+							<a class="red details-btn" href="#" data-transition="slide"> </a>
+						</li>
+
+						<li class="short blue">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="H" submissionId="0">Select a keyword</h3></a>
+							<a class="blue details-btn" href="#" data-transition="slide"></a>
+						</li>
+
+						<li class="short green">
+							<a href="#.html" data-transition="slide"> <img class="changer" src="img/add.png" data-altsrc='img/remove.png'/>  <h3 id="I" submissionId="0">Select a keyword</h3></a>
+							<a class="green details-btn" href="#" data-transition="slide"></a>
+						</li>
+
+					<!-- 	<li class="footer" data-icon="info" data-iconpos="bottom">
+							<a href="tags.html" data-transition="slideup">  <h3 id="footer">Filters </h3></a>
+						</li> -->
+		<!-- 		<li  class="short" id="listitem"> Swipe me right! </li> -->
+		 			</ul>
+				</div>
+			</div>
+		</div> <!-- END PAGE -->
+
+		<script>
+
+	//Code to sync up with the server
+		//local server
+		var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+		//cloud server
+		//var socket = io.connect("http://92.243.30.77", {port: 8000});
+		
+		//visual tiles
+		var tiles = document.getElementsByTagName("h3");
+		var filters =[];
+		//logical tiles
+		var tiles2 = [];
+
+		//infamous global variables
+		var onsync = true;
+		var missed =[];
+
+		var globalId = "";
+		var globalSubId = 0;
+
+		var tagTileId = ""
+		//Temporary call to function to fake preexisting data
+		//createFilter(["visualization", "infoviz"]);
+
+		var timer;
+
+		//Logical structure for each tile data
+		function Tile (id){
+			this.id = id;
+			this.text = "";
+			this.total = 0;
+			this.current = 0;
+			this.submissionId = 0;
+			this.submissions = {};
+		};
+
+		Tile.prototype.updateCurrent = function(current){
+			this.current = current;
+		};
+
+		Tile.prototype.getCurrent = function(){
+			return this.current;
+		};
+
+		Tile.prototype.updateTotal = function(total){
+			this.total = total;
+		};
+		Tile.prototype.getTotal = function(){
+			return this.total;
+		};
+
+		Tile.prototype.reset = function(){
+			this.text = "Select a keyword";
+			this.total = 0;
+			this.current = 0;
+			this.submissionId = 0;
+			this.submissions = {};
+		};
+
+		//Creates 7 Tile objects
+		function createTiles(){
+			var ids = ["A","B","C","D","E","F","G","H","I"];
+			for (var i=3; i< ids.length; i++){
+				var tile = new Tile(ids[i]);
+				tiles2.push(tile);
+			}
+		};
+
+		//Called at load
+		createTiles();
+
+		//Load existing JSON data from /tiles and assign it to logical tiles
+		function loadData(){
+			$.get('/tiles', function(data){
+				for(id in data){
+					if(data[id].type == "filter" && data[id].hasOwnProperty("filter"))
+					{
+						var filter = data[id];
+						for(var i = 0; i<tiles2.length;i++)
+						{	
+							var tile = tiles2[i];
+							if(tile.id === filter.filter.tileId)
+							{
+								tile.total = filter.total;
+								tile.submissions = filter.filter.submissions;
+
+								if (tile.total > 0){
+								tile.text = tile.submissions[tile.current].title;
+								tile.submissionId = tile.submissions[tile.current].id;									
+								}
+							}
+						}
+					}
+				}
+
+				showSubmissions();
+			});
+		}
+
+		//Load logical tiles' data into visual tiles
+		function showSubmissions(){
+			for(var i = 0; i< tiles2.length; i++)
+			{
+				var tile = tiles2[i];
+				if(tile.total > 0 && tile.id == tiles[i].getAttribute(
+					"id"))
+				{
+				//tiles is the visual tiles, tiles2 are the logical tiles
+				tiles[i].innerHTML = tile.text;
+				tiles[i].setAttribute("submissionId", tile.submissionId);
+				tiles[i].setAttribute("total", tile.total);
+				showBreadCrumbs();
+				}
+			}
+		};
+
+		function showBreadCrumbs(){
+		 	for(var i =0; i < tiles.length; i ++){
+		 		var total =tiles[i].getAttribute("total");
+		 		var id = tiles[i].getAttribute("id");
+		 		//remove pre-existing breadcrumbs
+				$('#'+id).parent().children('div').remove('.circle');	
+
+		 		if(total)
+		 		for(var j=0, temp = 100; j<total; j++)
+		 		{
+			 		$('#'+id).parent().append('<div class="circle" style="left:'+temp+'px;"></div>');
+			 		temp +=30;
+			 	}
+		 	}
+		};
+
+		//Update logical tiles then visual tiles
+		function updateSubmissions(tileId, talkId){
+
+			console.log("ID: " + tileId  + "  " + "current" + talkId);
+			//loop used to find the tile with the right id
+			for(var i = 0; i< tiles2.length; i++)
+			{
+				var tile = tiles2[i];
+				if(tile.id == tileId)
+				{
+				//assign new text and id to logical tile
+				tile.text= tile.submissions[talkId].title;
+				tile.submissionId = tile.submissions[tile.current].id;
+				//assign new current value to logical tile
+				tile.current = talkId;
+
+				//update visual tiles
+				//tiles is the visual tiles, tiles2 are the logical tiles
+				tiles[i].innerHTML = tile.text;
+				tiles[i].setAttribute("submissionId", tile.submissionId)
+				
+				//Code to update highlighted crumb
+				//Get this tile's crumbs
+				var crumbs = $('#'+tileId).parent().children('.circle');
+
+				//Highlight current
+				//crumbs[talkId].classList.remove('circle');
+				//crumbs[talkId].classList.toggle('circle_selected');
+
+				for(var j =0; j<crumbs.length;j++){
+					if(talkId != j)
+					crumbs[j].style.backgroundColor = 'gray';
+					else{
+					crumbs[talkId].style.backgroundColor = 'white';
+
+					}
+
+				}
+
+				}
+			}
+
+
+		};
+
+		//Function used to simulate something was already on the server
+		function createFilter(tags) 
+			{
+				$.post("http://localhost:8000/filters",
+				// Add your ip here to test with mobile device
+		//		$.post("http://92.243.30.77:8000/filters",
+					{
+						"tags": tags,
+						"tileId": tagTileId
+					},
+					function(data, status)
+					{
+						loadData();
+					});
+			}
+		
+		
+
+		function createTimer(){
+			console.log("created timer");
+		  timer = $('#p1').cprogress({
+	       percent: 0, // starting position
+	       img1: 'img/x.png', // background
+	       img2: 'img/x2.png', // foreground
+	       speed: 1000, // speed (timeout)
+	       PIStep : 0.25, // every step foreground area is bigger about this val
+	       limit: 100, // end value
+	       loop : false, //if true, no matter if limit is set, progressbar will be running
+	       showPercent : false, //show hide percent
+	       onInit: function(){},
+	       onProgress: function(p){}, //p=current percent
+	       onComplete: function(p){}
+	  });
+		}
+		//Function triggered by the server every X milliseconds
+		socket.on('tick', function(count) {
+		    console.log("Tick " + count);
+		    if(!count.isEmpty && onsync == true)
+			   {
+			    for(var id in count)
+			    {
+			    	 updateSubmissions(id, count[id]);
+			    	 console.log("Called update for id: " +  id);
+
+				    for(var i = 0; i<tiles.length;i++)
+				    {
+				    	if(id == tiles[i].getAttribute("id"))
+				    	{
+				    		$('#'+id).fadeTo(250, 0.5, function() {
+	      					// Animation complete.
+	   						 });
+				    		$('#'+id).fadeTo(250, 1, function() {
+	      					// Animation complete.
+	   						 });
+				    	}
+				    }
+			    }
+			   }
+
+			if(!timer)
+				createTimer();
+			else{
+				timer.reset()
+			}
+			
+			if($("#" + count[id]).html() != "Select a keyword"){	
+					 var $details = $(this).parent().parent().parent().parent().find('.details-btn');
+					$details.css("opacity","1");
+			}
+		
+		});
+
+		//Function called after a new filter is posted to server
+		//Populates arrays with all titles for each filter
+    	socket.on('tilesUpdated', function(data) {
+   	    	loadData();
+		});
+
+		socket.on('doneTile', function(data) { 
+			if(onsync)
+			{
+				for(var i = 0; i<tiles2.length;i++)
+				{
+					if(data.tileId == tiles2[i].id)
+					{ 
+						doneTile(data.tileId, i);
+					}
+				}
+			}
+			else{
+				missed.push(data.tileId);
+			}				
+		});
+
+		//function called after we iterate through all session events
+		function doneTile(tileId,index){
+			tile = tiles2[index];
+			tile.reset();
+			tiles[index].innerHTML = tile.text;
+			tiles[index].setAttribute("submissionId", tile.submissionId)
+			tiles[index].setAttribute("total", tile.total)
+
+			//remove breadcrumbs
+			$('#'+tileId).parent().children('div').remove('.circle');
+
+			//gray details button again
+			var $details = $("#" + tileId).parent().parent().parent().parent().find('.details-btn');
+			$details.css("opacity","0.1");
+			}
+
+		//onclick handler for the tiles
+		//calls iOS function with the id of the selected submission
+		$("li.short h3").on("click", function(){
+			var id = $(this).attr("id");
+			var submissionId = $(this).attr("submissionId")
+			//if tile has text select to add to schedule
+			if(submissionId != 0)
+			addSubmission(submissionId);
+
+			//redirect to select filter page if tile is empty
+			if($(this).html() == "Select a keyword"){
+					tagTileId = id;
+					$.mobile.changePage("tags.html");	
+
+					//enable details button
+					 var $details = $(this).parent().parent().parent().parent().find('.details-btn');
+
+					$details.css("opacity","1");
+			}
+		});
+
+		$("#previous").on("click", function (){
+			
+			$("#previous .ui-btn-text").text("Previous");
+			$("#previous .ui-icon").addClass("ui-icon-arrow-l").removeClass("ui-icon-minus");
+			onsync = false;
+			var tile;
+			for(var i = 0; i< tiles2.length; i++){
+				tile = tiles2[i];
+				if(tile.current>0){
+					tile.current = tile.current -1 ; 
+					updateSubmissions(tile.id, tile.current);
+				}
+			};
+
+			timer.stop();
+		});
+
+		$("#now").on("click", function(){
+			
+			$("#previous .ui-btn-text").text("Stop");
+			$("#previous .ui-icon").addClass("ui-icon-minus").removeClass("ui-icon-arrow-l");
+
+			onsync = true;
+			loadData();
+
+			for(var i = 0; i<missed.length; i++)
+				for(var j =0; j<tiles2.length; j++){
+					if(missed[i] == tiles2[j].id)
+						doneTile(missed[i],j)
+				}
+			if(!timer)
+			  createTimer();
+			else{			
+			timer.reset();
+			timer.start();
+		}
+		});
+
+		//When a details button is pressed send submission info to talk.html via global namespace
+		$("li a:nth-child(2)").on("click", function(){
+			var $button = $(this).parent().children("div").children("div").children("a").children('h3');
+			globalId = $button.attr("id");
+			globalSubId = $button.attr("submissionId");
+
+			//disable button unless there's a valid session displayed
+			if(globalSubId.length > 1 )
+			$(this).attr("href","talk.html");
+			else
+			$(this).attr("href","#");
+
+		});
+		//Function to send to Native iOS app to add to schedule
+		function addSubmission(id){
+			alert("called iOS");
+		}
+
+
+		//Helper function(s)
+		var isEmpty = function(obj) {
+  		return Object.keys(obj).length === 0;
+		}
+
+		//Change tile status icon
+		$(function(){
+			$('img.changer').click(function(){
+		 //grab the image just clicked as a jquery object.
+		    var img = $(this);
+
+		    console.log(img.data('mode'));
+
+		    if( img.data('mode') === 'alt')
+		    {
+		    	img
+		    	.attr('src', img.data('originalsrc'))
+		    	.data('mode','src');
+		    }
+		    else
+		    {
+		    	img 
+		    	.data('originalsrc', img.attr('src')) //stow the original src
+		        .attr('src', img.data('altsrc'))      //update the src
+		        .data('mode','alt');                  //tag that the img is in alt mode.
+		    }	
+		     console.log(img.data('mode'));
+			});
+		});
+
+		</script>
+	</body>
+</html>

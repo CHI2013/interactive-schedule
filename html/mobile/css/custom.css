@@ -147,10 +147,6 @@ span.ui-icon.ui-icon-minus.ui-icon-shadow{
     margin-top: -9px;
 }
 
-.ui-li-link-alt .ui-btn-inner {
-    /*visibility: hidden;*/
-    opacity: .1;
-}
 .short{
 	height: 55px;
 }
@@ -186,6 +182,10 @@ span.ui-icon.ui-icon-minus.ui-icon-shadow{
 
 .violet{
 	background: #DF73B2;
+}
+
+.details-btn{
+    opacity: 0.1;
 }
 /* Main page HOME styling */
 
@@ -326,7 +326,7 @@ h1{
 }
 
 .mainTitle{
-    width:45%;
+    width:40%;
 }
 
 h3{
@@ -388,6 +388,8 @@ h3 .ui-li-heading{
 .jCProgress {
      position: absolute;
      z-index: 9999999;
+     top: 5px;
+     left: 200px;
      /*  margin-top:-15px; /* offset from the center */
 }
 
@@ -397,8 +399,13 @@ h3 .ui-li-heading{
      text-shadow: 1px 1px 1px #1f1f1f;
 
      position:absolute;
-     margin-top:40px;
-     margin-left:22px;
+     margin-top:10px;
+     margin-left:62px;
      text-align: center;
      width:60px;
+}
+
+.jCProgress > div.percent > canvas {
+    width: 30px;
+    height: 30px;
 }
