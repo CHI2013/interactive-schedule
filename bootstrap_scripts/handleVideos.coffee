@@ -22,7 +22,7 @@ papersToUse = { notes: [ 'paper1210', 'paper120', 'paper1562', 'paper1067', 'pap
 #                    papersToUse.notes.push paper.id
 #                console.log papersToUse
 options = {
-    host: 'localhost',
+    host: '127.0.0.1',
     port: 8000,
     path: '/ongoingsessions',
     method: 'GET'
