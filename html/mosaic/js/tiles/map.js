@@ -14,11 +14,16 @@ $(document).ready(function() {
             var session = currentSessions[i];
             var timeline = '<div class="session"></div>';
 
-            for(var j = 0; j < session.submissions.length; j++) {
-                var sub = session.submissions[j];
-                var type = (sub.contributionType == 'Paper') ? 'long' : (sub.contributionType == 'Note') ? 'short' : 'altchi';
-                timeline += '<div id="' + sub.id + '" class="submission ' + type + '"></div>';
+            if(session.submissions.length == 0)
+                timeline += '<div id="' + session._id + '" class="submission full"></div>';    
+            else {
+               for(var j = 0; j < session.submissions.length; j++) {
+                   var sub = session.submissions[j];
+                   var type = (sub.contributionType == 'Paper') ? 'long' : (sub.contributionType == 'Note') ? 'short' : 'altchi';
+                   timeline += '<div id="' + sub.id + '" class="submission ' + type + '"></div>';
+              } 
             }
+            
 
             $('#' + room + ' .timeline').html(timeline);
         }

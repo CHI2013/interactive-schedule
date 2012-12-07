@@ -119,6 +119,7 @@
         }
 
         .selected { opacity: 1 !important; }
+        .full   { width: 100%; }
         .long   { width: 25%; }
         .short  { width: 12.5%; }
         .altchi { width: 18.75%; }
@@ -160,9 +161,13 @@
             // Refactor to do session stuff only once
             $('#map').attr('src', 'imgs/wendy-metro/' + room + '.png');
             var timeline = '';
-            for(var i = 0; i < session.submissions.length; i++) {
-                var type = (session.submissions[i].contributionType == 'Paper') ? 'long' : (session.submissions[i].contributionType == 'Note') ? 'short' : 'altchi';
-                timeline += '<div class="' + type + '"></div>';
+            if(session.submissions.length == 0)
+                timeline += '<div id="' + session._id + '" class="submission full"></div>';    
+            else {            
+                for(var i = 0; i < session.submissions.length; i++) {
+                    var type = (session.submissions[i].contributionType == 'Paper') ? 'long' : (session.submissions[i].contributionType == 'Note') ? 'short' : 'altchi';
+                    timeline += '<div class="' + type + '"></div>';
+                }
             }
             $('#timeline').html(timeline);
 
