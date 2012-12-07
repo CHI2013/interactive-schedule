@@ -164,8 +164,9 @@ session_reader.addListener 'end', () ->
         else if videos.videos[submission.id[0..4] + "0" + submission.id[5..]]?
             submission.video = videos.videos[submission.id[0..4] + "0" + submission.id[5..]]
         else
-            hasVideo = false
-            console.log "Ignoring submission", submission.id, "as it has no video"
+            submission.video = 'NoVideo.mp4'
+            #hasVideo = false
+            #console.log "Ignoring submission", submission.id, "as it has no video"
 
         if data['Keywords']?
             keywords = data['Keywords'].split(/[\n\t,;\\]+/).map (word) ->
