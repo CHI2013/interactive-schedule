@@ -1,5 +1,9 @@
 .tweet {
     display: block;
+    float: left;
+    width: 310px;
+    height: 100px;
+    margin: 0 5px 10px 5px;
     background: #352537;
     border-radius: 5px;
     padding: 10px;

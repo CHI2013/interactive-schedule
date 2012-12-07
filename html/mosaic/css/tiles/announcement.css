@@ -3,14 +3,14 @@
     top: 15px;
     bottom: 15px;
     left: 15px;
-    right: 50%;
+    right: 66%;
 }
 
 #right {
     position: absolute;
     top: 15px;
     bottom: 15px;
-    left: 50%;
+    left: 34%;
     right: 15px;
 }
 
