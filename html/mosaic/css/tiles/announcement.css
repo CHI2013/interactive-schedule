@@ -25,11 +25,11 @@
     background: #f6eebf;
     border-radius: 10px;
     font-family: 'Magra', sans-serif;
-    font-size: 36px;
+    font-size: 21pt;
 }
 
 #logo { 
     width: 95%; 
     position: absolute;
-    top: 55%;
+    bottom: 0px;
 }
