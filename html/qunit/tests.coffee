@@ -46,13 +46,14 @@ asyncTest "Post a filter", 2, () ->
             start()
             
 asyncTest "Post a filter with tile", 2, () ->
-    query = {"tag":["visualization"], "tile":"C"}
+    query = {"tag":["visualization"], "tile":"G"}
     $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
-        $.getJSON queryURL('tiles/C'), (data) ->
+        $.getJSON queryURL('tiles/G'), (data) ->
+            start()
             delete query.tile
             ok (JSON.stringify data.filter.query) == (JSON.stringify query), "Tile updated with the proper filter"
-            start()
+
             
 asyncTest "Post a filter with illegal tile", 2, () ->
     query = {"tag":["visualization"], "tile":"Z"}
