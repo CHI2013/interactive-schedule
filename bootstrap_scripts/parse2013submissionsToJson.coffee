@@ -1,5 +1,37 @@
 csv = require 'ya-csv'
 
+authorRegExps = {
+    'firstName': /^Author given first name [\d]+/,
+    'middleName': /^Middle initial or name [\d]+/,
+    'lastName': /^Author last\/family name [\d]+/,
+    'email': /^Valid email address [\d]+/,
+    'department1': /^Primary Affiliation [\d]+ - Department\/School\/Lab/,
+    'institution1': /^Primary Affiliation [\d]+ - Institution/,
+    'city1': /^Primary Affiliation [\d]+ - City/,
+    'stateProvince1': /^Primary Affiliation [\d]+ - State or Province/,
+    'country1': /^Primary Affiliation [\d]+ - Country/,
+    'department2': /^Secondary Affiliation (optional) [\d]+ - Department\/School\/Lab/,
+    'institution2': /^Secondary Affiliation (optional) [\d]+ - Institution/,
+    'city2': /^Secondary Affiliation (optional) [\d]+ - City/,
+    'stateProvince2': /^Secondary Affiliation (optional) [\d]+ - State or Province/,
+    'country2': /^Secondary Affiliation (optional) [\d]+ - Country/
+    }
+    
+    
+attributeMap = {
+    'ID': 'submissionId',
+    'ID 1': 'submissionId2',
+    'Title': 'title',
+    'Abstract': 'abstract',
+    'Page Length': 'pageLength',
+    'Paper or Note': 'type',
+    'Primary and Additional ACM Classifiers': 'acmClassifiers',
+    'Thumbnail Image Caption': 'thumbnailCaption',
+    'Contribution & Benefit Statement (Mandatory Field)': 'contributionAndBenefit',
+    'Presenting Author': 'presentingAuthor',
+    'Backup Presenting Author': 'backupPresentingAuthor'
+}
+
 paper_reader = csv.createCsvFileReader process.argv[2], {
     'columnsFromHeader': true,
     'separator': ',',
@@ -20,22 +52,6 @@ getNumberedKey = (obj, key, regexp) ->
         
 
 addAuthors = (submission, data) ->
-    authorRegExps = {
-        'firstName': /^Author given first name [\d]+/,
-        'middleName': /^Middle initial or name [\d]+/,
-        'lastName': /^Author last\/family name [\d]+/,
-        'email': /^Valid email address [\d]+/,
-        'department1': /^Primary Affiliation [\d]+ - Department\/School\/Lab/,
-        'institution1': /^Primary Affiliation [\d]+ - Institution/,
-        'city1': /^Primary Affiliation [\d]+ - City/,
-        'stateProvince1': /^Primary Affiliation [\d]+ - State or Province/,
-        'country1': /^Primary Affiliation [\d]+ - Country/,
-        'department2': /^Secondary Affiliation (optional) [\d]+ - Department\/School\/Lab/,
-        'institution2': /^Secondary Affiliation (optional) [\d]+ - Institution/,
-        'city2': /^Secondary Affiliation (optional) [\d]+ - City/,
-        'stateProvince2': /^Secondary Affiliation (optional) [\d]+ - State or Province/,
-        'country2': /^Secondary Affiliation (optional) [\d]+ - Country/
-    }
     authors = []
     for key in Object.keys data
         if data[key] == '"'
@@ -79,17 +95,8 @@ paper_reader.addListener 'data', (data) ->
     console.log "======================================================================================="
     submission = {}
     
-    addAttribute submission, data, 'ID', 'submissionId'
-    addAttribute submission, data, 'ID 1', 'submissionId2'
-    addAttribute submission, data, 'Title', 'title'
-    addAttribute submission, data, 'Abstract', 'abstract'
-    addAttribute submission, data, 'Page Length', 'pageLength'
-    addAttribute submission, data, 'Paper or Note', 'type'
-    addAttribute submission, data, 'Primary and Additional ACM Classifiers', 'acmClassifiers'
-    addAttribute submission, data, 'Thumbnail Image Caption', 'thumbnailCaption'
-    addAttribute submission, data, 'Contribution & Benefit Statement (Mandatory Field)', 'contributionAndBenefit'
-    addAttribute submission, data, 'Presenting Author', 'presentingAuthor'
-    addAttribute submission, data, 'Backup Presenting Author', 'submission.backupPresentingAuthor'
+    for keyInData, targetKey of attributeMap
+        addAttribute submission, data, keyInData, targetKey
     
     addCommunities submission, data
     addAuthors submission, data
