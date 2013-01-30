@@ -1,5 +1,7 @@
 csv = require 'ya-csv'
-
+pid = require './pronounceableId.coffee'
+pids = pid.getListOfPronounceableIds 4, 1000
+    
 authorRegExps = {
     'firstName': /^Author given first name [\d]+/,
     'middleName': /^Middle initial or name [\d]+/,
@@ -80,6 +82,9 @@ addKeywords = (submission, data) ->
         for keyword in keywords
             if keyword.length != 0
                 submission.keywords.push keyword
+                
+addPronounceableId = (submission) ->
+    submission.pronounceableId = pids.pop()
 
 addAttribute = (submission, data, keyInData, targetKey) ->
     if not data[keyInData]?
@@ -89,7 +94,8 @@ addAttribute = (submission, data, keyInData, targetKey) ->
     submission[targetKey] = data[keyInData]
     
 addCommunities = (submission, data) ->
-    submission.chiCommunities = if data["CHI Communities"]? then data["CHI Communities"].split ','
+    if data["CHI Communities"]? and data["CHI Communities"] != '"'
+        submission.chiCommunities = data["CHI Communities"].split ','
 
 paper_reader.addListener 'data', (data) ->
     console.log "======================================================================================="
@@ -102,5 +108,7 @@ paper_reader.addListener 'data', (data) ->
     addAuthors submission, data
     addKeywords submission, data
     addContact submission, data
+    
+    addPronounceableId submission
 
     console.log submission
