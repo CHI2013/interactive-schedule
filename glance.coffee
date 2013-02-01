@@ -117,18 +117,18 @@ class GlanceServer
         #Get the filter of a given tile (e.g. F)
         @app.get '/tiles/:id', (req, res) =>
             if not @tiles[req.params.id]?
-                res.send {'status': 'error', 'message': 'No such tile'}, 400
+                res.jsonp {'status': 'error', 'message': 'No such tile'}, 400
                 return
-            res.send @tiles[req.params.id]
+            res.jsonp @tiles[req.params.id]
             
         @app.get '/tiles', (req, res) =>
-            res.send @tiles
+            res.jsonp @tiles
         
         #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
         #IF the query contains a named tile this will be used IF it is available, otherwise it will be given another tile.
         @app.post '/filters', (req, res) =>
             if @availableTiles.length == 0
-                res.send {'status': 'error', 'message': 'No empty tiles'}, 500
+                res.jsonp {'status': 'error', 'message': 'No empty tiles'}, 500
                 return
             
             query = req.body
@@ -136,7 +136,7 @@ class GlanceServer
             
             @getOngoingSubmissions (err, data) =>
                 if err?
-                    res.send {'status': 'error'}, 500
+                    res.jsonp {'status': 'error'}, 500
                 else
                     matches = s.matchArray data, query
                     filter = {'query': query, 'submissions': matches, 'tileId': tileId}
@@ -144,7 +144,7 @@ class GlanceServer
                     @tiles[tileId]['timestamp'] = new Date()
                     @tiles[tileId]['total'] = matches.length
                     @tickIndex[tileId] = -1
-                    res.send {'status': 'ok', 'tileId': tileId}
+                    res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
         
@@ -154,7 +154,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load submissions', 500
                     return
-                res.send body.rows
+                res.jsonp body.rows
                 
         #Returns a specific submission with a given ID
         @app.get '/submission/:id', (req, res) =>
@@ -168,7 +168,7 @@ class GlanceServer
                     if body.type != 'submission'
                         res.send 'No submission with given id', 404
                     else
-                        res.send body
+                        res.jsonp body
                         
                         
         #Redirects to the vdeo of a specific submission with a given ID
@@ -195,7 +195,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load days', 500
                     return
-                res.send body.rows
+                res.jsonp body.rows
                 
         #Returns a specific day with a given ID
         @app.get '/day/:id', (req, res) =>
@@ -209,7 +209,7 @@ class GlanceServer
                     if body.type != 'day'
                         res.send 'No day with given id', 404
                     else
-                        res.send body
+                        res.jsonp body
                         
         #Returns a list of all timeslots
         @app.get '/timeslot', (req, res) =>
@@ -217,7 +217,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load days', 500
                     return
-                res.send body.rows
+                res.jsonp body.rows
 
         #Returns a specific timeslot with a given ID
         @app.get '/timeslot/:id', (req, res) =>
@@ -231,7 +231,7 @@ class GlanceServer
                     if body.type != 'timeslot'
                         res.send 'No timeslot with given id', 404
                     else
-                        res.send body
+                        res.jsonp body
         
         #Returns a list of all sessions
         @app.get '/session', (req, res) =>
@@ -239,7 +239,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load sessions', 500
                     return
-                res.send body.rows
+                res.jsonp body.rows
                 
         #Returns a specific session with a given ID
         @app.get '/session/:id', (req, res) =>
@@ -253,7 +253,8 @@ class GlanceServer
                     if body.type != 'session'
                         res.send 'No session with given id', 404
                     else
-                        res.send body
+                        res.jsonp body
+                        
         #Return the orientation of the large display
         @app.get '/orientation', (req, res) =>
             res.jsonp {'orientation': @config.orientation}
@@ -268,7 +269,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load ongoing submissions', 500
                 else
-                    res.send data
+                    res.jsonp data
 
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsessions', (req, res) =>
@@ -276,7 +277,7 @@ class GlanceServer
                 if err?
                     res.send 'Could not load ongoing sessions', 500
                 else
-                    res.send data
+                    res.jsonp data
 
         #Returns a list of all tags of ongoing submissions each tag has a list of submissions matching that tag. 
         #Also a count of all ongoing submissions is returned (which can be used e.g. to size tags in a tag cloud)
@@ -295,7 +296,7 @@ class GlanceServer
                                     tags[tag].push submission._id
                                 else
                                     tags[tag] = [submission._id]
-                    res.send {'tags': tags, 'totalItems': count}
+                    res.jsonp {'tags': tags, 'totalItems': count}
                     
 
         #Returns a list of all keywords of ongoing submissions each keyword has a list of keywords matching that tag. 
@@ -315,7 +316,7 @@ class GlanceServer
                                     keywords[keyword].push submission._id
                                 else
                                     keywords[keyword] = [submission._id]
-                    res.send {'tags': keywords, 'totalItems': count}
+                    res.jsonp {'tags': keywords, 'totalItems': count}
   
         
         #Returns the ongoing timeslot (if any)
@@ -327,7 +328,7 @@ class GlanceServer
                     if not doc?
                         res.send "No ongoing timeslot", 404
                     else
-                        res.send doc
+                        res.jsonp doc
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
