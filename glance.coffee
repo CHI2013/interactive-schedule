@@ -254,6 +254,9 @@ class GlanceServer
                         res.send 'No session with given id', 404
                     else
                         res.send body
+        #Return the orientation of the large display
+        @app.get '/orientation', (req, res) =>
+            res.jsonp {'orientation': @config.orientation}
         
 ##################################
 ##More specialized queries below##

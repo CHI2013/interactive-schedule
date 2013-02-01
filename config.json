@@ -4,6 +4,7 @@
     "port": 80,
     "tickFrequency": 25000,
     "videoDir": "/videos",
+    "orientation": "vertical",
     "tiles": {
         "A": {"type": "feed"},
         "B": {"type": "map"},
