@@ -20,7 +20,7 @@ class GlanceServer
             @app = @setupExpress()
             @connectCouchDB () =>
                 server = http.createServer @app
-                server.listen 8000
+                server.listen @config.port
                 @iosocket = io.listen(server)
                 @setupSocketIO()
                 @setupRest()
