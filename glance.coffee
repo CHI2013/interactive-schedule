@@ -346,11 +346,15 @@ class GlanceServer
             minuteStr = "0" + minuteStr
         return parseInt(hourStr+minuteStr)
     
+    ###
+    Used to get the current or upcoming timeslot. Will also handle day changes.
+    It is possible to provide an additional boolean getUpcoming to only return data if there is an ongoing timeslot.
+    ###
     getCurrentOrUpcomingTimeSlot: (cb, getUpcoming = true) ->
         time = @getTime()
-        timeVal = @createTimeVal time[3], time[4]
+        timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
         start = time[..2]
-        @db.view 'day', 'bydate', {"startkey": start}, (err, days) =>
+        @db.view 'day', 'bydate', {"startkey": start}, (err, days) => #Get all days start from today
             if err?
                 cb err, null
             else
@@ -368,7 +372,7 @@ class GlanceServer
                                 tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
                                 if tsStart <= timeVal  && tsEnd >= timeVal
                                     found = timeslot
-                            if not found? and getUpcoming
+                            if not found? and getUpcoming #If no ongoing timeslot look in the rest of the timeslots of the day to see if there is an upcoming one
                                 lowestStart = 9999
                                 for timeslot in timeslots.rows
                                     tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
@@ -379,7 +383,7 @@ class GlanceServer
                             if found
                                 cb null, found.doc
                             else
-                                if getUpcoming and days.rows.length > 1
+                                if getUpcoming and days.rows.length > 1 #We didn't find an upcoming timeslot this day, lets try to look at tomorrow
                                     day = days.rows[1].value
                                     @db.fetch {'keys': day.timeslots}, (err, timeslots2) =>
                                         if err?
