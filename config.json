@@ -1,7 +1,7 @@
 {
     "name": "Lobby",
     "db": "chi2013",
-    "port": 80,
+    "port": 8000,
     "tickFrequency": 25000,
     "videoDir": "/videos",
     "orientation": "vertical",
