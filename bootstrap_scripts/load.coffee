@@ -44,14 +44,14 @@ days = {
                 'number': 5,
                 'name': 'Wednesday',
                 'timeslots': ['timeslot_17', 'timeslot_18', 'timeslot_19', 'timeslot_20'],
-                'date': [2013, 1, 5]
+                'date': [2013, 5, 1]
             },
         'day_6': {
                 'type': 'day',
                 'number': 6,
                 'name': 'Thursday',
                 'timeslots': ['timeslot_21', 'timeslot_22', 'timeslot_23', 'timeslot_24'],
-                'date': [2013, 2, 5]
+                'date': [2013, 5, 2]
             }
     }
 

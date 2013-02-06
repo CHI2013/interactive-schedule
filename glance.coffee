@@ -323,7 +323,7 @@ class GlanceServer
         
         #Returns the ongoing timeslot (if any)
         @app.get '/currentTimeSlot', (req, res) =>
-            @getCurrentTimeSlot (error, doc) =>
+            @getCurrentOrUpcomingTimeSlot (error, doc) =>
                 if error?
                     res.send "Could not load current timeslot", 500
                 else
@@ -339,37 +339,66 @@ class GlanceServer
         date = new Date()
         return [date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes()]
         
-    getCurrentTimeSlot: (cb) ->
+    createTimeVal: (hour, minute) ->
+        hourStr = "" + hour
+        minuteStr = "" + minute
+        if minuteStr.length == 1
+            minuteStr = "0" + minuteStr
+        return parseInt(hourStr+minuteStr)
+    
+    getCurrentOrUpcomingTimeSlot: (cb, getUpcoming = true) ->
         time = @getTime()
+        timeVal = @createTimeVal time[3], time[4]
         start = time[..2]
-        end = time[..2]
-        @db.view 'day', 'bydate', {"startkey": start, "endkey": end}, (err, body) =>
-        #@db.view 'day', 'all', (err, body) =>    
+        @db.view 'day', 'bydate', {"startkey": start}, (err, days) =>
             if err?
                 cb err, null
             else
-                dayNo = -1
-                currentDay = null
-                count = 0
-                for row in body.rows
-                    day = row.value
-                    if _.difference(day.date, start).length == 0
-                        dayNo = count
-                        currentDay = day
-                    count++
-                if body.rows.length != 1
+                if days.rows.length < 1
                     cb new Error "No data for given time", null
                 else
-                    day = body.rows[0].value
-                    @db.fetch {'keys': day.timeslots}, (err, body) ->
+                    day = days.rows[0].value
+                    @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
                         if err?
                             cb err, null
                         else
-                            for timeslot in body.rows
-                                if timeslot.doc.start[0] <= time[3] && timeslot.doc.end[0] >= time[3]
-                                    cb null, timeslot.doc
-                                    return
-                            cb null, null
+                            found = null
+                            for timeslot in timeslots.rows
+                                tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                                tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
+                                if tsStart <= timeVal  && tsEnd >= timeVal
+                                    found = timeslot
+                            if not found? and getUpcoming
+                                lowestStart = 9999
+                                for timeslot in timeslots.rows
+                                    tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                                    if tsStart > timeVal
+                                        if not found? or tsStart < lowestStart
+                                            found = timeslot
+                                            lowestStart = tsStart
+                            if found
+                                cb null, found.doc
+                            else
+                                if getUpcoming and days.rows.length > 1
+                                    day = days.rows[1].value
+                                    @db.fetch {'keys': day.timeslots}, (err, timeslots2) =>
+                                        if err?
+                                            cb err, null
+                                            return
+                                        else
+                                            lowestStart = 9999
+                                            found = null
+                                            for timeslot in timeslots2.rows
+                                                tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                                                if tsStart < lowestStart
+                                                    lowestStart = tsStart
+                                                    found = timeslot
+                                            if found?
+                                                cb null, found.doc
+                                            else
+                                                cb null, null
+                                else
+                                    cb null, null
     
     inlineSubmissionsForSession: (session, cb) ->
         @db.fetch {"keys": session.submissions}, (err, submissions) =>
@@ -393,7 +422,7 @@ class GlanceServer
                 cb()
                 
     getOngoingSessions: (cb) ->
-        @getCurrentTimeSlot (error, doc) =>
+        @getCurrentOrUpcomingTimeSlot (error, doc) =>
             if error?
                 cb error, null
             else
