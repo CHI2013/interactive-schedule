@@ -123,6 +123,9 @@ submissions = {}
 
 for submission in submissionData
     submissionValue = submission.value
+    if submissionValue.authorKeywords?
+        submissionValue.authorKeywords = submissionValue.authorKeywords.split(/[\n\t,;\\]+/).map (word) ->
+            word.trim().toLowerCase().replace '.', ''
     delete submissionValue._id
     delete submissionValue._rev
     submissions[submission.id] = submissionValue

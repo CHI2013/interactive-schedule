@@ -310,14 +310,15 @@ class GlanceServer
                     keywords = {}
                     count = 0
                     for submission in data
-                        if submission.keywords?
-                            for keyword in submission.keywords
+                        console.log submission.authorKeywords
+                        if submission.authorKeywords?
+                            for keyword in submission.authorKeywords
                                 count++
                                 if keywords[keyword]?
                                     keywords[keyword].push submission._id
                                 else
                                     keywords[keyword] = [submission._id]
-                    res.jsonp {'tags': keywords, 'totalItems': count}
+                    res.jsonp {'keywords': keywords, 'totalItems': count}
   
         
         #Returns the ongoing timeslot (if any)
