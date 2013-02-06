@@ -14,5 +14,7 @@ glance80.coffee
 html/lib/findBiggestTimeSlot.js
 
 *.mp4
+*.m4v
 
 bootstrap_scripts/paper_sessions_modified.csv
+bootstrap_scripts/json

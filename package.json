@@ -11,6 +11,7 @@
     "ya-csv": "*",
     "socket.io": "*",
     "searchjs": "*",
-    "simplesets": "*"
+    "simplesets": "*",
+    "underscore": "*"
   }
 }

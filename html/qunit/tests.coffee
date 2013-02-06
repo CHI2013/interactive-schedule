@@ -39,20 +39,28 @@ asyncTest "Get tiles", 3, () ->
         
 asyncTest "Post a filter", 2, () ->
     query = {"tag":["visualization"]}
-    $.post queryURL('filters'), query, (data) ->
+    post = $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         $.getJSON queryURL('tiles/'+data.tileId), (data) ->
             ok (JSON.stringify data.filter.query) == (JSON.stringify query), "Tile updated with the proper filter"
             start()
+    post.fail () ->
+        start()
+        ok false, "Request failed"
+        
+                
             
 asyncTest "Post a filter with tile", 2, () ->
     query = {"tag":["visualization"], "tile":"G"}
-    $.post queryURL('filters'), query, (data) ->
+    post = $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         $.getJSON queryURL('tiles/G'), (data) ->
             start()
             delete query.tile
             ok (JSON.stringify data.filter.query) == (JSON.stringify query), "Tile updated with the proper filter"
+    post.fail () ->
+        start()
+        ok false, "Request failed"
 
             
 asyncTest "Post a filter with illegal tile", 2, () ->

@@ -4,6 +4,7 @@ http = require 'http'
 io = require 'socket.io'
 s = require 'searchjs'
 fs = require 'fs'
+_ = require 'underscore'
 
 class GlanceServer
     constructor: () ->
@@ -136,7 +137,7 @@ class GlanceServer
             
             @getOngoingSubmissions (err, data) =>
                 if err?
-                    res.jsonp {'status': 'error'}, 500
+                    res.jsonp {'status': 'error', 'message': err}, 500
                 else
                     matches = s.matchArray data, query
                     filter = {'query': query, 'submissions': matches, 'tileId': tileId}
@@ -183,8 +184,8 @@ class GlanceServer
                     if body.type != 'submission'
                         res.send 'No submission with given id', 404
                     else
-                        if body.video?
-                            res.redirect(@config.videoDir + '/' + body.video);
+                        if body.videoPreviewFile?
+                            res.redirect(@config.videoDir + '/' + body.videoPreviewFile);
                         else
                             res.send 'No video for submission', 404
 
@@ -342,9 +343,19 @@ class GlanceServer
         start = time[..2]
         end = time[..2]
         @db.view 'day', 'bydate', {"startkey": start, "endkey": end}, (err, body) =>
+        #@db.view 'day', 'all', (err, body) =>    
             if err?
                 cb err, null
             else
+                dayNo = -1
+                currentDay = null
+                count = 0
+                for row in body.rows
+                    day = row.value
+                    if _.difference(day.date, start).length == 0
+                        dayNo = count
+                        currentDay = day
+                    count++
                 if body.rows.length != 1
                     cb new Error "No data for given time", null
                 else
@@ -360,10 +371,7 @@ class GlanceServer
                             cb null, null
     
     inlineSubmissionsForSession: (session, cb) ->
-        submissionIDs = []
-        for submission in session['Submission IDs']
-            submissionIDs.push "submission_"+submission
-        @db.fetch {"keys": submissionIDs}, (err, submissions) =>
+        @db.fetch {"keys": session.submissions}, (err, submissions) =>
             if err?
                 cb err
             submissionDocs = []
@@ -403,10 +411,11 @@ class GlanceServer
         @getOngoingSessions (err, sessions) =>
             if err?
                 cb err, null
-            submissions = []
-            for session in sessions
-                for submission in session.submissions
-                    submissions.push submission
-            cb null, submissions
+            else
+                submissions = []
+                for session in sessions
+                    for submission in session.submissions
+                        submissions.push submission
+                cb null, submissions
 
 server = new GlanceServer()
