@@ -5,6 +5,7 @@
     "tickFrequency": 25000,
     "videoDir": "/videos",
     "orientation": "vertical",
+    "fixedTime": [2013, 4, 29, 14, 15],
     "tiles": {
         "A": {"type": "feed"},
         "B": {"type": "map"},

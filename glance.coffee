@@ -332,7 +332,10 @@ class GlanceServer
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
-        return [2012, 5, 9, 11, 35]
+        if @config.fixedTime? 
+            return @config.fixedTime
+        date = new Date()
+        return [date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes()]
         
     getCurrentTimeSlot: (cb) ->
         time = @getTime()
