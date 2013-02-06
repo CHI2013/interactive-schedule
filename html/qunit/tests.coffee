@@ -38,7 +38,7 @@ asyncTest "Get tiles", 3, () ->
             break
         
 asyncTest "Post a filter", 2, () ->
-    query = {"tag":["visualization"]}
+    query = {"authorKeywords":["visualization"]}
     post = $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         $.getJSON queryURL('tiles/'+data.tileId), (data) ->
@@ -51,7 +51,7 @@ asyncTest "Post a filter", 2, () ->
                 
             
 asyncTest "Post a filter with tile", 2, () ->
-    query = {"tag":["visualization"], "tile":"G"}
+    query = {"authorKeywords":["visualization"], "tile":"G"}
     post = $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         $.getJSON queryURL('tiles/G'), (data) ->
@@ -64,14 +64,14 @@ asyncTest "Post a filter with tile", 2, () ->
 
             
 asyncTest "Post a filter with illegal tile", 2, () ->
-    query = {"tag":["visualization"], "tile":"Z"}
+    query = {"authorKeywords":["visualization"], "tile":"Z"}
     $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         ok data.tileId != 'Z'
         start()
         
 asyncTest "Post a filter with an unavailable tile", 2, () ->
-    query = {"tag":["visualization"], "tile":"A"}
+    query = {"authorKeywords":["visualization"], "tile":"A"}
     $.post queryURL('filters'), query, (data) ->
         ok data?, "Got some data"
         ok data.tileId != 'A'
