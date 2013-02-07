@@ -10,19 +10,13 @@ Installing and running
 ----------------------
 
 You'll need [node.js](http://nodejs.org), [CoffeeScript](http://coffeescript.org) and [CouchDB](http://couchdb.apache.org) to run the server.
+You will also need the CHI2013 program data. The CHI2013 program data should be extracted into bootstrap_scripts/json
 
-When CouchDB is installed create a database in it (e.g. named chi2013). 
-
-Now run 'npm install' in the root of glance
+Run 'npm install' in the root of glance
 Now go to the folder 'bootstrap_scripts' and run 
 
-    'coffee load_papers_and_sessions.coffee paper_submissions.csv paper_sessions.csv' (Get the data from Clemens or Arvind)
-
-Now you need to add a view to the database so do the following:
-Navigate to the couchdb_design folder and fire off the shellscript in there
-
-    sh post_designs.sh
-
+    sh bootstrap.sh
+    
 To compile the (now very simple client code) in the root of glace run 'cake build'
 
 Change the config.json to point at the right database in CouchDB
@@ -38,8 +32,7 @@ If you just browse there nothing will happen but http://localhost:8000/session s
 You can see a bit of interaction if you browser to http://localhost:8000/phone.html and look at the javascript console output. (The functionality of mobile.html is implemented in phone.coffee).
 If you post a new filter
 
-    curl -X POST http://localhost:8000/filters -H "Content-Type: application/json" -d '{"tags": ["visualization", "infoviz"]}'
-    
+    curl -X POST http://localhost:8000/filters -H "Content-Type: application/json" -d '{"authorKeywords": ["visualization", "infoviz"]}'
     
 Usage
 ------
@@ -65,21 +58,21 @@ The glance server provides a basic REST based API.
    + REST api
      * GET on _http://server.url:8000/session_: returns all sessions
      * GET on _http://server.url:8000/session/[sessionID]_: returns a specific session
-     * GET on _http://server.url:8000/ongoingsessions_: returns all sessions that are currently ongoing (time hardcoded in server for now)
+     * GET on _http://server.url:8000/ongoingsessions_: returns all sessions that are currently ongoing, or if nothing is ongoing the upcoming
  * __Submissions__
    + represents the submissions to the conference
    + REST api
      * GET on _http://server.url:8000/submission_: returns all submissions
      * GET on _http://server.url:8000/submission/[submissionID]_: returns a specific submission
      * GET on _http://server.url:8000/submission/[submissionID]/video_: redirects to the optional video material of a submission
-     * GET on _http://server.url:8000/ongoingsubmissions_: returns all submissions that are currently ongoing (timehardcoded in server for now)
+     * GET on _http://server.url:8000/ongoingsubmissions_: returns all submissions that are currently ongoing, or if nothing is ongoing the upcoming
  * __Timeslots__
    + represents a timeslot in a day
    + each timeslot contains a set of sessions
    + REST api
      * GET on _http://server.url:8000/timeslot_: returns all timeslots
      * GET on _http://server.url:8000/timeslot/[timeslotID]_: returns a specific timeslot
-     * GET on _http://server.url:8000/currenttimeslot_: returns the current ongoing timeslot
+     * GET on _http://server.url:8000/currenttimeslot_: returns the current ongoing or upcoming timeslot
  * __Days__
    + Represents the days of the conference
    + Each day contains 4 timeslots (morning, before lunch, after lunch, afternoon)
@@ -132,22 +125,21 @@ Example:
         });
     });
         
-  ### Mobile Interface
+### Mobile Interface
 
-  The main file for the mobile interface is located under glance/mobile/phone.html
+The main file for the mobile interface is located under glance/mobile/phone.html
 
-  Once the server is running you can use it to post filters and view submissions related to them.
+Once the server is running you can use it to post filters and view submissions related to them.
 
-  Once submissions are being display, a tap event on the tile triggers the function to send the selected submission ID to the future Obj-C function to add to the schedule on the iOS app.
+Once submissions are being display, a tap event on the tile triggers the function to send the selected submission ID to the future Obj-C function to add to the schedule on the iOS app.
 
-Line 253
- function addSubmission(id){
-      alert("called iOS");
-  }
+    function addSubmission(id){
+        alert("called iOS");
+    }
 
-  As explained here https://developer.apple.com/library/mac/#documentation/AppleApplications/Conceptual/SafariJSProgTopics/Tasks/ObjCFromJavaScript.html#//apple_ref/doc/uid/30001215-BBCBFJCD , we should use this function to communicate both apps.
+As explained here https://developer.apple.com/library/mac/#documentation/AppleApplications/Conceptual/SafariJSProgTopics/Tasks/ObjCFromJavaScript.html#//apple_ref/doc/uid/30001215-BBCBFJCD , we should use this function to communicate both apps.
 
-  Currently it only offers "add" capabilities but more will come in the future.
+Currently it only offers "add" capabilities but more will come in the future.
 
 
 
