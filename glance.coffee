@@ -323,7 +323,7 @@ class GlanceServer
         
         #Returns the ongoing timeslot (if any)
         @app.get '/currentTimeSlot', (req, res) =>
-            @getCurrentOrUpcomingTimeSlot (error, doc) =>
+            @getCurrentTimeSlot (error, doc) =>
                 if error?
                     res.send "Could not load current timeslot", 500
                 else
@@ -335,6 +335,17 @@ class GlanceServer
         #Returns the upcoming timeslot (if any)
         @app.get '/upcomingTimeSlot', (req, res) =>
             @getUpcomingTimeSlot (error, doc) =>
+                if error?
+                    res.send "Could not load current timeslot", 500
+                else
+                    if not doc?
+                        res.send "No ongoing timeslot", 404
+                    else
+                        res.jsonp doc
+                        
+        #Returns the current or ongoing timeslot (if any)
+        @app.get '/currentOrUpcomingTimeSlot', (req, res) =>
+            @getCurrentOrUpcomingTimeSlot (error, doc) =>
                 if error?
                     res.send "Could not load current timeslot", 500
                 else
