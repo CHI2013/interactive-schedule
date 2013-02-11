@@ -259,6 +259,19 @@ class GlanceServer
         #Return the orientation of the large display
         @app.get '/orientation', (req, res) =>
             res.jsonp {'orientation': @config.orientation}
+            
+        #For automated testing purposes, only available if fixedTime is set in config file
+        @app.post '/fixedTime', (req, res) =>
+            if not @config.fixedTime?
+                res.send 'Illegal to set fixedTime when not configured for testing', 500
+            else
+                time = req.body
+                if req.body.length != 5
+                    res.send 'Illegal length of time array', 500
+                else
+                    @config.fixedTime = time
+                    res.jsonp {'status': 'ok'}
+            
         
 ##################################
 ##More specialized queries below##
