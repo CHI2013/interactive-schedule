@@ -331,6 +331,17 @@ class GlanceServer
                         res.send "No ongoing timeslot", 404
                     else
                         res.jsonp doc
+                        
+        #Returns the upcoming timeslot (if any)
+        @app.get '/upcomingTimeSlot', (req, res) =>
+            @getUpcomingTimeSlot (error, doc) =>
+                if error?
+                    res.send "Could not load current timeslot", 500
+                else
+                    if not doc?
+                        res.send "No ongoing timeslot", 404
+                    else
+                        res.jsonp doc
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
