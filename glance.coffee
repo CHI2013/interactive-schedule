@@ -347,32 +347,62 @@ class GlanceServer
         return parseInt(hourStr+minuteStr)
     
     ###
-    Used to get the current or upcoming timeslot. Will also handle day changes.
-    It is possible to provide an additional boolean getUpcoming to only return data if there is an ongoing timeslot.
+    Gets the remaining days of the conference including the current day
     ###
-    getCurrentOrUpcomingTimeSlot: (cb, getUpcoming = true) ->
+    getRemainingDays: (cb) ->
         time = @getTime()
-        timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
         start = time[..2]
         @db.view 'day', 'bydate', {"startkey": start}, (err, days) => #Get all days start from today
             if err?
                 cb err, null
             else
-                if days.rows.length < 1
-                    cb new Error "No data for given time", null
-                else
-                    day = days.rows[0].value
-                    @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
-                        if err?
-                            cb err, null
-                        else
-                            found = null
-                            for timeslot in timeslots.rows
-                                tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
-                                tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
-                                if tsStart <= timeVal  && tsEnd >= timeVal
-                                    found = timeslot
-                            if not found? and getUpcoming #If no ongoing timeslot look in the rest of the timeslots of the day to see if there is an upcoming one
+                cb null, days.rows
+                    
+    
+    ###
+    Returns the currently ongoing timeslot and null of none is ongoing
+    ###    
+    getCurrentTimeSlot: (cb) ->
+        time = @getTime()
+        timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
+        start = time[..2]
+        @getRemainingDays (err, days) =>
+            if err?
+                cb err, null
+            else
+                day = days[0].value
+                @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
+                    if err?
+                        cb err, null
+                    else
+                        for timeslot in timeslots.rows
+                            tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                            tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
+                            if tsStart <= timeVal && tsEnd >= timeVal
+                                cb null, timeslot.doc
+                                return
+                        cb null, null
+                    
+    ###
+    Returns the upcoming timeslot
+    ###
+    getUpcomingTimeSlot: (cb) ->
+        @getRemainingDays (err, days) =>
+            if err?
+                cb err, null
+            else
+                day = days[0].value
+                time = @getTime()
+                timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
+                start = time[..2]
+                @db.view 'day', 'bydate', {"startkey": start}, (err, days) => #Get all days start from today
+                    if err?
+                        cb err, null
+                    else
+                        @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
+                            if err?
+                                cb err, null
+                            else
                                 lowestStart = 9999
                                 for timeslot in timeslots.rows
                                     tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
@@ -380,30 +410,44 @@ class GlanceServer
                                         if not found? or tsStart < lowestStart
                                             found = timeslot
                                             lowestStart = tsStart
-                            if found
-                                cb null, found.doc
-                            else
-                                if getUpcoming and days.rows.length > 1 #We didn't find an upcoming timeslot this day, lets try to look at tomorrow
-                                    day = days.rows[1].value
-                                    @db.fetch {'keys': day.timeslots}, (err, timeslots2) =>
-                                        if err?
-                                            cb err, null
-                                            return
-                                        else
-                                            lowestStart = 9999
-                                            found = null
-                                            for timeslot in timeslots2.rows
-                                                tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
-                                                if tsStart < lowestStart
-                                                    lowestStart = tsStart
-                                                    found = timeslot
-                                            if found?
-                                                cb null, found.doc
-                                            else
-                                                cb null, null
+                                if found?
+                                    cb null, found.doc
                                 else
-                                    cb null, null
-    
+                                    if days.rows.length > 1 #We didn't find an upcoming timeslot this day, lets try to look at tomorrow
+                                        day = days.rows[1].value
+                                        @db.fetch {'keys': day.timeslots}, (err, timeslots2) =>
+                                            if err?
+                                                cb err, null
+                                                return
+                                            else
+                                                lowestStart = 9999
+                                                found = null
+                                                for timeslot in timeslots2.rows
+                                                    tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                                                    if tsStart < lowestStart
+                                                        lowestStart = tsStart
+                                                        found = timeslot
+                                                if found?
+                                                    cb null, found.doc
+                                                else
+                                                    cb null, null
+                                    else
+                                        cb null, null
+                    
+    ### 
+    Used to get the current or upcoming timeslot. Will also handle day changes.
+    It is possible to provide an additional boolean getUpcoming to only return data if there is an ongoing timeslot.
+    ###
+    getCurrentOrUpcomingTimeSlot: (cb, getUpcoming = true) ->
+        @getCurrentTimeSlot (err, timeslot) =>
+            if not timeslot? and not getUpcoming
+                cb null, null
+            else if not timeslot?
+                @getUpcomingTimeSlot (err, timeslot) =>
+                    cb err, timeslot
+            else
+                cb err, timeslot
+
     inlineSubmissionsForSession: (session, cb) ->
         @db.fetch {"keys": session.submissions}, (err, submissions) =>
             if err?
