@@ -139,7 +139,7 @@ class GlanceServer
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
-                    matches = s.matchArray data, query
+                    matches = s.matchArray data.submissions, query
                     filter = {'query': query, 'submissions': matches, 'tileId': tileId}
                     @tiles[tileId]['filter'] = filter
                     @tiles[tileId]['timestamp'] = new Date()
@@ -300,9 +300,12 @@ class GlanceServer
                 if err?
                     res.send 'Could not load ongoing sessions', 500
                 else
+                    result = {}
+                    result.ongoing = data.ongoing
+                    result.timeslot = data.timeslot
                     tags = {}
                     count = 0
-                    for submission in data
+                    for submission in data.submissions
                         if submission.tags?
                             for tag in submission.tags
                                 count++
@@ -310,7 +313,9 @@ class GlanceServer
                                     tags[tag].push submission._id
                                 else
                                     tags[tag] = [submission._id]
-                    res.jsonp {'tags': tags, 'totalItems': count}
+                    result.tags = tags
+                    result.totalItems = count
+                    res.jsonp result
                     
 
         #Returns a list of all keywords of ongoing submissions each keyword has a list of keywords matching that tag. 
@@ -320,10 +325,12 @@ class GlanceServer
                 if err?
                     res.send 'Could not load ongoing sessions', 500
                 else
+                    result = {}
+                    result.ongoing = data.ongoing
+                    result.timeslot = data.timeslot
                     keywords = {}
                     count = 0
-                    for submission in data
-                        console.log submission.authorKeywords
+                    for submission in data.submissions
                         if submission.authorKeywords?
                             for keyword in submission.authorKeywords
                                 count++
@@ -331,7 +338,9 @@ class GlanceServer
                                     keywords[keyword].push submission._id
                                 else
                                     keywords[keyword] = [submission._id]
-                    res.jsonp {'keywords': keywords, 'totalItems': count}
+                    result.keywords = keywords
+                    result.totalItems = count
+                    res.jsonp result
   
         
         #Returns the ongoing timeslot (if any)
@@ -359,6 +368,16 @@ class GlanceServer
         #Returns the current or ongoing timeslot (if any)
         @app.get '/currentOrUpcomingTimeSlot', (req, res) =>
             @getCurrentOrUpcomingTimeSlot (error, doc) =>
+                if error?
+                    res.send "Could not load current timeslot", 500
+                else
+                    if not doc?
+                        res.send "No ongoing timeslot", 404
+                    else
+                        res.jsonp doc
+                        
+        @app.get '/currentAndUpcomingTimeSlot', (req, res) =>
+            @getCurrentAndUpcomingTimeSlot (error, doc) =>
                 if error?
                     res.send "Could not load current timeslot", 500
                 else
@@ -482,6 +501,22 @@ class GlanceServer
                     cb err, timeslot
             else
                 cb err, timeslot
+                
+    getCurrentAndUpcomingTimeSlot: (cb) ->
+        result = {}
+        @getCurrentTimeSlot (err, ongoingTimeslot) =>
+            if err?
+                cb err, null
+                return
+            else
+                result.ongoing = ongoingTimeslot
+                @getUpcomingTimeSlot (err, upcomingTimeslot) =>
+                    if err?
+                        cb err, null
+                        return
+                    else
+                        result.upcoming = upcomingTimeslot
+                        cb null, result
 
     inlineSubmissionsForSession: (session, cb) ->
         @db.fetch {"keys": session.submissions}, (err, submissions) =>
@@ -505,30 +540,42 @@ class GlanceServer
                 cb()
                 
     getOngoingSessions: (cb) ->
-        @getCurrentOrUpcomingTimeSlot (error, doc) =>
+        result = {}
+        @getCurrentAndUpcomingTimeSlot (error, doc) =>
             if error?
                 cb error, null
             else
                 if not doc?
                     cb new Error "No data for given time", null
                 else
-                    @db.fetch {'keys': doc.sessions}, (err, body) =>
+                    if doc.ongoing?
+                        result.ongoing = true
+                        result.timeslot = doc.ongoing
+                    else
+                        result.ongoing = false
+                        result.timeslot = doc.upcoming
+                    @db.fetch {'keys': result.timeslot.sessions}, (err, body) =>
                         if err?
                             cb err, null
                         else
-                            result = body.rows.map (row) -> row.doc
-                            @inlineSubmissionsForSessions result, 0, () =>
+                            sessions = body.rows.map (row) -> row.doc
+                            @inlineSubmissionsForSessions sessions, 0, () =>
+                                result.sessions = sessions
                                 cb null, result
                 
     getOngoingSubmissions: (cb) ->
+        result = {}
         @getOngoingSessions (err, sessions) =>
             if err?
                 cb err, null
             else
+                result.ongoing = sessions.ongoing
+                result.timeslot = sessions.timeslot
                 submissions = []
-                for session in sessions
+                for session in sessions.sessions
                     for submission in session.submissions
                         submissions.push submission
-                cb null, submissions
+                result.submissions = submissions
+                cb null, result
 
 server = new GlanceServer()

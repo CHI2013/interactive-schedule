@@ -80,8 +80,8 @@ asyncTest "Post a filter with an unavailable tile", 2, () ->
 asyncTest "Get ongoing sessions", 3, () ->
     $.getJSON queryURL('ongoingSessions'), (data) ->
         ok data?, "Got some data"
-        ok Object.keys(data).length > 0, "Length of ongoing sessions are greater than zero"
-        for session in data
+        ok Object.keys(data.sessions).length > 0, "Length of ongoing sessions are greater than zero"
+        for session in data.sessions
             ok session.submissions?, "Submissions have been inlined"
             break
         start()
