@@ -6,9 +6,18 @@ chidb = nano.db.use('chi2013');
 submissionData = require('./' + process.argv[2]).rows
 sessionData = require('./' + process.argv[3]).rows
 schedule = require('./' + process.argv[4]).rows
-#console.log submissions
-#console.log sessions
-#console.log schedule
+
+sessionLength = 80
+
+lengths = {
+    'TOCHI': sessionLength / 4, 
+    'Paper': sessionLength / 4, 
+    'Note': sessionLength / 8, 
+    'SIG': sessionLength, 
+    'casestudy': sessionLength / 4, 
+    'panel': sessionLength
+}
+
 
 days = {
         'day_1': {
@@ -64,7 +73,8 @@ for id, day of days
         'name': 'Morning',
         'sessions': [],
         'start': [9, 0],            
-        'end': [10, 20]
+        'end': [10, 20],
+        'day': id
     }
     timeslots[day.timeslots[1]] = {
         'type': 'timeslot',
@@ -72,7 +82,8 @@ for id, day of days
         'name': 'Before Lunch',
         'sessions': [],
         'start': [11, 0],
-        'end': [12, 20]
+        'end': [12, 20],
+        'day': id
     }
     timeslots[day.timeslots[2]] = {
         'type': 'timeslot',
@@ -80,7 +91,8 @@ for id, day of days
         'name': 'After Lunch',
         'sessions': [],
         'start': [14, 0],
-        'end': [15, 20]
+        'end': [15, 20],
+        'day': id
     }
     timeslots[day.timeslots[3]] = {
         'type': 'timeslot',
@@ -88,7 +100,8 @@ for id, day of days
         'name': 'Afternoon',
         'sessions': [],
         'start': [16, 0],
-        'end': [17, 20]
+        'end': [17, 20],
+        'day': id
     }
 
 sessions = {}
@@ -128,8 +141,44 @@ for submission in submissionData
             word.trim().toLowerCase().replace '.', ''
     delete submissionValue._id
     delete submissionValue._rev
+    if submissionValue.session?
+        submissionValue.room = sessions[submissionValue.session].room
+    else if submissionValue.sessions?
+        submissionValue.room = sessions[submissionValue.sessions[0]].room
     submissions[submission.id] = submissionValue
 
+computeTimeForSubmission = (id, submission) ->
+    if submission.session?
+        session = sessions[submission.session]
+    else if submission.sessions? #Submission is multi-session, take start of first
+        session = sessions[submission.sessions[0]]
+    if not session? #This shouldn't happen
+        return
+    timeslot = timeslots[session.timeslot]
+    day = days[timeslot.day]
+    startArray = day.date.concat timeslot.start
+    start = new Date startArray[0], startArray[1], startArray[2], startArray[3], startArray[4]
+    t = 0
+    if not submission.sessions?
+        for s in session.submissions #We'll accumulate the time up to the given submission
+            if submissions[s].venue == 'paper'
+                duration = lengths[submissions[s].subtype] #Paper or Note
+            else
+                duration = lengths[submissions[s].venue]
+            if id == s
+                venue = submissions[s].venue
+                break
+            t += duration
+        submissionStart = new Date(start.getTime() + t * 60000)
+        submission.startTime = [submissionStart.getFullYear(), submissionStart.getMonth(), submissionStart.getDate(), submissionStart.getHours(), submissionStart.getMinutes()]
+        submission.duration = duration
+    else #We are dealing with a multi-session submission
+        submission.startTime = start
+        submission.duration = submission.sessions.length * sessionLength
+
+for id, submission of submissions
+    computeTimeForSubmission id, submission
+    
 insertInDb = (dict) ->
     for id, value of dict
        chidb.insert value, id, (err, body) ->
