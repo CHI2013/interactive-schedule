@@ -385,6 +385,24 @@ class GlanceServer
                         res.send "No ongoing timeslot", 404
                     else
                         res.jsonp doc
+                        
+        @app.get '/keywordmap', (req, res) =>
+            @db.view 'submission', 'all', (err, body) =>
+                if err?
+                    res.send 'Could not load submissions', 500
+                    return
+                keywordmap = {}
+                for submission in body.rows
+                    if not submission.value.authorKeywords?
+                        continue
+                    for keyword in submission.value.authorKeywords
+                        if keyword.length <= 1
+                            continue
+                        if keywordmap[keyword]?
+                            keywordmap[keyword].push submission.id
+                        else
+                            keywordmap[keyword] = [submission.id]
+                res.jsonp keywordmap
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
