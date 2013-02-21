@@ -93,7 +93,7 @@ $(document).ready () ->
                 keywordCount = 0
                 $('.hover').append $('<h3>' + $(this).text() + '<h3>')
                 totalKeywordP = $('<p class="totalKeywords">Total keywords in group: </p>')
-                totalPaperP = $('<p class="totalPapers">Total papers in group: </p>')
+                totalPaperP = $('<p class="totalPapers">Total occurences in group: </p>')
                 $('.hover').append totalKeywordP  
                 $('.hover').append totalPaperP   
                 $('.hover').append $('<br/>') 
