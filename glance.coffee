@@ -392,17 +392,35 @@ class GlanceServer
                     res.send 'Could not load submissions', 500
                     return
                 keywordmap = {}
+                keywordGroups= {}
                 for submission in body.rows
                     if not submission.value.authorKeywords?
                         continue
                     for keyword in submission.value.authorKeywords
+                        if keyword.length == 0
+                            continue
+                        keyword = keyword.replace /["']{1}/gi,""
+                        keywordSplit = keyword.split ' '
+                        for k in keywordSplit
+                            if k.length == 0
+                                continue
+                            else
+                                if not keywordGroups[k]?
+                                    keywordGroups[k] = {}
+                                if keywordGroups[k][keyword]?
+                                    keywordGroups[k][keyword]++
+                                else
+                                    keywordGroups[k][keyword] = 1
                         if keyword.length <= 1
                             continue
                         if keywordmap[keyword]?
                             keywordmap[keyword].push submission.id
                         else
                             keywordmap[keyword] = [submission.id]
-                res.jsonp keywordmap
+                #console.log keywordGroups
+                #console.log keywordmap
+                result = {'groups': keywordGroups, 'map': keywordmap}
+                res.jsonp result
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub

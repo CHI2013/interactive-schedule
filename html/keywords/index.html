@@ -1,16 +1,57 @@
 <!DOCTYPE html>
 <html>
   <head> 
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <style type="text/css">
+        .hover {
+            background-color: white;
+            width: 400px;
+            position: absolute;
+            box-shadow: 8px 8px 15px #000;
+            max-height: 333px;
+            overflow:auto;
+            overflow-x: hidden;
+            border: solid;
+            border-radius: 4px;
+        }
+        .totalKeywords {
+            color: blue;
+            font-size: 130%;
+            margin: 0;
+        }
+        .totalPapers {
+            color: green;
+            font-size: 130%;
+            margin: 0;
+        }
+        .tagclouds {
+            width: 80%;
+            margin-bottom:350px;
+        }
+        .highlight { background-color: yellow }
+        .kw2 { 
+            color: black;
+            font-size: 120%;
+        }
+        h3 {
+            margin: 2px;
+            font-size: 180%;
+        }
+      </style>
     <title>CHI 2013 Keywords</title>
-		<meta charset = "UTF-8">
-		<meta name = "viewport" content="width=device-width, initial-scale=1">
 		<title> CHI'13 keywords </title>
 		<script src="../lib/jquery.min.js"></script>
-    	<script src="/socket.io/socket.io.js"></script>
-        <script src="../lib/underscore-min.js"></script>
+    	<script src="../lib/underscore-min.js"></script>
 		<script src="../lib/keywords.js"></script>
   </head>
 
   <body>
+      <div id="stats"></div>
+      <div class="tagclouds">
+      	<div class="kwtagcloud">
+        </div>
+      </div>
+      <div class="hover"></div>
+
   </body>
 </html>
