@@ -90,4 +90,4 @@ asyncTest "Get ongoing submissions", 2, () ->
     $.getJSON queryURL('ongoingSubmissions'), (data) ->
         ok data?, "Got some data"
         ok Object.keys(data).length > 0, "Length of ongoing submissions are greater than zero"
-        start()  
+        start()

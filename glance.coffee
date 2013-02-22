@@ -277,6 +277,85 @@ class GlanceServer
 ##More specialized queries below##
 ##################################
         
+        #Get the sessions of a day
+        @app.get '/day/:id/sessions', (req, res) =>
+            @db.get req.params.id, (err, body) =>
+                if err?
+                    res.send 'Could not load given day', 500
+                else
+                    if not body.type?
+                        res.send 'No day with given id', 404
+                        return
+                    if body.type != 'day'
+                        res.send 'No day with given id', 404
+                    else
+                        @getSessionsForTimeslots body.timeslots, (err, sessions) =>
+                            if err?
+                                res.send "Error", 500
+                            else
+                                res.jsonp sessions
+                                
+        #Get the submissions of a day
+        @app.get '/day/:id/submissions', (req, res) =>
+            @db.get req.params.id, (err, body) =>
+                if err?
+                    res.send 'Could not load given day', 500
+                else
+                    if not body.type?
+                        res.send 'No day with given id', 404
+                        return
+                    if body.type != 'day'
+                        res.send 'No day with given id', 404
+                    else
+                        @getSubmissionsForTimeslots body.timeslots, (err, submissions) =>
+                            if err?
+                                res.send "Error", 500
+                            else
+                                res.jsonp submissions
+                                
+        #Get the keywords of a day
+        @app.get '/day/:id/keywords', (req, res) =>
+            @db.get req.params.id, (err, body) =>
+                if err?
+                    res.send 'Could not load given day', 500
+                else
+                    if not body.type?
+                        res.send 'No day with given id', 404
+                        return
+                    if body.type != 'day'
+                        res.send 'No day with given id', 404
+                    else
+                        @getKeywordsForTimeslots body.timeslots, (err, keywords) =>
+                            if err?
+                                res.send "Error", 500
+                            else
+                                res.jsonp keywords
+        
+        #Get the sessions of a timeslot
+        @app.get '/timeslot/:id/sessions', (req, res) =>
+            @getSessionsForTimeslots [req.params.id], (err, sessions) =>
+                if err?
+                    res.send 'Could not load given timeslot', 500
+                else
+                    res.jsonp sessions
+        
+        #Get the submissions of a timeslot
+        @app.get '/timeslot/:id/submissions', (req, res) =>
+            @getSubmissionsForTimeslots [req.params.id], (err, submissions) =>
+                if err?
+                    res.send 'Could not load given timeslot', 500
+                else
+                    res.jsonp submissions
+                    
+        #Get the keywords of a timeslot
+        @app.get '/timeslot/:id/keywords', (req, res) =>
+            @getKeywordsForTimeslots [req.params.id], (err, keywords) =>
+                if err?
+                    res.send 'Could not load given timeslot', 500
+                else
+                    res.jsonp keywords
+        
+        
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsubmissions', (req, res) =>
             @getOngoingSubmissions (err, data) ->
@@ -386,41 +465,48 @@ class GlanceServer
                     else
                         res.jsonp doc
                         
+        
+        
         @app.get '/keywordmap', (req, res) =>
             @db.view 'submission', 'all', (err, body) =>
                 if err?
                     res.send 'Could not load submissions', 500
                     return
-                keywordmap = {}
-                keywordGroups= {}
-                for submission in body.rows
-                    if not submission.value.authorKeywords?
+                    
+                submissions = body.rows.map (submission) -> submission.value
+                console.log submissions
+                res.jsonp (@getKeywordMapForSubmissionList submissions )
+
+    getKeywordMapForSubmissionList: (submissionList) ->
+        keywordmap = {}
+        keywordGroups= {}
+        for submission in submissionList
+            if not submission.authorKeywords?
+                continue
+            for keyword in submission.authorKeywords
+                if keyword.length == 0
+                    continue
+                keyword = keyword.replace /["']{1}/gi,""
+                keywordSplit = keyword.split ' '
+                for k in keywordSplit
+                    if k.length == 0
                         continue
-                    for keyword in submission.value.authorKeywords
-                        if keyword.length == 0
-                            continue
-                        keyword = keyword.replace /["']{1}/gi,""
-                        keywordSplit = keyword.split ' '
-                        for k in keywordSplit
-                            if k.length == 0
-                                continue
-                            else
-                                if not keywordGroups[k]?
-                                    keywordGroups[k] = {}
-                                if keywordGroups[k][keyword]?
-                                    keywordGroups[k][keyword]++
-                                else
-                                    keywordGroups[k][keyword] = 1
-                        if keyword.length <= 1
-                            continue
-                        if keywordmap[keyword]?
-                            keywordmap[keyword].push submission.id
+                    else
+                        if not keywordGroups[k]?
+                            keywordGroups[k] = {}
+                        if keywordGroups[k][keyword]?
+                            keywordGroups[k][keyword]++
                         else
-                            keywordmap[keyword] = [submission.id]
-                #console.log keywordGroups
-                #console.log keywordmap
-                result = {'groups': keywordGroups, 'map': keywordmap}
-                res.jsonp result
+                            keywordGroups[k][keyword] = 1
+                if keyword.length <= 1
+                    continue
+                if keywordmap[keyword]?
+                    keywordmap[keyword].push submission.id
+                else
+                    keywordmap[keyword] = [submission.id]
+        result = {'groups': keywordGroups, 'map': keywordmap}
+        return result
+    
     
     #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
     getTime: () -> #This is just a stub
@@ -574,7 +660,53 @@ class GlanceServer
             count++
             @inlineSubmissionsForSessions sessions, count, () =>
                 cb()
+    
+    getTimeslots: (timeslotIds, cb) ->
+        @db.fetch {'keys': timeslotIds}, (err, body) =>
+            if err?
+                cb err, null
+            else
+                cb null, body
+    
+    getSessionsForTimeslots: (timeslotIds, cb) ->
+        @getTimeslots timeslotIds, (err, timeslots) =>
+            if err?
+                cb err, null
+            else
+                sessionIds = []
+                for timeslot in timeslots.rows
+                    for sessionId in timeslot.doc.sessions
+                        sessionIds.push sessionId
                 
+                @db.fetch {'keys': sessionIds }, (err, body) =>
+                    if err?
+                        cb err, null
+                    else
+                        sessions = body.rows.map (row) -> row.doc
+                        @inlineSubmissionsForSessions sessions, 0, () =>
+                            cb null, sessions
+    
+    getSubmissionsForTimeslots: (timeslotIds, cb) ->
+        @getSessionsForTimeslots timeslotIds, (err, sessions) =>
+            if err?
+                cb err, null
+            else
+                submissions = []
+                for session in sessions
+                    for submission in session.submissions
+                        submissions.push submission
+                cb null, submissions
+    
+    getKeywordsForTimeslots: (timeslotIds, cb) ->
+        @getSubmissionsForTimeslots timeslotIds, (err, submissions) =>
+            if err?
+                cb err, null
+            else
+                cb null, @getKeywordMapForSubmissionList(submissions)
+                
+    
+    
+    
     getOngoingSessions: (cb) ->
         result = {}
         @getCurrentAndUpcomingTimeSlot (error, doc) =>

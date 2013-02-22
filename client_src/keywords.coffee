@@ -4,17 +4,61 @@ $(document).mousemove (e) ->
    root.mouseX = e.pageX 
    root.mouseY = e.pageY
 
-#$(".classForHoverEffect").mouseover(function(){
-#  $('#DivToShow').css({'top':mouseY,'left':mouseX}).fadeIn('slow');
-#});
-
 $(document).ready () ->
+    load 'all'
+    $('#showall').toggleClass("down")
+    
+    $('#showall').click () ->
+        if root.selectedTime?
+            root.selectedTime.removeClass 'highlight'
+            $('#showall').removeClass("down")
+        $('#showall').addClass("down")
+        if root.selectedTime?
+            root.selectedTime.removeClass 'highlight'
+        load 'all'
+
+    $.get '../day', (days) ->
+        row = $('<tr/>')
+        timeslots = ["Morning", "Before lunch", "After lunch", "Afternoon"]
+        for day in days
+            entry = $('<th id="' + day.id + '">' + day.value.name + '</th>')
+            row.append entry 
+            entry.mousedown () ->
+                $('#showall').removeClass "down"
+                if root.selectedTime?
+                    root.selectedTime.removeClass 'highlight'
+                root.selectedTime = $(this)
+                $(this).addClass 'highlight'
+                load 'day', $(this).attr 'id'
+        $('#days').append row
+        timeslotcount = 0
+        for timeslot in timeslots
+            row = $('<tr/>')
+            for day in days
+                entry = $('<td id="' + day.value.timeslots[timeslotcount] + '">' + timeslot + '</td>')
+                row.append entry
+                entry.mousedown () ->
+                    $('#showall').removeClass "down"
+                    if root.selectedTime?
+                        root.selectedTime.removeClass 'highlight'
+                    root.selectedTime = $(this)
+                    $(this).addClass 'highlight'
+                    load 'timeslot', $(this).attr 'id'
+            $('#days').append row
+            timeslotcount++
+            
+        
     $('body').mousedown () ->
         $('.hover').hide()
         if root.selected?
             root.selected.removeClass 'highlight'
-    $.get '../keywordmap', (data) ->
-        console.log data
+    
+load = (type, id) ->
+    if type == 'all'
+        path = '../keywordmap'
+    else
+        path = '../' + type + '/' + id + '/keywords'
+    $.get path, (data) ->
         
         totalKeywords = 0
         totalUniqueKeywords = 0
@@ -41,6 +85,8 @@ $(document).ready () ->
         for group, content of data.groups
             for item, count of content
                 maxGroups += count
+        $('#stats').empty()
+        $('.kwtagcloud').empty()
         
         $('#stats').append "<h2>Stats:<h2/>"
         $('#stats').append "Total unique keywords: " + totalUniqueKeywords
@@ -79,7 +125,6 @@ $(document).ready () ->
                     usedKeywords.push item
             span= $('<span class="kw"/>')
             size = 80 + (length / (maxGroups * 1.0)) * maxGroups * 4
-            console.log size
             span.css 'font-size', Math.ceil(size) + '%'
             span.append group
             span.mouseover () ->

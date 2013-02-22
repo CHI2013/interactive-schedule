@@ -33,10 +33,51 @@
             color: black;
             font-size: 120%;
         }
-        h3 {
-            margin: 2px;
-            font-size: 180%;
+        
+        #showall {
+            font-weight:bold;
+            font-size: 140%;
         }
+        
+        table {
+        	font-size:11px;
+        	color:#333333;
+        	border-width: 1px;
+        	border-color: #666666;
+        	border-collapse: collapse;
+        }
+        th {
+        	border-width: 1px;
+        	padding: 8px;
+        	border-style: solid;
+        	border-color: #666666;
+        	background-color: #dedede;
+        }
+        td {
+        	border-width: 1px;
+        	padding: 8px;
+        	border-style: solid;
+        	border-color: #666666;
+        	background-color: #ffffff;
+        }
+        
+        a {
+            background: #ccc;
+            cursor: pointer;
+            border-top: solid 2px #eaeaea;
+            border-left: solid 2px #eaeaea;
+            border-bottom: solid 2px #777;
+            border-right: solid 2px #777;
+            padding: 5px 5px;   	
+            }
+
+        a.down {
+            background: yellow;
+            border-top: solid 2px #777;
+            border-left: solid 2px #777;
+            border-bottom:solid 2px  #eaeaea;
+            border-right: solid 2px #eaeaea;
+            }
       </style>
     <title>CHI 2013 Keywords</title>
 		<title> CHI'13 keywords </title>
@@ -46,6 +87,14 @@
   </head>
 
   <body>
+      <div id="menu">
+          <a id="showall">Whole conference</a>
+          <br/>
+          <br/>
+          <table id="days">
+              
+          </table>
+      </div>
       <div id="stats"></div>
       <div class="tagclouds">
       	<div class="kwtagcloud">
