@@ -49,12 +49,12 @@ class GlanceServer
             process.exit 1
         @tiles = @config.tiles
 
-        @getOngoingSubmissions (err, data) =>
+        @getOngoingSessions (err, data) =>
             for tile, val of @tiles
                 if val.type == 'filter'
                     if val.filter?
                         if not err?
-                            @filterSubmissions tile, val.filter, data.submissions
+                            @filterSubmissions tile, val.filter, data.sessions
                     else
                         @availableTiles.push tile                                
 
@@ -144,11 +144,11 @@ class GlanceServer
             query = req.body
             tileId = @getTile query
             
-            @getOngoingSubmissions (err, data) =>
+            @getOngoingSessions (err, data) =>
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
-                    @filterSubmissions tileId, qquery, data.submissions
+                    @filterSubmissions tileId, query, data.sessions
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
@@ -747,12 +747,14 @@ class GlanceServer
                 result.submissions = submissions
                 cb null, result
 
-    filterSubmissions: (tileId, query, submissions) ->
-        matches = s.matchArray submissions, query
-        filter = {'query': query, 'submissions': matches, 'tileId': tileId}
+    filterSubmissions: (tileId, query, sessions) ->
+        matches = s.matchArray sessions, query
+        filter = {'query': query, 'sessions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
-        @tiles[tileId]['total'] = matches.length
+        total = 0
+        total = total + (m.submissions.length || 1) for m in matches
+        @tiles[tileId]['total'] = total
         @tickIndex[tileId] = -1
 
 server = new GlanceServer()

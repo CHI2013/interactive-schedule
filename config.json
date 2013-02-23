@@ -25,7 +25,7 @@
         "D": {
             "type": "filter",
             "filter": {
-                "room": ["253", "Bleu"]
+                "room": ["253", "Blue"]
             }
         },
         "E": {

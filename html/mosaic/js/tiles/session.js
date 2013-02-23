@@ -1,4 +1,5 @@
-var submissions = [];
+var items = [];
+var durations = {};
 
 function init() {
     if(!tile.hasOwnProperty('filter'))
@@ -7,14 +8,14 @@ function init() {
     var filter = tile.filter;
     console.log("Initializing tile " + filter.tileId);
 
-    if(!filter.hasOwnProperty('query') || !filter.hasOwnProperty('submissions'))
-    { console.log('!!! No filter or submissions'); return; }
+    if(!filter.hasOwnProperty('query') || !filter.hasOwnProperty('sessions'))
+    { console.log('!!! No filter or sessions'); return; }
 
     $('body').attr('id', 'tile_' + tileId);
 
     // Submissions will be for multiple rooms, sort rooms in order
-    submissions = filter.submissions;
-    submissions.sort(function(a, b) {
+    var sessions = filter.sessions;
+    sessions.sort(function(a, b) {
         var roomA = parseInt(a.room),
             roomB = parseInt(b.room);
 
@@ -28,9 +29,22 @@ function init() {
             return 1;  
     });
 
-    for(var i = 0; i < submissions.length; i++) {
-        var item = submissions[i];
-        var authorList = item.authorList;
+    sessions.forEach(function(s) {
+        if(s.submissions.length == 0) {
+            items.push(s);
+            durations[s['_id']] = [80];
+        } else {
+            s.submissions.forEach(function(ss) {
+                items.push(ss);
+                durations[ss['session']] || (durations[ss['session']] = []);
+                durations[ss['session']] = ss.duration;
+            });
+        }
+    });
+
+    for(var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var authorList = item.authorList || [];
         for(var j = 0; j < authorList.length; j++)
             authorList[j] = authorList[j].familyName + ', ' + authorList[j].givenName.charAt(0).toUpperCase() + '.';
 
@@ -58,7 +72,7 @@ function tick(ti) {
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
-    $('h1').text('Room: ' + submissions[ti].room);
+    $('h1').text('Room: ' + items[ti].room);
 
     $('.submission.active').each(function(index, self) {
         $('.submission.active .video').html('');
@@ -66,7 +80,7 @@ function tick(ti) {
         var $this = $(this);
         $this.removeClass('active').animate({
             left: -($this.width())-100,
-        }, 500).hide();
+        }, 500);
     });
 
     var $target = $('.submission:eq(' + ti + ')')
@@ -75,7 +89,8 @@ function tick(ti) {
     }).animate({
         left: 0
     }, 500, 'swing', function() {
-        $('.submission.active .video').html('<video height="100%" autoplay="1" src="http://92.243.30.77:8000/videos/' + submissions[ti].videoPreviewFile + '"></video>');
+        if(items[ti].videoPreviewFile)
+            $('.submission.active .video').html('<video height="100%" autoplay="1" src="http://92.243.30.77:8000/videos/' + items[ti].videoPreviewFile + '"></video>');
     });
 
     $('#progress_bar circle').removeClass('active');
