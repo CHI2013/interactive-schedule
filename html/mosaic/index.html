@@ -1,29 +1,61 @@
 <!DOCTYPE html>
 <html lang="en"> 
 <head> 
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/vertical.css">
+    <script type="text/javascript" src="/lib/jquery.min.js"></script>
+    <script type="text/javascript">
+        var tiles = ['B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        var rooms = [
+            ['241', '242', '243'],
+            ['251', '252'],
+            ['253', 'Bleu'],
+            ['Bordeaux', '341'],
+            ['342', '343'],
+            ['Havane', '351'],
+            ['352', '353']
+        ];
+
+        var loadedTile = 0;
+        var loadTile = function() {
+            if(loadedTile++ >= tiles.length)
+                return;
+
+            $.ajax({
+                type: "POST",
+                url: '/filters',
+                data: {'tile': tiles[loadedTile], 'room': rooms[loadedTile] },
+                success: function() {
+                    window.setTimeout(loadTile, 1000);
+                }
+            });
+        };
+
+        $(document).ready(loadTile);
+    </script>
 </head>
 <body>
+<div id="vertical">
 
-<iframe class="tile row1 col1" src="tiles/session.html#C"></iframe>
+    <iframe class="tile row1 col1" src="tiles/session.html#A"></iframe>
 
-<!-- <iframe class="tile row1 col2" src="tiles/session.html#D"></iframe> -->
+    <iframe class="tile row1 col2" src="tiles/session.html#B"></iframe>
 
-<iframe class="tile row1 col3" src="tiles/announcement.html"></iframe>
+    <iframe class="tile row2 col1" src="tiles/session.html#C"></iframe>
 
-<iframe class="tile row2 col1" src="tiles/session.html#E"></iframe>
+    <iframe class="tile row2 col2" src="tiles/session.html#D"></iframe>
 
-<!-- <iframe class="tile row2 col2" src="tiles/map.html"></iframe> -->
+    <iframe class="tile row3 col1" src="tiles/session.html#E"></iframe>
 
-<iframe class="tile row2 col3" src="tiles/session.html#F"></iframe>
+    <iframe class="tile row3 col2" src="tiles/session.html#F"></iframe>
 
-<iframe class="tile row3 col1" src="tiles/session.html#G"></iframe>
+    <iframe class="tile row4 col1" src="tiles/session.html#G"></iframe>
 
-<iframe class="tile row3 col2" src="tiles/session.html#H"></iframe>
+    <iframe class="tile row4 col2" src="tiles/session.html#H"></iframe>
 
-<iframe class="tile row3 col3" src="tiles/session.html#I"></iframe>
+    <iframe class="tile row5 col1" src="tiles/seesion.html"></iframe>
 
-<iframe id="map" src="tiles/map.html"></iframe>
+    <iframe class="tile row5 col2" src="tiles/session.html"></iframe>
 
+</div>
 </body>
 </html>

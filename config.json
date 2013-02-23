@@ -2,19 +2,18 @@
     "name": "Lobby",
     "db": "chi2013",
     "port": 8000,
-    "tickFrequency": 25000,
-    "videoDir": "/videos",
+    "tickFrequency": 30000,
+    "videoDir": "http://92.243.30.77:8000/videos",
     "orientation": "vertical",
     "fixedTime": [2013, 4, 30, 9, 21],
     "tiles": {
-        "A": {"type": "feed"},
-        "B": {"type": "map"},
-        "C": {"type": "map"},
+        "A": {"type": "filter"},
+        "B": {"type": "filter"},
+        "C": {"type": "filter"},
         "D": {"type": "filter"},
         "E": {"type": "filter"},
         "F": {"type": "filter"},
         "G": {"type": "filter"},
-        "H": {"type": "filter"},
-        "I": {"type": "filter"}
+        "H": {"type": "filter"}
     }
 }

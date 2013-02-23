@@ -10,8 +10,10 @@
 }
 
 .tile {
+    position: absolute;
     width: 540px;
     height: 384px;
+    border: 0;
 }
 
 .row1 { top: 0; }
@@ -29,7 +31,7 @@
   left: 540px;
   height: 768px;
   width: 540px;
-  border: 1px solid #999;
+  border: 1px solid #251929;
 }
 
 #announcement {

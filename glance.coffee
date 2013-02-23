@@ -66,9 +66,12 @@ class GlanceServer
         for tileId, i of @tickIndex
             @tickIndex[tileId] = ++i
             if(@tickIndex[tileId] >= @tiles[tileId]['total'])
-                @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
-                @cleanTile(tileId)
-                delete @tickIndex[tileId]
+                @tickIndex[tileId] = 0;
+                
+            # if(@tickIndex[tileId] >= @tiles[tileId]['total'])
+            #     @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
+            #     @cleanTile(tileId)
+            #     delete @tickIndex[tileId]
 
         @iosocket.sockets.emit 'tick', @tickIndex
         @tickCount++
