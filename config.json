@@ -7,13 +7,50 @@
     "orientation": "vertical",
     "fixedTime": [2013, 4, 30, 9, 21],
     "tiles": {
-        "A": {"type": "filter"},
-        "B": {"type": "filter"},
-        "C": {"type": "filter"},
-        "D": {"type": "filter"},
-        "E": {"type": "filter"},
-        "F": {"type": "filter"},
-        "G": {"type": "filter"},
-        "H": {"type": "filter"}
+        "A": {
+            "type": "filter"
+        },
+        "B": {
+            "type": "filter",
+            "filter": {
+                "room": ["241", "242", "243"]
+            }
+        },
+        "C": {
+            "type": "filter",
+            "filter": {
+                "room": ["251", "252"]
+            }
+        },
+        "D": {
+            "type": "filter",
+            "filter": {
+                "room": ["253", "Bleu"]
+            }
+        },
+        "E": {
+            "type": "filter",
+            "filter": {
+                "room": ["Bordeaux", "341"]
+            }
+        },
+        "F": {
+            "type": "filter",
+            "filter": {
+                "room": ["342", "343"]
+            }
+        },
+        "G": {
+            "type": "filter",
+            "filter": {
+                "room": ["Havane", "351"]
+            }
+        },
+        "H": {
+            "type": "filter",
+            "filter": {
+                "room": ["352", "353"]
+            }
+        }
     }
 }

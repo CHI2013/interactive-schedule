@@ -2,36 +2,6 @@
 <html lang="en"> 
 <head> 
     <link rel="stylesheet" type="text/css" href="css/vertical.css">
-    <script type="text/javascript" src="/lib/jquery.min.js"></script>
-    <script type="text/javascript">
-        var tiles = ['B', 'C', 'D', 'E', 'F', 'G', 'H'];
-        var rooms = [
-            ['241', '242', '243'],
-            ['251', '252'],
-            ['253', 'Bleu'],
-            ['Bordeaux', '341'],
-            ['342', '343'],
-            ['Havane', '351'],
-            ['352', '353']
-        ];
-
-        var loadedTile = 0;
-        var loadTile = function() {
-            if(loadedTile++ >= tiles.length)
-                return;
-
-            $.ajax({
-                type: "POST",
-                url: '/filters',
-                data: {'tile': tiles[loadedTile], 'room': rooms[loadedTile] },
-                success: function() {
-                    window.setTimeout(loadTile, 1000);
-                }
-            });
-        };
-
-        $(document).ready(loadTile);
-    </script>
 </head>
 <body>
 <div id="vertical">

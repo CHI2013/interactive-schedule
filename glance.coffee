@@ -16,7 +16,6 @@ class GlanceServer
         @tickIndex = {}
         
         @loadConfig () =>
-            @setupTiles()
             @dbName = @config.db
             @app = @setupExpress()
             @connectCouchDB () =>
@@ -25,7 +24,8 @@ class GlanceServer
                 @iosocket = io.listen(server)
                 @setupSocketIO()
                 @setupRest()
-                
+                @setupTiles()
+
                 sendTickWrapper = () => #Ugly scoping hack
                     @sendTick()
                 setInterval sendTickWrapper, @config.tickFrequency
@@ -48,9 +48,15 @@ class GlanceServer
             console.log "No tiles defined in config!"
             process.exit 1
         @tiles = @config.tiles
-        for tile, val of @tiles
-            if val.type == 'filter'
-                @availableTiles.push tile            
+
+        @getOngoingSubmissions (err, data) =>
+            for tile, val of @tiles
+                if val.type == 'filter'
+                    if val.filter?
+                        if not err?
+                            @filterSubmissions tile, val.filter, data.submissions
+                    else
+                        @availableTiles.push tile                                
 
     cleanTile: (tileId) ->
         delete @tiles[tileId]['filter']
@@ -67,7 +73,7 @@ class GlanceServer
             @tickIndex[tileId] = ++i
             if(@tickIndex[tileId] >= @tiles[tileId]['total'])
                 @tickIndex[tileId] = 0;
-                
+
             # if(@tickIndex[tileId] >= @tiles[tileId]['total'])
             #     @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
             #     @cleanTile(tileId)
@@ -142,12 +148,7 @@ class GlanceServer
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
-                    matches = s.matchArray data.submissions, query
-                    filter = {'query': query, 'submissions': matches, 'tileId': tileId}
-                    @tiles[tileId]['filter'] = filter
-                    @tiles[tileId]['timestamp'] = new Date()
-                    @tiles[tileId]['total'] = matches.length
-                    @tickIndex[tileId] = -1
+                    @filterSubmissions tileId, qquery, data.submissions
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
@@ -706,9 +707,6 @@ class GlanceServer
                 cb err, null
             else
                 cb null, @getKeywordMapForSubmissionList(submissions)
-                
-    
-    
     
     getOngoingSessions: (cb) ->
         result = {}
@@ -748,5 +746,13 @@ class GlanceServer
                         submissions.push submission
                 result.submissions = submissions
                 cb null, result
+
+    filterSubmissions: (tileId, query, submissions) ->
+        matches = s.matchArray submissions, query
+        filter = {'query': query, 'submissions': matches, 'tileId': tileId}
+        @tiles[tileId]['filter'] = filter
+        @tiles[tileId]['timestamp'] = new Date()
+        @tiles[tileId]['total'] = matches.length
+        @tickIndex[tileId] = -1
 
 server = new GlanceServer()
