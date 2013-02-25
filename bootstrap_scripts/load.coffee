@@ -173,7 +173,7 @@ computeTimeForSubmission = (id, submission) ->
         submission.startTime = [submissionStart.getFullYear(), submissionStart.getMonth(), submissionStart.getDate(), submissionStart.getHours(), submissionStart.getMinutes()]
         submission.duration = duration
     else #We are dealing with a multi-session submission
-        submission.startTime = start
+        submission.startTime = [start.getFullYear(), start.getMonth(), start.getDate(), start.getHours(), start.getMinutes()]
         submission.duration = submission.sessions.length * sessionLength
 
 for id, submission of submissions
