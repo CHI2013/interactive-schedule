@@ -1,4 +1,4 @@
-var maxTweets = 10;
+var maxTweets = 6;
 var lastTweet;
 
 function twitter() {

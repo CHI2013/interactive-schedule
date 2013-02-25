@@ -90,7 +90,7 @@ function tick(ti) {
         left: 0
     }, 500, 'swing', function() {
         if(items[ti].videoPreviewFile)
-            $('.submission.active .video').html('<video height="100%" autoplay="1" src="http://92.243.30.77:8000/videos/' + items[ti].videoPreviewFile + '"></video>');
+            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://92.243.30.77:8000/videos/' + items[ti].videoPreviewFile + '"></video>');
     });
 
     $('#progress_bar circle').removeClass('active');
