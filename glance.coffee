@@ -391,6 +391,17 @@ class GlanceServer
                             res.jsonp submissions
                 else
                     res.jsonp []
+                    
+        @app.get '/keywordMapForRemainingSubmissionsToday', (req, res) =>
+            @getRemainingDays (err, days) =>
+                if err?
+                    res.send 'Could not get days', 500
+                if days.length > 0
+                    @getRemainingSubmissionsForDay days[0].value, (err, submissions) =>
+                        if err?
+                            res.send 'Could not get remaining submissions', 500
+                        else
+                            res.jsonp (@getKeywordMapForSubmissionList submissions)
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsubmissions', (req, res) =>
@@ -510,13 +521,14 @@ class GlanceServer
                     return
                     
                 submissions = body.rows.map (submission) -> submission.value
-                console.log submissions
                 res.jsonp (@getKeywordMapForSubmissionList submissions )
 
+    #Returns a keyword map for a list of submission docs
     getKeywordMapForSubmissionList: (submissionList) ->
         keywordmap = {}
         keywordGroups= {}
         for submission in submissionList
+            id = if submission.id? then submission.id else submission._id 
             if not submission.authorKeywords?
                 continue
             for keyword in submission.authorKeywords
@@ -537,9 +549,9 @@ class GlanceServer
                 if keyword.length <= 1
                     continue
                 if keywordmap[keyword]?
-                    keywordmap[keyword].push submission.id
+                    keywordmap[keyword].push id 
                 else
-                    keywordmap[keyword] = [submission.id]
+                    keywordmap[keyword] = [id]
         result = {'groups': keywordGroups, 'map': keywordmap}
         return result
     
@@ -712,10 +724,8 @@ class GlanceServer
                 cb err, null
                 return
             time = @getTime()
-            console.log time
             currentDate = time[0..2]
             currentTime = @createTimeVal time[3], time[4]
-            console.log currentTime
             if currentDate > day.date
                 cb null, []
             else if currentDate < day.date
