@@ -32,12 +32,18 @@ function init() {
     sessions.forEach(function(s) {
         if(s.submissions.length == 0) {
             items.push(s);
-            durations[s['_id']] = [80];
+            durations[s['room']] = [{
+                id: s['_id'],
+                duration: 80
+            }];
         } else {
             s.submissions.forEach(function(ss) {
                 items.push(ss);
-                durations[ss['session']] || (durations[ss['session']] = []);
-                durations[ss['session']] = ss.duration;
+                durations[ss['room']] || (durations[ss['room']] = []);
+                durations[ss['room']].push({
+                    id: ss['_id'],
+                    duration: ss.duration > 80 ? 80 : ss.duration
+                });
             });
         }
     });
@@ -59,6 +65,16 @@ function init() {
         $('#submissions').append(html);
     }
 
+    for(var room in durations) {
+        var schedule = durations[room];
+        for(var i = 0; i < schedule.length; i++) {
+            $('<div></div>')
+                .addClass('schedule').addClass(room).addClass(schedule[i].id)
+                .css('width', schedule[i].duration / 80 * 100 + '%')
+                .appendTo('#timeline');
+        }
+    }
+
     $('h1').text('Loading...');
 
     // Set heights
@@ -73,6 +89,9 @@ function tick(ti) {
     console.log($('body').attr('id') + ' tick ' + ti);
 
     $('h1').text('Room: ' + items[ti].room);
+    $('#timeline .schedule').hide();
+    $('#timeline .' + items[ti].room).removeClass('active').show();
+    $('#timeline .' + items[ti]['_id']).addClass('active');
 
     $('.submission.active').each(function(index, self) {
         $('.submission.active .video').html('');

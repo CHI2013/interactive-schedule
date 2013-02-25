@@ -7,11 +7,31 @@ body {
 }
 
 h1 {
+    display: inline-block;
     font-variant: small-caps;
     font-size: 18px;
     margin: 0;
     padding: 0;
     letter-spacing: 1px;
+}
+
+
+#timeline {
+    position: absolute;
+    left: 250px;
+    right: 10px;
+    top: 5px;
+}
+
+.schedule {
+    float: left;
+    display: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    box-sizing: border-box;
+    height: 15px;
+    margin: 5px 0px;
 }
 
 #submissions { 
@@ -82,21 +102,26 @@ h3.code {
 
 /* Colors */
 #tile_A h1 { color: #f1a16d;}
-#tile_A .submission .info { background: #f1a16d; }
+#tile_A .schedule { border-color: #f1a16d;}
+#tile_A .submission .info, #tile_A .schedule.active { background: #f1a16d; }
 #tile_A .code { background: #63412a; }
 
 #tile_B h1 { color: #B5E27D;}
-#tile_B .submission .info { background: #B5E27D; }
+#tile_B .schedule { border-color: #B5E27D;}
+#tile_B .submission .info, #tile_B .schedule.active { background: #B5E27D; }
 #tile_B .code { background: #4b6530; }
 
 #tile_C h1, #tile_D h1 { color: #AACDE5;}
-#tile_C .submission .info, #tile_D .submission .info { background: #AACDE5; }
+#tile_C .schedule, #tile_D .schedule { border-color: #AACDE5;}
+#tile_C .submission .info, #tile_D .submission .info, #tile_C .schedule.active, #tile_D .schedule.active { background: #AACDE5; }
 #tile_C .code, #tile_D .code { background: #1B5097; }
 
 #tile_E h1, #tile_F h1 { color: #F59A99;}
-#tile_E .submission .info, #tile_F .submission .info { background: #F59A99; }
+#tile_E .schedule, #tile_F .schedule { border-color: #F59A99;}
+#tile_E .submission .info, #tile_F .submission .info, #tile_E .schedule.active, #tile_F .schedule.active { background: #F59A99; }
 #tile_E .code, #tile_F .code { background: #865252; }
 
 #tile_G h1, #tile_H h1 { color: #CAB2D9;}
-#tile_G .submission .info, #tile_H .submission .info { background: #CAB2D9; }
+#tile_G .schedule, #tile_H .schedule { border-color: #CAB2D9;}
+#tile_G .submission .info, #tile_H .submission .info, #tile_G .schedule.active, #tile_H .schedule.active { background: #CAB2D9; }
 #tile_G .code, #tile_H .code { background: #5C5065; }
