@@ -329,26 +329,12 @@ class GlanceServer
                     if body.type != 'day'
                         res.send 'No day with given id', 404
                     else
-                        @getRemainingTimeslotsForDay body, (err, timeslots) =>
+                        @getRemainingSubmissionsForDay body, (err, submissions) =>
                             if err?
-                                res.send 'Could not load timeslots', 500
+                                res.send "Error", 500
                             else
-                                ids = timeslots.map (timeslot) -> timeslot.id
-                                time = @getTime()
-                                timeVal = @createTimeVal time[3], time[4]
-                                remainingSubmissions = []
-                                @getSubmissionsForTimeslots ids, (err, submissions) =>
-                                    if err?
-                                        res.send "Could not load submissions", 500
-                                    else
-                                        for submission in submissions
-                                            submissionStart = @createTimeVal submission.startTime[3], submission.startTime[4]
-                                            date = new Date submission.startTime[0], submission.startTime[1], submission.startTime[2], submission.startTime[3], submission.startTime[4]
-                                            endDate = new Date date.getTime() + 60000*submission.duration
-                                            submissionEnd = @createTimeVal endDate.getHours(), endDate.getMinutes()
-                                            if submissionStart > timeVal || submissionEnd > timeVal
-                                                remainingSubmissions.push submission
-                                    res.jsonp remainingSubmissions
+                                res.jsonp submissions
+                    
                                 
         #Get the keywords of a day
         @app.get '/day/:id/keywords', (req, res) =>
@@ -392,6 +378,19 @@ class GlanceServer
                 else
                     res.jsonp keywords
         
+        #Get the submissions that are remaining today
+        @app.get '/remainingSubmissionsToday', (req, res) =>
+            @getRemainingDays (err, days) =>
+                if err?
+                    res.send 'Could not get days', 500
+                if days.length > 0
+                    @getRemainingSubmissionsForDay days[0].value, (err, submissions) =>
+                        if err?
+                            res.send 'Could not get remaining submissions', 500
+                        else
+                            res.jsonp submissions
+                else
+                    res.jsonp []
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsubmissions', (req, res) =>
@@ -583,18 +582,21 @@ class GlanceServer
             if err?
                 cb err, null
             else
-                day = days[0].value
-                @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
-                    if err?
-                        cb err, null
-                    else
-                        for timeslot in timeslots.rows
-                            tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
-                            tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
-                            if tsStart <= timeVal && tsEnd >= timeVal
-                                cb null, timeslot.doc
-                                return
-                        cb null, null
+                if days.length > 0
+                    day = days[0].value
+                    @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
+                        if err?
+                            cb err, null
+                        else
+                            for timeslot in timeslots.rows
+                                tsStart = @createTimeVal timeslot.doc.start[0], timeslot.doc.start[1]
+                                tsEnd = @createTimeVal timeslot.doc.end[0], timeslot.doc.end[1]
+                                if tsStart <= timeVal && tsEnd >= timeVal
+                                    cb null, timeslot.doc
+                                    return
+                            cb null, null
+                else
+                    cb null, null
                     
     ###
     Returns the upcoming timeslot
@@ -604,6 +606,9 @@ class GlanceServer
             if err?
                 cb err, null
             else
+                if days.length == 0
+                    cb null, null
+                    return
                 day = days[0].value
                 time = @getTime()
                 timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
@@ -676,6 +681,30 @@ class GlanceServer
                     else
                         result.upcoming = upcomingTimeslot
                         cb null, result
+    
+    getRemainingSubmissionsForDay: (day, cb) ->
+        @getRemainingTimeslotsForDay day, (err, timeslots) =>
+            if err?
+                cb err, null
+            else
+                ids = timeslots.map (timeslot) -> timeslot.id
+                time = @getTime()
+                timeVal = @createTimeVal time[3], time[4]
+                remainingSubmissions = []
+                @getSubmissionsForTimeslots ids, (err, submissions) =>
+                    if err?
+                        cb err, null
+                        return
+                    else
+                        for submission in submissions
+                            submissionStart = @createTimeVal submission.startTime[3], submission.startTime[4]
+                            date = new Date submission.startTime[0], submission.startTime[1], submission.startTime[2], submission.startTime[3], submission.startTime[4]
+                            endDate = new Date date.getTime() + 60000*submission.duration
+                            submissionEnd = @createTimeVal endDate.getHours(), endDate.getMinutes()
+                            if submissionStart > timeVal || submissionEnd > timeVal
+                                remainingSubmissions.push submission
+                    cb null, remainingSubmissions
+    
                         
     getRemainingTimeslotsForDay: (day, cb) ->
         @db.fetch {"keys": day.timeslots}, (err, timeslots) =>
@@ -771,7 +800,7 @@ class GlanceServer
             if error?
                 cb error, null
             else
-                if not doc?
+                if not doc? or (not doc.ongoing? and not doc.upcoming?)
                     cb new Error "No data for given time", null
                 else
                     if doc.ongoing?
