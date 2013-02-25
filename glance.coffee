@@ -380,28 +380,18 @@ class GlanceServer
         
         #Get the submissions that are remaining today
         @app.get '/remainingSubmissionsToday', (req, res) =>
-            @getRemainingDays (err, days) =>
+            @getRemainingSubmissionsForToday (err, submissions) =>
                 if err?
-                    res.send 'Could not get days', 500
-                if days.length > 0
-                    @getRemainingSubmissionsForDay days[0].value, (err, submissions) =>
-                        if err?
-                            res.send 'Could not get remaining submissions', 500
-                        else
-                            res.jsonp submissions
+                    res.send 'Could not get remaining submissions', 500
                 else
-                    res.jsonp []
+                    res.jsonp submissions
                     
         @app.get '/keywordMapForRemainingSubmissionsToday', (req, res) =>
-            @getRemainingDays (err, days) =>
+            @getRemainingSubmissionsForToday (err, submissions) =>
                 if err?
-                    res.send 'Could not get days', 500
-                if days.length > 0
-                    @getRemainingSubmissionsForDay days[0].value, (err, submissions) =>
-                        if err?
-                            res.send 'Could not get remaining submissions', 500
-                        else
-                            res.jsonp (@getKeywordMapForSubmissionList submissions)
+                    res.send 'Could not get remaining submissions', 500
+                else
+                    res.jsonp (@getKeywordMapForSubmissionList submissions)
         
         #Returns a list of all ongoing sessions
         @app.get '/ongoingsubmissions', (req, res) =>
@@ -693,6 +683,16 @@ class GlanceServer
                     else
                         result.upcoming = upcomingTimeslot
                         cb null, result
+    
+    getRemainingSubmissionsForToday: (cb) ->
+        @getRemainingDays (err, days) =>
+            if err?
+                cb err, null
+            if days.length > 0
+                @getRemainingSubmissionsForDay days[0].value, (err, submissions) =>
+                    cb err, submissions
+            else
+                cb [], null
     
     getRemainingSubmissionsForDay: (day, cb) ->
         @getRemainingTimeslotsForDay day, (err, timeslots) =>
