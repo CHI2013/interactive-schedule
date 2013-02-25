@@ -1,35 +1,23 @@
-#left {
-    position: absolute;
-    top: 15px;
-    bottom: 15px;
-    left: 15px;
-    right: 66%;
-}
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700);
 
-#right {
-    position: absolute;
-    top: 15px;
-    bottom: 15px;
-    left: 34%;
-    right: 15px;
+body { 
+    padding: 30px 10px 0 10px;
+    margin: 0;
 }
 
 #announcement {
-    position: absolute;
-    top: 0;
-    bottom: 50%;
-    left: 0;
-    right: 15px;
     padding: 15px;
     overflow: hidden;
-    background: #f6eebf;
-    border-radius: 10px;
-    font-family: 'Magra', sans-serif;
-    font-size: 21pt;
+    background: #e2c877;
+    border-radius: 5px;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 30px;
+    line-height: 35px;
 }
 
 #logo { 
-    width: 95%; 
+    width: 50%; 
     position: absolute;
-    bottom: 0px;
+    bottom: 5px;
+    right: 10px;
 }
