@@ -316,6 +316,39 @@ class GlanceServer
                                 res.send "Error", 500
                             else
                                 res.jsonp submissions
+
+        #Get the remaining submissions of a day
+        @app.get '/day/:id/remainingSubmissions', (req, res) =>
+            @db.get req.params.id, (err, body) =>
+                if err?
+                    res.send 'Could not load given day', 500
+                else
+                    if not body.type?
+                        res.send 'No day with given id', 404
+                        return
+                    if body.type != 'day'
+                        res.send 'No day with given id', 404
+                    else
+                        @getRemainingTimeslotsForDay body, (err, timeslots) =>
+                            if err?
+                                res.send 'Could not load timeslots', 500
+                            else
+                                ids = timeslots.map (timeslot) -> timeslot.id
+                                time = @getTime()
+                                timeVal = @createTimeVal time[3], time[4]
+                                remainingSubmissions = []
+                                @getSubmissionsForTimeslots ids, (err, submissions) =>
+                                    if err?
+                                        res.send "Could not load submissions", 500
+                                    else
+                                        for submission in submissions
+                                            submissionStart = @createTimeVal submission.startTime[3], submission.startTime[4]
+                                            date = new Date submission.startTime[0], submission.startTime[1], submission.startTime[2], submission.startTime[3], submission.startTime[4]
+                                            endDate = new Date date.getTime() + 60000*submission.duration
+                                            submissionEnd = @createTimeVal endDate.getHours(), endDate.getMinutes()
+                                            if submissionStart > timeVal || submissionEnd > timeVal
+                                                remainingSubmissions.push submission
+                                    res.jsonp remainingSubmissions
                                 
         #Get the keywords of a day
         @app.get '/day/:id/keywords', (req, res) =>
@@ -518,7 +551,7 @@ class GlanceServer
             return @config.fixedTime
         date = new Date()
         return [date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes()]
-        
+    
     createTimeVal: (hour, minute) ->
         hourStr = "" + hour
         minuteStr = "" + minute
@@ -643,6 +676,30 @@ class GlanceServer
                     else
                         result.upcoming = upcomingTimeslot
                         cb null, result
+                        
+    getRemainingTimeslotsForDay: (day, cb) ->
+        @db.fetch {"keys": day.timeslots}, (err, timeslots) =>
+            if err?
+                cb err, null
+                return
+            time = @getTime()
+            console.log time
+            currentDate = time[0..2]
+            currentTime = @createTimeVal time[3], time[4]
+            console.log currentTime
+            if currentDate > day.date
+                cb null, []
+            else if currentDate < day.date
+                cb null, timeslots.rows
+            else
+                remainingTimeslots = []
+                for timeslotRow in timeslots.rows
+                    timeslot = timeslotRow.doc
+                    timeslotStart = @createTimeVal timeslot.start[0], timeslot.start[1]
+                    timeslotEnd = @createTimeVal timeslot.end[0], timeslot.end[1]
+                    if timeslotStart > currentTime || timeslotStart > currentTime
+                        remainingTimeslots.push timeslotRow
+                cb null, remainingTimeslots
 
     inlineSubmissionsForSession: (session, cb) ->
         @db.fetch {"keys": session.submissions}, (err, submissions) =>
