@@ -65,11 +65,11 @@ class GlanceServer
                             @availableTiles.push tile 
 
 
-
     cleanTile: (tileId) ->
         delete @tiles[tileId]['filter']
         delete @tiles[tileId]['timestamp']
         delete @tiles[tileId]['total']
+        delete @tiles[tileId]['volatile']
         @availableTiles.push tileId            
     
     setupSocketIO: () ->
@@ -78,14 +78,14 @@ class GlanceServer
             
     sendTick: () ->
         for tileId, i of @tickIndex
+            if not @tiles[tileId]['volatile']
+                continue
             @tickIndex[tileId] = ++i
+            
             if(@tickIndex[tileId] >= @tiles[tileId]['total'])
-                @tickIndex[tileId] = 0;
-
-            # if(@tickIndex[tileId] >= @tiles[tileId]['total'])
-            #     @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
-            #     @cleanTile(tileId)
-            #     delete @tickIndex[tileId]
+                 @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
+                 @cleanTile(tileId)
+                 delete @tickIndex[tileId]
 
         @iosocket.sockets.emit 'tick', @tickIndex
         @tickCount++
@@ -162,7 +162,7 @@ class GlanceServer
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
                     data = if ongoing then data.submissions else data
-                    @filterSubmissions tileId, query, data
+                    @filterSubmissions tileId, query, data, true
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
@@ -863,12 +863,13 @@ class GlanceServer
                 result.submissions = submissions
                 cb null, result
 
-    filterSubmissions: (tileId, query, submissions) ->
+    filterSubmissions: (tileId, query, submissions, volatile = false) ->
         matches = s.matchArray submissions, query
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
         @tiles[tileId]['total'] = matches.length
+        @tiles[tileId]['volatile'] = volatile
         @tickIndex[tileId] = -1
 
 server = new GlanceServer()
