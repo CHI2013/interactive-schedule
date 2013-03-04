@@ -49,14 +49,22 @@ class GlanceServer
             process.exit 1
         @tiles = @config.tiles
 
-        @getOngoingSessions (err, data) =>
-            for tile, val of @tiles
-                if val.type == 'filter'
-                    if val.filter?
-                        if not err?
-                            @filterSubmissions tile, val.filter, data.sessions
-                    else
-                        @availableTiles.push tile                                
+        @getOngoingSubmissions (err1, ongoingSubmissions) =>
+            @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
+                for tile, val of @tiles
+                    if val.type == 'filter'
+                        if val.filter?
+                            if not err?
+                                ongoing = false
+                                if val.filter.when and val.filter.when == 'now'
+                                    ongoing = true
+                                    delete val.filter.when
+                                data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
+                                @filterSubmissions tile, val.filter, data
+                        else
+                            @availableTiles.push tile 
+
+
 
     cleanTile: (tileId) ->
         delete @tiles[tileId]['filter']
@@ -144,14 +152,26 @@ class GlanceServer
             query = req.body
             tileId = @getTile query
             
-            @getOngoingSessions (err, data) =>
+            ongoing = false
+            if query.when and query.when == 'now'
+                ongoing = true
+                delete query.when
+            
+            callback = (err, data) =>
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
-                    @filterSubmissions tileId, query, data.sessions
+                    data = if ongoing then data.submissions else data
+                    @filterSubmissions tileId, query, data
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}
+            
+            if ongoing
+                @getOngoingSubmissions callback
+            else
+                @getRemainingSubmissionsForToday callback
+                
         
         #Returns a list of all sessions
         @app.get '/submission', (req, res) =>
@@ -843,14 +863,12 @@ class GlanceServer
                 result.submissions = submissions
                 cb null, result
 
-    filterSubmissions: (tileId, query, sessions) ->
-        matches = s.matchArray sessions, query
-        filter = {'query': query, 'sessions': matches, 'tileId': tileId}
+    filterSubmissions: (tileId, query, submissions) ->
+        matches = s.matchArray submissions, query
+        filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
-        total = 0
-        total = total + (m.submissions.length || 1) for m in matches
-        @tiles[tileId]['total'] = total
+        @tiles[tileId]['total'] = matches.length
         @tickIndex[tileId] = -1
 
 server = new GlanceServer()

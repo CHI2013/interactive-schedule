@@ -13,42 +13,49 @@
         "B": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["241", "242", "243"]
             }
         },
         "C": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["251", "252"]
             }
         },
         "D": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["253", "Blue"]
             }
         },
         "E": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["Bordeaux", "341"]
             }
         },
         "F": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["342", "343"]
             }
         },
         "G": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["Havane", "351"]
             }
         },
         "H": {
             "type": "filter",
             "filter": {
+                "when": "now",
                 "room": ["352", "353"]
             }
         }
