@@ -428,6 +428,35 @@ class GlanceServer
                     res.send 'Could not load ongoing sessions', 500
                 else
                     res.jsonp data
+                    
+        @app.get '/autocompletelist', (req, res) =>
+            @getOngoingSubmissions (err, data) =>
+                if err?
+                    res.send 'Could not load ongoing submissions', 500
+                list = []
+                console.log data.submissions.length
+                for submission in data.submissions
+                    for key in @config.searchFields
+                        if submission[key]?
+                            if _.isString submission[key]
+                                split = submission[key].split(',')
+                                for word in split
+                                    word = word.trim()
+                                    if word.length == 0
+                                        continue
+                                    if not _.contains list, word
+                                        list.push word
+                            else if _.isArray submission[key]
+                                for substring in submission[key]
+                                    split = substring.split(',')
+                                    for word in split
+                                        word = word.trim()
+                                        if word.length == 0
+                                            continue
+                                        if not _.contains list, word
+                                            list.push word
+                                    
+                res.jsonp list
 
         #Returns a list of all tags of ongoing submissions each tag has a list of submissions matching that tag. 
         #Also a count of all ongoing submissions is returned (which can be used e.g. to size tags in a tag cloud)
@@ -864,7 +893,16 @@ class GlanceServer
                 cb null, result
 
     filterSubmissions: (tileId, query, submissions, volatile = false) ->
-        matches = s.matchArray submissions, query
+        matches = []
+        if query.all?
+            toQuery = @config.searchFields
+            for subquery in toQuery
+                filter = {}
+                filter[subquery] = query.all
+                submatches = s.matchArray submissions, filter
+                matches = _.union matches, submatches
+        else
+            matches = s.matchArray submissions, query
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
