@@ -15,6 +15,8 @@ class GlanceServer
         @config = {}
         @tickIndex = {}
         
+        @currentTimeslot = null;
+        
         @loadConfig () =>
             @dbName = @config.db
             @app = @setupExpress()
@@ -44,14 +46,18 @@ class GlanceServer
             process.exit 1
                     
     setupTiles: () ->
-        if not @config.tiles?
+        if not @config.sessionTiles? or not @config.breakTiles?
             console.log "No tiles defined in config!"
             process.exit 1
-        @tiles = @config.tiles
+        if @currentTimeslot?
+            @tiles = @config.sessionTiles
+        else
+            @tiles = @config.breakTiles
 
         @getOngoingSubmissions (err1, ongoingSubmissions) =>
             @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
                 for tile, val of @tiles
+                    @iosocket.sockets.emit 'newTile', {'tileId': tile}
                     if val.type == 'filter'
                         if val.filter?
                             if not err?
@@ -89,6 +95,14 @@ class GlanceServer
 
         @iosocket.sockets.emit 'tick', @tickIndex
         @tickCount++
+        
+        @getCurrentTimeSlot (error, doc) =>
+            if error?
+                console.log "Could not load current timeslot"
+            else
+                if @currentTimeslot != doc._id
+                    @currentTimeslot = doc._id
+                    @setupTiles()
         
     setupExpress: () ->
         app = express()

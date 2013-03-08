@@ -7,7 +7,7 @@
     "orientation": "vertical",
     "fixedTime": [2013, 4, 30, 9, 21],
     "searchFields": ["authors", "room", "venue", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries"],
-    "tiles": {
+    "breakTiles": {
         "A": {
             "type": "filter"
         },
@@ -59,6 +59,40 @@
                 "when": "now",
                 "room": ["352", "353"]
             }
+        }
+    },
+    "sessionTiles": {
+        "A": {
+            "type": "filter",
+            "when": "now",
+            "room": ["241", "242", "243", "251", "252"]
+        },
+        "B": {
+            "type": "filter",
+            "when": "now",
+            "room": ["253", "Blue", "Bordeaux", "341"]
+        },
+        "C": {
+            "type": "filter",
+            "when": "now",
+            "room": ["342", "343", "Havane", "351"]
+        },
+        "D": {
+            "type": "filter",
+            "when": "now",
+            "room": ["352", "353"]
+        },
+        "E": {
+            "type": "filter"
+        },
+        "F": {
+            "type": "filter"
+        },
+        "G": {
+            "type": "filter"
+        },
+        "H": {
+            "type": "filter"
         }
     }
 }
