@@ -6,7 +6,7 @@
     "videoDir": "http://92.243.30.77:8000/videos",
     "orientation": "vertical",
     "fixedTime": [2013, 4, 30, 9, 21],
-    "searchFields": ["authors", "room", "venue", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers"],
+    "searchFields": ["authors", "room", "venue", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries"],
     "tiles": {
         "A": {
             "type": "filter"

@@ -1,5 +1,6 @@
 nano = require('nano')('http://127.0.0.1:5984')
 sets = require 'simplesets'
+_ = require 'underscore'
 
 chidb = nano.db.use('chi2013');
 
@@ -145,6 +146,38 @@ for submission in submissionData
         submissionValue.room = sessions[submissionValue.session].room
     else if submissionValue.sessions?
         submissionValue.room = sessions[submissionValue.sessions[0]].room
+    
+    institutions = []
+    cities = []
+    states = []
+    countries = []
+    if submissionValue.authorList?
+        for author in submissionValue.authorList
+            if author.primary?
+                p = author.primary
+                if p.institution? and not _.contains(institutions, p.institution)
+                    institutions.push p.institution
+                if p.city? and not _.contains(cities, p.city)
+                    cities.push p.city
+                if p.state? and not _.contains(states, p.state)
+                    states.push p.state
+                if p.country? and not _.contains(countries, p.country)
+                    countries.push p.country
+            if author.secondary?
+                s = author.secondary
+                if s.institution? and not _.contains(institutions, s.institution)
+                    institutions.push s.institution
+                if s.city? and not _.contains(cities, s.city)
+                    cities.push s.city
+                if s.state? and not _.contains(states, s.state)
+                    states.push s.state
+                if s.country? and not _.contains(countries, s.country)
+                    countries.push s.country
+        submissionValue.institutions = institutions
+        submissionValue.cities  = cities
+        submissionValue.states  = states
+        submissionValue.countries  = countries
+    
     submissions[submission.id] = submissionValue
 
 computeTimeForSubmission = (id, submission) ->
