@@ -64,23 +64,31 @@
     "sessionTiles": {
         "A": {
             "type": "filter",
-            "when": "now",
-            "room": ["241", "242", "243", "251", "252"]
+            "filter": {
+                "when": "now",
+                "room": ["241", "242", "243", "251", "252"]
+            }
         },
         "B": {
             "type": "filter",
-            "when": "now",
-            "room": ["253", "Blue", "Bordeaux", "341"]
+            "filter": {
+                "when": "now",
+                "room": ["253", "Blue", "Bordeaux", "341"]
+            }
         },
         "C": {
             "type": "filter",
-            "when": "now",
-            "room": ["342", "343", "Havane", "351"]
+            "filter": {
+                "when": "now",
+                "room": ["342", "343", "Havane", "351"]
+            }
         },
         "D": {
             "type": "filter",
-            "when": "now",
-            "room": ["352", "353"]
+            "filter": {
+                "when": "now",
+                "room": ["352", "353"]
+            }
         },
         "E": {
             "type": "filter"

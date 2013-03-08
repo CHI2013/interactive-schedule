@@ -50,14 +50,13 @@ class GlanceServer
             console.log "No tiles defined in config!"
             process.exit 1
         if @currentTimeslot?
-            @tiles = @config.sessionTiles
+            @tiles = _.clone @config.sessionTiles
         else
-            @tiles = @config.breakTiles
-
+            @tiles = _.clone @config.breakTiles
+        
         @getOngoingSubmissions (err1, ongoingSubmissions) =>
             @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
                 for tile, val of @tiles
-                    @iosocket.sockets.emit 'newTile', {'tileId': tile}
                     if val.type == 'filter'
                         if val.filter?
                             if not err?
@@ -67,6 +66,7 @@ class GlanceServer
                                     delete val.filter.when
                                 data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
                                 @filterSubmissions tile, val.filter, data
+                                @iosocket.sockets.emit 'newTile', {'tileId': tile}
                         else
                             @availableTiles.push tile 
 
@@ -448,7 +448,6 @@ class GlanceServer
                 if err?
                     res.send 'Could not load ongoing submissions', 500
                 list = []
-                console.log data.submissions.length
                 for submission in data.submissions
                     for key in @config.searchFields
                         if submission[key]?
