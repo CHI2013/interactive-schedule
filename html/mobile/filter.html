@@ -1,0 +1,229 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>Interactive Schedule</title> 
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
+	<link rel="stylesheet" href="css/mobile.css" />
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<script src="js/jquery.mobile-1.3.0.min.js"></script>
+
+	<script type="text/javascript">
+	var glanceHost = "92.243.30.77:8000";
+	var selectedKeyword;
+	function queryURL(url) {
+		if (window.location.host == glanceHost)
+			return '/'+url;
+		else
+			// cross-site request => use JSONP
+			return 'http://'+glanceHost+'/'+url+'?callback=?';	
+	}
+
+	//jQuery Mobile way of dealing with dynamic content
+
+	// Listen for any attempts to call changePage().
+	$(document).bind( "pagebeforechange", function( e, data ) {
+		// We only want to handle changePage() calls where the caller is
+		// asking us to load a page by URL.
+		if ( typeof data.toPage === "string" ) {
+
+			// We are being asked to load a page by URL, but we only
+			// want to handle URLs that request the data for a specific
+			// category.
+			var u = $.mobile.path.parseUrl( data.toPage ),
+				re = /^#home/;
+
+			if ( u.hash.search(re) !== -1 ) {
+
+				// We're being asked to display the items for a specific category.
+				// Call our internal method that builds the content for the category
+				// on the fly based on our in-memory category data structure.
+				showFilter( u, data.options );
+				// Make sure to tell changePage() we've handled this call so it doesn't
+				// have to do anything.
+				e.preventDefault();
+			}
+		}
+	});
+
+	// Load the data for a specific category, based on
+	// the URL passed in. Generate markup for the items in the
+	// category, inject it into an embedded page, and then make
+	// that page the current active page.
+	function showFilter( urlObj, options )
+	{			
+		var filterName = urlObj.hash.replace( /.*filter=/, "" ),
+			// Get the object that represents the filter we
+			// are interested in.
+			
+			pageSelector = urlObj.hash.replace( /\?.*$/, "" );
+			// The pages we use to display our content are already in
+			// the DOM. The id of the page we are going to write our
+			// content into is specified in the hash before the '?'.
+
+			$.getJSON(queryURL(filterName), function(data) {
+				// Get the page we are going to dump our content into.
+				var $page = $( pageSelector ),
+
+				// Get the header for the page.
+				$header = $page.children( ":jqmData(role=header)" ),
+
+				// Get the content area element for the page.
+				$content = $page.children( ":jqmData(role=content)" );
+
+				// The markup we are going to inject into the content
+				// area of the page.
+
+				switch(filterName){
+					case "ongoingkeywords": 
+						var markup = generateKeyWordsMarkup(data);
+						break;
+					case "day": 
+						var markup = generateDaysMarkup(data);
+						break;
+					case "autocompletelist": 
+						var markup = generateSearchKeyWordsMarkup(data);
+						break;
+				}
+				
+				// Find the h1 element in our header and inject the name of
+				// the category into it.
+				// $header.html( "<h1>CHI'13</h1>" );
+				// $header.html("<button id='back' onclick='reload()'>Back</button><h3 style='display:inline;'>CHI'13</h3>")
+
+				// Inject the category items markup into the content element.
+				$content.html( markup );
+
+				// Pages are lazily enhanced. We call page() on the page
+				// element to make sure it is always enhanced before we
+				// attempt to enhance the listview markup we just injected.
+				// Subsequent calls to page() are ignored since a page/widget
+				// can only be enhanced once.
+				$page.page();
+
+				// Enhance the listview we just injected.
+				$content.find( ":jqmData(role=listview)" ).listview();
+
+				// We don't want the data-url of the page we just modified
+				// to be the url that shows up in the browser's location field,
+				// so set the dataUrl option to the URL for the category
+				// we just loaded.
+				options.dataUrl = urlObj.href;
+				console.log(options.dataUrl);
+				// Now call changePage() and tell it to switch to
+				// the page we just modified.
+				$.mobile.changePage( $page, options );
+			});
+	}
+
+	function generateKeyWordsMarkup(data){
+		markup = "<ul data-role='listview' data-inset='true' data-filter='true'>";
+						console.log(data);
+
+			for(keyword in data.keywords){
+				var sub_count = data.keywords[keyword].length;
+				markup += "<li><a href='#'>"+keyword + " "+ "<span class='ui-li-count'>"+ sub_count +"</span></a></li>";
+			}
+			markup += "</ul>";
+			return markup;
+	}
+
+	function generateDaysMarkup(data){
+		markup = "<ul id='day_list' data-role='listview' data-inset='true' data-filter='true'>";
+			for (id in data) {
+				var day = data[id].value;
+				markup += "<li data-role='list-divider' role='heading'>"+day.name+" "+day.date[2]+"/"+day.date[1]+"/"+day.date[0] + "</li>";
+				for (timeslot in day.timeslots) {
+					var slot = day.timeslots[timeslot];
+					markup += "<li id='"+slot+"'></li>";
+					getTimeslot(slot);
+				}
+			}
+		markup += "</ul>";
+
+		return markup;
+	}	
+
+	function generateSearchKeyWordsMarkup(data){
+		markup = "<button id='back' onclick='reload()'>Back</button>" +
+				 "<button id='show' onclick='postFilter()'>Show on screen</button>" +
+				 "<div id='top'><h4> Search videos for ongoing events related to: </h4>" +
+				 "<span id='selected'></span></div>" +
+				 "<ul data-role='listview' data-inset='true' data-filter='true' data-autodividers='true'>";
+		
+		//search widget
+		// markup += "<ul data-role='listview' data-inset='false' data-filter='true' data-filter-reveal='true' data-filter-placeholder='Search everything'>";
+
+		data.sort();
+		var keyword,id;
+		for(var i =0; i<data.length; i++){
+			keyword = data[i];
+			markup += "<li class='keyword' id=" + "\"" +i + "\"" + " onclick='selectFilter("+ "\"" + keyword + "\"" +","+ i +")'>"+keyword + "</li>";
+		}
+		markup += "</ul>";
+		return markup;
+	}	
+
+	function reload(){
+		window.location.reload(true);
+	}
+
+
+    function selectFilter(tag,id) {	
+    	selectedKeyword = tag;
+		 $('.keyword').css('background-color','rgb(238, 238, 238)');
+		 $("#"+id).css("background-color","rgba(166,166,166,1)");
+		 $('#show').css("visibility","visible");
+		 $('#selected').text(tag);
+	};
+
+	function postFilter(){
+		$('input[data-type="search"]').val('').trigger("change");
+		$('#show').css("visibility","hidden");
+		$('#selected').text("");
+
+		$('.keyword').css('background-color','rgb(238, 238, 238)');
+
+		$('html, body').stop().animate({ scrollTop : 0 }, 500);
+		alert("posted to screen");
+		//$.post("http://localhost:8000/filters",
+		// Add your ip here to test with mobile device
+		// $.post("http://92.243.30.77:8000/filters",
+		 $.post("http://92.243.30.77:8000/filters",	
+			{
+				"all": selectedKeyword,
+				"when": "now",
+				"volatile": true//,
+				// "tile": tagTileId
+			},
+			function(data, status)
+			{
+				console.log("Updated session: " + data);
+			});
+	};
+	</script>
+</head> 
+<body> 
+
+<div data-role="page" id="home" data-dom-cache="true">
+
+	<div data-role="header"  data-position="fixed">
+		<h1>CHI'13</h1>
+	</div>
+
+    <div data-role="content">
+    	<h3> Which screen are you looking at? </h3>
+		<ul  id="screen_list" data-role="listview" data-filter="false">
+ 			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 1</a></h3></li>
+ 			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 2</a></h3></li>
+ 			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 3</a></h3></li>
+			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 4</a></h3></li>
+ 			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 5</a></h3></li>
+ 			<li><h3><a href="#home?filter=autocompletelist" data-transition="slide">Screen 6</a></h3></li>
+		</ul>
+    </div>
+
+</div><!-- /page -->
+
+</body>
+</html>

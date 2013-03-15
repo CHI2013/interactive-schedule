@@ -3,8 +3,9 @@
 *.ui-listview *.ui-btn-hover-c
   {
   /* Copy your .ui-btn-up styles here */
-  text-decoration: none;
-  }
+/*  text-decoration: none;
+*/  }
+
 
   #screen_list li {
 	padding: 0.3em 15px;
@@ -33,7 +34,7 @@
   	left:10px;
   	width:50px;
   	height:25px;
-  	background-color: silver;
+  	background-color: rgba(238, 238, 238,1);
   	border-radius: 3px;
   	z-index: 1000;
   }
@@ -42,9 +43,9 @@
  	position:fixed;
   	top:10px;
   	right:10px;
-  	width:50px;
+  	width:auto;
   	height:25px;
-  	background-color: silver;
+  	background-color: rgba(23, 206, 118,1);
   	border-radius: 3px;
   	visibility: hidden;
   	z-index: 1000;
@@ -56,5 +57,6 @@
   }
 
   div[data-role="header"]{
-	position: fixed;
+	position: fixed !important;
+	box-shadow: 0px 3px 5px #888;
   }
