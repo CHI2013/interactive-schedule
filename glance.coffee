@@ -14,6 +14,7 @@ class GlanceServer
         @dbName = ""
         @config = {}
         @tickIndex = {}
+        @autoCompleteList = undefined
         
         @currentTimeslot = null;
         
@@ -102,6 +103,7 @@ class GlanceServer
             else
                 if @currentTimeslot != doc._id
                     @currentTimeslot = doc._id
+                    @autoCompleteList = undefined
                     @setupTiles()
         
     setupExpress: () ->
@@ -443,33 +445,65 @@ class GlanceServer
                 else
                     res.jsonp data
                     
+        filterAutocompleteList = (substring, list) ->
+            result = _.clone list
+            todelete = []
+            re = new RegExp substring, 'i'
+            keys = Object.keys list
+            for key in keys
+                if key.search(re) == -1
+                    todelete.push key
+            for key in todelete
+                delete result[key]
+            return result
+        
+        
         @app.get '/autocompletelist', (req, res) =>
-            @getOngoingSubmissions (err, data) =>
-                if err?
-                    res.send 'Could not load ongoing submissions', 500
-                list = []
-                for submission in data.submissions
-                    for key in @config.searchFields
-                        if submission[key]?
-                            if _.isString submission[key]
-                                split = submission[key].split(',')
-                                for word in split
-                                    word = word.trim()
-                                    if word.length == 0
-                                        continue
-                                    if not _.contains list, word
-                                        list.push word
-                            else if _.isArray submission[key]
-                                for substring in submission[key]
-                                    split = substring.split(',')
+            newResult = {}
+            if @autoCompleteList?
+                result = @autoCompleteList
+                if req.query.substring? and req.query.substring.length > 0
+                    result = filterAutocompleteList req.query.substring, @autoCompleteList
+                res.jsonp result 
+            else
+                @getOngoingSubmissions (err, data) =>
+                    if err?
+                        res.send 'Could not load ongoing submissions', 500
+                    list = []
+                    for submission in data.submissions
+                        for key in @config.searchFields
+                            if submission[key]?
+                                if _.isString submission[key]
+                                    split = submission[key].split(',')
                                     for word in split
                                         word = word.trim()
                                         if word.length == 0
                                             continue
                                         if not _.contains list, word
+                                            newResult[word] = {'source': key, 'submissions': [submission._id]}
                                             list.push word
-                                    
-                res.jsonp list
+                                        else
+                                            if not _.contains newResult[word].submissions, submission._id
+                                                newResult[word].submissions.push submission._id
+                                else if _.isArray submission[key]
+                                    for substring in submission[key]
+                                        split = substring.split(',')
+                                        for word in split
+                                            word = word.trim()
+                                            if word.length == 0
+                                                continue
+                                            if not _.contains list, word
+                                                newResult[word] = {'source': key, 'submissions': [submission._id]}
+                                                list.push word
+                                            if not _.contains newResult[word].submissions, submission._id
+                                                newResult[word].submissions.push submission._id
+                                            
+                    @autoCompleteList  = newResult                
+                    result = @autoCompleteList
+                    if req.query.substring? and req.query.substring.length > 0
+                        result = filterAutocompleteList req.query.substring, @autoCompleteList
+                    res.jsonp result 
+                    
 
         #Returns a list of all tags of ongoing submissions each tag has a list of submissions matching that tag. 
         #Also a count of all ongoing submissions is returned (which can be used e.g. to size tags in a tag cloud)
