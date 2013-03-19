@@ -8,14 +8,14 @@ function init() {
     var filter = tile.filter;
     console.log("Initializing tile " + filter.tileId);
 
-    if(!filter.hasOwnProperty('query') || !filter.hasOwnProperty('sessions'))
-    { console.log('!!! No filter or sessions'); return; }
+    if(!filter.hasOwnProperty('query') || !filter.hasOwnProperty('submissions'))
+    { console.log('!!! No filter or submissions'); return; }
 
     $('body').attr('id', 'tile_' + tileId);
 
     // Submissions will be for multiple rooms, sort rooms in order
-    var sessions = filter.sessions;
-    sessions.sort(function(a, b) {
+    var submissions = filter.submissions;
+    submissions.sort(function(a, b) {
         var roomA = parseInt(a.room),
             roomB = parseInt(b.room);
 
@@ -29,23 +29,13 @@ function init() {
             return 1;  
     });
 
-    sessions.forEach(function(s) {
-        if(s.submissions.length == 0) {
-            items.push(s);
-            durations[s['room']] = [{
-                id: s['_id'],
-                duration: 80
-            }];
-        } else {
-            s.submissions.forEach(function(ss) {
-                items.push(ss);
-                durations[ss['room']] || (durations[ss['room']] = []);
-                durations[ss['room']].push({
-                    id: ss['_id'],
-                    duration: ss.duration > 80 ? 80 : ss.duration
-                });
-            });
-        }
+    submissions.forEach(function(s) {
+        items.push(s);
+        durations[s['room']] || (durations[s['room']] = []);
+        durations[s['room']].push({
+            id: s['_id'],
+            duration: s.duration > 80 ? 80 : s.duration
+        });
     });
 
     for(var i = 0; i < items.length; i++) {
@@ -83,15 +73,16 @@ function init() {
 }
 
 function tick(ti) {
+    itemIndex = ti % items.length;
     if(!tile.hasOwnProperty('filter'))
         return;
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
-    $('h1').text('Room: ' + items[ti].room);
+    $('h1').text('Room: ' + items[itemIndex].room);
     $('#timeline .schedule').hide();
-    $('#timeline .' + items[ti].room).removeClass('active').show();
-    $('#timeline .' + items[ti]['_id']).addClass('active');
+    $('#timeline .' + items[itemIndex].room).removeClass('active').show();
+    $('#timeline .' + items[itemIndex]['_id']).addClass('active');
 
     $('.submission.active').each(function(index, self) {
         $('.submission.active .video').html('');
@@ -102,14 +93,14 @@ function tick(ti) {
         }, 500);
     });
 
-    var $target = $('.submission:eq(' + ti + ')')
+    var $target = $('.submission:eq(' + itemIndex + ')')
     $target.addClass('active').show().css({
         left: $target.width()+100
     }).animate({
         left: 0
     }, 500, 'swing', function() {
-        if(items[ti].videoPreviewFile)
-            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://92.243.30.77:8000/videos/' + items[ti].videoPreviewFile + '"></video>');
+        if(items[itemIndex].videoPreviewFile)
+            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://92.243.30.77:8000/videos/' + items[itemIndex].videoPreviewFile + '"></video>');
     });
 
     $('#progress_bar circle').removeClass('active');

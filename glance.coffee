@@ -50,26 +50,29 @@ class GlanceServer
         if not @config.sessionTiles? or not @config.breakTiles?
             console.log "No tiles defined in config!"
             process.exit 1
-        if @currentTimeslot?
-            @tiles = _.clone @config.sessionTiles
-        else
-            @tiles = _.clone @config.breakTiles
+        @getCurrentTimeSlot (error, timeslot) =>
+            if timeslot?
+                @currentTimeslot = timeslot._id 
+            if @currentTimeslot?
+                @tiles = _.clone @config.sessionTiles
+            else
+                @tiles = _.clone @config.breakTiles
         
-        @getOngoingSubmissions (err1, ongoingSubmissions) =>
-            @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
-                for tile, val of @tiles
-                    if val.type == 'filter'
-                        if val.filter?
-                            if not err?
-                                ongoing = false
-                                if val.filter.when and val.filter.when == 'now'
-                                    ongoing = true
-                                    delete val.filter.when
-                                data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
-                                @filterSubmissions tile, val.filter, data
-                                @iosocket.sockets.emit 'newTile', {'tileId': tile}
-                        else
-                            @availableTiles.push tile 
+            @getOngoingSubmissions (err1, ongoingSubmissions) =>
+                @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
+                    for tile, val of @tiles
+                        if val.type == 'filter'
+                            if val.filter?
+                                if not err?
+                                    ongoing = false
+                                    if val.filter.when and val.filter.when == 'now'
+                                        ongoing = true
+                                        delete val.filter.when
+                                    data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
+                                    @filterSubmissions tile, val.filter, data
+                                    @iosocket.sockets.emit 'newTile', {'tileId': tile}
+                            else
+                                @availableTiles.push tile 
 
 
     cleanTile: (tileId) ->
@@ -85,9 +88,9 @@ class GlanceServer
             
     sendTick: () ->
         for tileId, i of @tickIndex
+            @tickIndex[tileId] = ++i
             if not @tiles[tileId]['volatile']
                 continue
-            @tickIndex[tileId] = ++i
             
             if(@tickIndex[tileId] >= @tiles[tileId]['total'])
                  @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
@@ -101,10 +104,14 @@ class GlanceServer
             if error?
                 console.log "Could not load current timeslot"
             else
-                if @currentTimeslot != doc._id
+                if (doc? and @currentTimeslot == doc._id) or (not doc? and not @currentTimeslot?)
+                    return
+                if doc? and @currentTimeslot != doc._id
                     @currentTimeslot = doc._id
-                    @autoCompleteList = undefined
-                    @setupTiles()
+                else if @currentTimeslot != null
+                    @currentTimeslot = null
+                @autoCompleteList = undefined
+                @setupTiles()
         
     setupExpress: () ->
         app = express()
