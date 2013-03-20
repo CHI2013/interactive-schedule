@@ -5,9 +5,27 @@ io = require 'socket.io'
 s = require 'searchjs'
 fs = require 'fs'
 _ = require 'underscore'
+expressWinston = require 'express-winston'
+winston = require 'winston'
 
 class GlanceServer
     constructor: () ->
+        @transports = [
+              new winston.transports.File {
+                  filename: 'glance.log',
+                  timestamp: true
+                  },
+            new winston.transports.Console {
+                  colorize: true,
+                  timestamp: true
+                } 
+            ]
+        
+        @logger = new winston.Logger {
+            'transports': @transports 
+        }
+        
+        
         @tiles = {}
         @tickCount = 0
         @availableTiles = []
@@ -24,7 +42,7 @@ class GlanceServer
             @connectCouchDB () =>
                 server = http.createServer @app
                 server.listen @config.port
-                @iosocket = io.listen(server)
+                @iosocket = io.listen server, {log: false}
                 @setupSocketIO()
                 @setupRest()
                 @setupTiles () =>
@@ -37,17 +55,20 @@ class GlanceServer
             filename = process.argv[2]
             fs.readFile filename, (err, data) =>
                 if err?
-                    console.log err
+                    @logger.error err
                     process.exit 1
                 @config = JSON.parse data
+                @logger.info "Configuration file loaded"
+                if @config.fixedTime?
+                    @logger.warn "Fixed time defined in config, use only for debug!"
                 cb()
         else
-            console.log "No config file provided!"
+            @logger.error "No config file provided!"
             process.exit 1
                     
     setupTiles: (cb) ->
         if not @config.sessionTiles? or not @config.breakTiles?
-            console.log "No tiles defined in config!"
+            @logger.error "No tiles defined in config!"
             process.exit 1
         @getCurrentTimeSlot (error, timeslot) =>
             if timeslot?
@@ -73,7 +94,6 @@ class GlanceServer
                                     data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
                                     if filter?
                                         @filterSubmissions tile, filter, data
-                                    console.log "New tile", tile
                             else
                                 @availableTiles.push tile
                         else
@@ -91,7 +111,11 @@ class GlanceServer
     
     setupSocketIO: () ->
         @iosocket.sockets.on 'connection', (sock) =>
-            console.log "Connection!"
+            @logger.info "Client connected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
+            
+            sock.on 'disconnect', () =>
+                @logger.info "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
+            
             
     tick: () ->
         for tileId, i of @tickIndex
@@ -106,17 +130,19 @@ class GlanceServer
 
         @getCurrentTimeSlot (error, doc) =>
             if error?
-                console.log "Could not load current timeslot"
+                @logger.error "Could not load current timeslot"
             else
                 if (doc? and @currentTimeslot == doc._id) or (not doc? and not @currentTimeslot?)
 
                     @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
                     @tickCount++
                     return
+                oldTimeslot = @currentTimeslot
                 if doc? and @currentTimeslot != doc._id
                     @currentTimeslot = doc._id
                 else if @currentTimeslot != null
                     @currentTimeslot = null
+                @logger.info "Changing timeslot", {'new': @currentTimeslot, 'old': oldTimeslot}
                 @autoCompleteList = undefined
                 @setupTiles () =>
         
@@ -125,17 +151,20 @@ class GlanceServer
         app.use express.bodyParser()
         dir = __dirname + '/html'
         app.use express.static dir
+        app.use expressWinston.logger({
+            'transports': @transports
+            })
         return app
         
     connectCouchDB: (cb) ->
         nano = nano 'http://localhost:5984'
         nano.db.get @dbName, (err, body) =>
             if err
-                console.log "No " + @dbName +" database in CouchDB"
+                @logger.error "No " + @dbName +" database in CouchDB"
                 process.exit 1
             else
                 @db = nano.use @dbName
-                console.log "Connected to CouchDB and opened the " + @dbName + " database."
+                @logger.info "Connected to CouchDB and opened the " + @dbName + " database."
                 cb()
 
     ###
@@ -175,8 +204,11 @@ class GlanceServer
         #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
         #IF the query contains a named tile this will be used IF it is available, otherwise it will be given another tile.
         @app.post '/filters', (req, res) =>
+            @logger.info "Filter posted", {'filter': req.body, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
+            
             if @availableTiles.length == 0
                 res.jsonp {'status': 'error', 'message': 'No empty tiles'}, 500
+                @logger.info "No room for filter", {'filter': req.body, 'timeslot': @currentTimeslot}
                 return
             
             query = req.body
@@ -193,6 +225,7 @@ class GlanceServer
                 else
                     data = if ongoing then data.submissions else data
                     @filterSubmissions tileId, query, data, true
+                    @logger.info "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}

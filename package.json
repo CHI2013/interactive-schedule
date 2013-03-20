@@ -2,7 +2,12 @@
   "name": "glance",
   "version": "0.0.1",
   "description": "CHI at-a-glance",
-  "keywords": ["chi", "conference", "visualization", "tags"],
+  "keywords": [
+    "chi",
+    "conference",
+    "visualization",
+    "tags"
+  ],
   "homepage": "",
   "author": "Arvind Satyanarayan <arvindsatya@cs.stanford.edu>, Clemens N. Klokmose <clemens@cs.au.dk>",
   "dependencies": {
@@ -12,6 +17,8 @@
     "socket.io": "*",
     "searchjs": "*",
     "simplesets": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "winston": "~0.6.2",
+    "express-winston": "~0.2.0"
   }
 }
