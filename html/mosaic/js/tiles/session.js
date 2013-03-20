@@ -2,6 +2,8 @@ var items = [];
 var durations = {};
 
 function init() {
+    items = [];
+    durations = {};
     if(!tile.hasOwnProperty('filter'))
         return;
 
@@ -110,6 +112,7 @@ function tick(ti) {
 function doneTile() {
     $('body').attr('id', '');
     $('h1').text('');
+    $('#timeline').html('');
     $('#submissions').html('');
     $('#progress_bar').svg('destroy');
     $('#progress_bar').html('');

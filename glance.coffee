@@ -27,11 +27,10 @@ class GlanceServer
                 @iosocket = io.listen(server)
                 @setupSocketIO()
                 @setupRest()
-                @setupTiles()
-
-                sendTickWrapper = () => #Ugly scoping hack
-                    @sendTick()
-                setInterval sendTickWrapper, @config.tickFrequency
+                @setupTiles () =>
+                    tickWrapper = () => #Ugly scoping hack
+                        @tick()
+                    setInterval tickWrapper, @config.tickFrequency
     
     loadConfig: (cb) ->
         if process.argv[2]?
@@ -46,7 +45,7 @@ class GlanceServer
             console.log "No config file provided!"
             process.exit 1
                     
-    setupTiles: () ->
+    setupTiles: (cb) ->
         if not @config.sessionTiles? or not @config.breakTiles?
             console.log "No tiles defined in config!"
             process.exit 1
@@ -54,25 +53,33 @@ class GlanceServer
             if timeslot?
                 @currentTimeslot = timeslot._id 
             if @currentTimeslot?
-                @tiles = _.clone @config.sessionTiles
+                tileSetup = _.clone @config.sessionTiles
             else
-                @tiles = _.clone @config.breakTiles
+                tileSetup  = _.clone @config.breakTiles
         
             @getOngoingSubmissions (err1, ongoingSubmissions) =>
                 @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
-                    for tile, val of @tiles
+                    for tile, val of tileSetup
+                        @tiles[tile] = {}
+                        @tiles[tile].type = val.type
                         if val.type == 'filter'
                             if val.filter?
+                                filter = _.clone val.filter
                                 if not err?
                                     ongoing = false
-                                    if val.filter.when and val.filter.when == 'now'
+                                    if filter.when and filter.when == 'now'
                                         ongoing = true
-                                        delete val.filter.when
+                                        delete filter.when
                                     data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
-                                    @filterSubmissions tile, val.filter, data
-                                    @iosocket.sockets.emit 'newTile', {'tileId': tile}
+                                    if filter?
+                                        @filterSubmissions tile, filter, data
+                                    console.log "New tile", tile
                             else
-                                @availableTiles.push tile 
+                                @availableTiles.push tile
+                        else
+                            @tile[tile] = val
+                        @iosocket.sockets.emit 'newTile', {'tileId': tile}
+                    cb()
 
 
     cleanTile: (tileId) ->
@@ -86,32 +93,32 @@ class GlanceServer
         @iosocket.sockets.on 'connection', (sock) =>
             console.log "Connection!"
             
-    sendTick: () ->
+    tick: () ->
         for tileId, i of @tickIndex
             @tickIndex[tileId] = ++i
             if not @tiles[tileId]['volatile']
                 continue
             
             if(@tickIndex[tileId] >= @tiles[tileId]['total'])
-                 @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
-                 @cleanTile(tileId)
-                 delete @tickIndex[tileId]
+                @iosocket.sockets.emit 'doneTile', {'tileId': tileId}
+                @cleanTile(tileId)
+                delete @tickIndex[tileId]
 
-        @iosocket.sockets.emit 'tick', @tickIndex
-        @tickCount++
-        
         @getCurrentTimeSlot (error, doc) =>
             if error?
                 console.log "Could not load current timeslot"
             else
                 if (doc? and @currentTimeslot == doc._id) or (not doc? and not @currentTimeslot?)
+
+                    @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
+                    @tickCount++
                     return
                 if doc? and @currentTimeslot != doc._id
                     @currentTimeslot = doc._id
                 else if @currentTimeslot != null
                     @currentTimeslot = null
                 @autoCompleteList = undefined
-                @setupTiles()
+                @setupTiles () =>
         
     setupExpress: () ->
         app = express()

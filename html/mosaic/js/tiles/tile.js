@@ -1,5 +1,6 @@
 var tileId;
 var tile;
+var listenToTicks = true;
 
 $(document).ready(function() {
     tileId = window.location.hash.replace('#', '');
@@ -9,7 +10,7 @@ $(document).ready(function() {
     });
 
     socket.on('tick', function(data) {
-        if(data.hasOwnProperty(tileId))
+        if(listenToTicks && data.hasOwnProperty(tileId))
             tick(data[tileId])
     });
 
@@ -17,11 +18,21 @@ $(document).ready(function() {
         return $.get('/tiles/' + tileId, function(data) {
             tile = data;
             init();
+
+            listenToTicks = true;
         });
     };
 
-    socket.on('newTile',  function(data) { if(data.tileId == tileId) getTile(); });
-    socket.on('doneTile', function(data) { if(data.tileId == tileId) doneTile(); });
+    socket.on('newTile',  function(data) { 
+        if(data.tileId == tileId) {
+            listenToTicks = false;
+            doneTile(); 
+            getTile();
+        }
+    });
+    socket.on('doneTile', function(data) { 
+        if(data.tileId == tileId) doneTile(); 
+    });
 
     getTile();
 })
