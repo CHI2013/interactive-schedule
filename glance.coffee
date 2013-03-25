@@ -688,13 +688,19 @@ class GlanceServer
         result = {'groups': keywordGroups, 'map': keywordmap}
         return result
     
-    
-    #This is a stub method that just returns a time where there is sessions ongoing in the dataset.            
+    ###
+    Returns the current time as an array
+    Time can be fixed with the fixedTime entry in config
+    A time offset can be defined (in miliseconds) with the timeOffset config
+    ###
     getTime: () -> #This is just a stub
-        if @config.fixedTime? 
-            return @config.fixedTime
-        date = new Date()
-        return [date.getFullYear(), date.getMonth(), date.getDay(), date.getHours(), date.getMinutes()]
+        if @config.fixedTime?
+            date = new Date @config.fixedTime[0], @config.fixedTime[1], @config.fixedTime[2], @config.fixedTime[3], @config.fixedTime[4]
+        else
+            date = new Date()
+        if @config.timeOffset?
+            date = new Date(date.getTime() + @config.timeOffset)
+        return [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()]
     
     createTimeVal: (hour, minute) ->
         hourStr = "" + hour
@@ -997,6 +1003,8 @@ class GlanceServer
                 matches = _.union matches, submatches
         else
             matches = s.matchArray submissions, query
+            if matches.length == 0
+                console.log "MATCHES", matches, query
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
