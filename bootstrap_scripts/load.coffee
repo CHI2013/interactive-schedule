@@ -7,6 +7,7 @@ chidb = nano.db.use('chi2013');
 submissionData = require('./' + process.argv[2]).rows
 sessionData = require('./' + process.argv[3]).rows
 schedule = require('./' + process.argv[4]).rows
+letterCodes = require './letterCodes.json'
 
 sessionLength = 80
 
@@ -121,6 +122,8 @@ for session in sessionData
     sessionDoc.submissions = session.value.content
     for sch in schedule
         if session.value.schedule == sch.id
+            if letterCodes.code[sch.id]?
+                sessionDoc.letterCode = letterCodes.code[sch.id]
             sessionDoc.room = sch.value.room
             sessionDoc.venue = sch.value.venue
     
@@ -140,6 +143,8 @@ for submission in submissionData
     if submissionValue.authorKeywords?
         submissionValue.authorKeywords = submissionValue.authorKeywords.split(/[\n\t,;\\]+/).map (word) ->
             word.trim().toLowerCase().replace '.', ''
+    if letterCodes.code[submissionValue._id]?
+        submissionValue.letterCode = letterCodes.code[submissionValue._id]
     delete submissionValue._id
     delete submissionValue._rev
     if submissionValue.session?
