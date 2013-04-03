@@ -367,6 +367,13 @@
 
     $(".tile").on("vclick", function(){
         var submissionId = $(this).attr("submissionid");
+        submissionId = submissionId.replace(/pn/,"chi");
+        submissionId = submissionId.replace(/crs/,"cr");
+        submissionId = submissionId.replace(/tochi/,"to");
+        submissionId = submissionId.replace(/case/,"cs");
+        submissionId = submissionId.replace(/pan/,"pl");
+        submissionId = submissionId.replace(/sig/,"si");
+        submissionId = submissionId.replace(/alt/,"alt");
         NativeBridge.call('addToSchedule',submissionId,thisiscallback);
     });
 
