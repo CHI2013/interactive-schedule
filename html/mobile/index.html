@@ -204,6 +204,7 @@
       this.current = 0;
       this.submissionId = 0;
       this.submissions = {};
+      this.isInSchedule = false;
     };
 
     //Creates 7 Tile objects
@@ -237,7 +238,8 @@
                 if (tile.total > 0){
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
-                tile.isInSchedule = NativeBridge.call('isInSchedule',mapId(tile.submissionId),thisiscallback);                  
+                var mappedId = mapId(tile.submissionId);
+                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback);                  
                 }
               }
             }
@@ -295,10 +297,12 @@
         tiles[i].innerHTML = tile.text;
         tiles[i].setAttribute("submissionId", tile.submissionId)
         if(tile.isInSchedule){
-          tiles[i].innerHTML += " In Schedule";
+          tiles[i].innerHTML += "In Schedule";
+          tiles[i].setAttribute("isInSchedule", true);
         }
         else{
           tiles[i].innerHTML += " Not In Schedule";
+          tiles[i].setAttribute("isInSchedule", false);
         }
         
         //Code to update highlighted crumb
@@ -401,6 +405,7 @@
           tiles2[i].isInSchedule = status;
         }
       }
+        loadData();
     };
     function mapId(id){
         id = id.replace(/pn/,"chi")
