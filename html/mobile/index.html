@@ -236,7 +236,8 @@
 
                 if (tile.total > 0){
                 tile.text = tile.submissions[tile.current].title;
-                tile.submissionId = tile.submissions[tile.current]._id;                  
+                tile.submissionId = tile.submissions[tile.current]._id;
+                tile.isInSchedule = NativeBridge.call('isInSchedule',mapId(tile.submissionId),thisiscallback);                  
                 }
               }
             }
@@ -259,6 +260,14 @@
         tiles[i].innerHTML = tile.text;
         tiles[i].setAttribute("submissionId", tile.submissionId);
         tiles[i].setAttribute("total", tile.total);
+        tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
+
+        if(tile.isInSchedule){
+          tiles[i].innerHTML += " In Schedule";
+        }
+        else{
+          tiles[i].innerHTML += " Not In Schedule";
+        }
         }
       }
     };
@@ -274,7 +283,7 @@
         var tile = tiles2[i];
         if(tile.id == tileId)
         {
-                  talkId = talkId % tile.total;
+        talkId = talkId % tile.total;
         //assign new text and id to logical tile
         tile.text= tile.submissions[talkId].title;
         tile.submissionId = tile.submissions[tile.current]._id;
@@ -285,6 +294,12 @@
         //tiles is the visual tiles, tiles2 are the logical tiles
         tiles[i].innerHTML = tile.text;
         tiles[i].setAttribute("submissionId", tile.submissionId)
+        if(tile.isInSchedule){
+          tiles[i].innerHTML += " In Schedule";
+        }
+        else{
+          tiles[i].innerHTML += " Not In Schedule";
+        }
         
         //Code to update highlighted crumb
         //Get this tile's crumbs
@@ -366,17 +381,37 @@
     });
 
     $(".tile").on("vclick", function(){
-        var submissionId = $(this).attr("submissionid");
-        submissionId = submissionId.replace(/pn/,"chi");
-        submissionId = submissionId.replace(/crs/,"cr");
-        submissionId = submissionId.replace(/tochi/,"to");
-        submissionId = submissionId.replace(/case/,"cs");
-        submissionId = submissionId.replace(/pan/,"pl");
-        submissionId = submissionId.replace(/sig/,"si");
-        submissionId = submissionId.replace(/alt/,"alt");
-        NativeBridge.call('addToSchedule','chi108',thisiscallback);
-        // NativeBridge.call('addToSchedule',submissionId,thisiscallback);
+        var submissionId = mapId($(this).attr("submissionid"));
+        var isInSchedule = $(this).attr("isInSchedule");
+        var tileId = $(this).attr("id");
+
+        if (isInSchedule) {
+             NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
+             updateTile(tileId,true);
+        }
+        else{
+             NativeBridge.call('addToSchedule',submissionId,thisiscallback);
+             updateTile(tileId,false);
+        };
     });
+
+    function updateTile(id, status){
+      for(var i =0; i< tiles2.length; i++){
+        if(tiles2[i].id == id){
+          tiles2[i].isInSchedule = status;
+        }
+      }
+    };
+    function mapId(id){
+        id = id.replace(/pn/,"chi")
+            .replace(/crs/,"cr")
+            .replace(/tochi/,"to")
+            .replace(/case/,"cs")
+            .replace(/pan/,"pl")
+            .replace(/sig/,"si")
+            .replace(/alt/,"alt");
+        return id;
+    }
 
     //Function called after a new filter is posted to server
     //Populates arrays with all titles for each filter
@@ -412,7 +447,7 @@
   <div id ="main_grid" data-role="content"> 
     <div  class="ui-grid-a">
       <div id="A" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">Interactivity</a></div>
-      <div id="B" class="ui-block-b tile green"><a href="#tiles" data-transition="slide">...</a></div>
+      <div id="B" class="ui-block-b tile green"><a href="#tiles" data-transition="slide">...</a> </div>
       <div id="C" class="ui-block-a tile blue"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="D" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="E" class="ui-block-a tile red"><a href="#tiles" data-transition="slide">...</a></div>
