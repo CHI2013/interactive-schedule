@@ -180,6 +180,7 @@
       this.current = 0;
       this.submissionId = 0;
       this.submissions = {};
+      this.isInSchedule = false;
     };
 
     Tile.prototype.updateCurrent = function(current){
@@ -366,7 +367,7 @@
 
     $(".tile").on("vclick", function(){
         var submissionId = $(this).attr("submissionid");
-        NativeBridge.call('isInSchedule',submissionId,thisiscallback);
+        NativeBridge.call('addToSchedule',submissionId,thisiscallback);
     });
 
     //Function called after a new filter is posted to server
