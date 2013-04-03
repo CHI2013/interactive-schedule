@@ -374,7 +374,8 @@
         submissionId = submissionId.replace(/pan/,"pl");
         submissionId = submissionId.replace(/sig/,"si");
         submissionId = submissionId.replace(/alt/,"alt");
-        NativeBridge.call('addToSchedule',submissionId,thisiscallback);
+        NativeBridge.call('addToSchedule','chi108',thisiscallback);
+        // NativeBridge.call('addToSchedule',submissionId,thisiscallback);
     });
 
     //Function called after a new filter is posted to server
