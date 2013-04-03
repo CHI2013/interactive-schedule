@@ -22,7 +22,7 @@
 
       <h3> Welcome to CHI'13 interactive schedule. </h3>
       <p> Here you can interact with the large displays found through the conference and discover interesting events and add them to your schedule.</p>
-      <p> You found one of the screens? Great! Now, <a href="#screens" data-transition="slide">which one is it?</a></p>
+      <p> You found one of the large displays? Great! Now, <a href="#screens" data-transition="slide">which one is it?</a></p>
   </div>
 </div>
 
@@ -35,7 +35,7 @@
   </div>
  
   <div data-role="content"> 
-    <h3> I'm standing next to screen...</h3>
+    <h3> The label at the top says...</h3>
     <ul  id="screen_list" data-role="listview" data-filter="false">
       <li><h3><a href="#options?screen=1" data-transition="slide">Screen 1</a></h3></li>
       <li><h3><a href="#options?screen=2" data-transition="slide">Screen 2</a></h3></li>
@@ -362,6 +362,11 @@
       //     $details.css("opacity","1");
       // }
     
+    });
+
+    $(".tile").on("vclick", function(){
+        var submissionId = $(this).attr("submissionid");
+        NativeBridge.call('isInSchedule',submissionId,thisiscallback);
     });
 
     //Function called after a new filter is posted to server

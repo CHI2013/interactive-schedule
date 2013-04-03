@@ -3,9 +3,7 @@
 	display: block;
   }
   
-  .selected{
-    background-color: rgba(166,166,166,1);
-  }
+
 
   .invisible{
     visibility:hidden;
@@ -42,4 +40,14 @@
 
   .purple{
     background-color: #CAB2D9;
+  }
+
+div[data-role="content"]{
+  background-color: #fff;
+  margin:5px;
+  border-radius: 4px;
+}
+
+  .selected{
+    background-color: rgba(166,166,166,1) !important;
   }
