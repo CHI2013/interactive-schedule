@@ -134,7 +134,7 @@
   </script>
   <div data-role="header" data-position="fixed">
     <h1>Search</h1>
-    <a id="post" class=" ui-btn-right invisible" href="#tiles" data-icon="check" data-theme="b">Post</a>
+    <a id="post" class=" ui-btn-right invisible" href="#tiles" data-icon="check">Post</a>
   </div>
  
   <div data-role="content"> 
@@ -206,7 +206,9 @@
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
                 var mappedId = mapId(tile.submissionId);
-                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback);                  
+                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback); 
+                alert(NativeBridge.call('isInSchedule', mappedId,thisiscallback));
+                //tile.isInSchedule = "true";                 
                 }
               }
             }
@@ -229,6 +231,7 @@
         tiles[i].setAttribute("submissionId", tile.submissionId);
         tiles[i].setAttribute("total", tile.total);
         tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
+        tiles[i].setAttribute("current", tile.current);
 
         if(tile.isInSchedule){
           tiles[i].innerHTML += " In Schedule";
@@ -244,9 +247,9 @@
   //called on tick
     function updateTile(tileId, index, status){
 
-      console.log("ID: " + tileId  + "  " + "current" + index);
+      
       //loop used to find the tile with the right id
-      if(index){
+        console.log("Update tile - ID: " + tileId  + "  " + "index: " + index + " status: " + status);
         for(var i = 0; i< tiles2.length; i++)
         {
 
@@ -258,14 +261,17 @@
           //assign new text, schedule_status and id to logical tile
           tile.text= tile.submissions[index].title;
           tile.submissionId = tile.submissions[tile.current]._id;
-          tiles.isInSchedule = status;
+          if(status !== "ignore")
+          tile.isInSchedule = status;
           //assign new current value to logical tile
           tile.current = index;
 
           //update visual tiles
           //tiles is the visual tiles, tiles2 are the logical tiles
           tiles[i].innerHTML = tile.text;
-          tiles[i].setAttribute("submissionId", tile.submissionId)
+          tiles[i].setAttribute("submissionId", tile.submissionId);
+          tiles[i].setAttribute("current", tile.current);
+
           if(tile.isInSchedule){
             tiles[i].innerHTML += "In Schedule";
             tiles[i].setAttribute("isInSchedule", true);
@@ -276,7 +282,7 @@
           }
           }
         }
-      }
+      
     };
 
     //function called after we iterate through all session events
@@ -302,7 +308,7 @@
          {
           for(var id in count)
           {
-             updateTile(id, count[id]);
+             updateTile(id, count[id], "ignore");
             for(var i = 0; i<tiles.length;i++)
             {
               if(id == tiles[i].getAttribute("id"))
@@ -323,14 +329,18 @@
         var submissionId = mapId($(this).attr("submissionid"));
         var isInSchedule = $(this).attr("isInSchedule");
         var tileId = $(this).attr("id");
-
-        if (isInSchedule) {
-             NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
-             updateTile(tileId,0,true);
+        var index = $(this).attr("current")
+        ;
+        console.log("Is in schedule? " + isInSchedule);
+        if (isInSchedule ==="true") {
+            // NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
+             updateTile(tileId,index,false);
+             console.log("ororor");
         }
-        else{
-             NativeBridge.call('addToSchedule',submissionId,thisiscallback);
-             updateTile(tileId,0,false);
+        else if(isInSchedule === "false"){
+             //NativeBridge.call('addToSchedule',submissionId,thisiscallback);
+             updateTile(tileId,index,true);
+             console.log("rarararar");
         };
     });
 
