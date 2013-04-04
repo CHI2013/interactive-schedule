@@ -149,28 +149,13 @@
     $(document).on("pageinit","#tiles", function(){
     var glanceHost = "92.243.30.77:8000";
 
-     
-      // $.getJSON('http://'+glanceHost+'/'+'tiles'+'?callback=?'  , function(data) {
-      //     console.log(data);
-      // });
-
     var socket = io.connect("http://"+window.location.hostname, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
     
     //visual tiles
     var tiles = $(".tile");
-    var filters =[];
     //logical tiles
     var tiles2 = [];
-
-    //infamous global variables
-    var onsync = true;
-    var missed =[];
-
-    var globalId = "";
-    var globalSubId = 0;
-
-    var tagTileId = ""
 
     //Logical structure for each tile data
     function Tile (id){
@@ -183,21 +168,6 @@
       this.isInSchedule = false;
     };
 
-    Tile.prototype.updateCurrent = function(current){
-      this.current = current;
-    };
-
-    Tile.prototype.getCurrent = function(){
-      return this.current;
-    };
-
-    Tile.prototype.updateTotal = function(total){
-      this.total = total;
-    };
-    Tile.prototype.getTotal = function(){
-      return this.total;
-    };
-
     Tile.prototype.reset = function(){
       this.text = "Select a keyword";
       this.total = 0;
@@ -207,7 +177,7 @@
       this.isInSchedule = false;
     };
 
-    //Creates 7 Tile objects
+    //Creates 8 Tile objects
     function createTiles(){
       var ids = ["A","B","C","D","E","F","G","H"];
       for (var i=0; i< ids.length; i++){
@@ -215,9 +185,6 @@
         tiles2.push(tile);
       }
     };
-
-    //Called at load
-    createTiles();
 
     //Load existing JSON data from /tiles and assign it to logical tiles
     function loadData(){
@@ -245,7 +212,6 @@
             }
           }
         }
-
         showSubmissions();
       });
     }
@@ -275,58 +241,42 @@
     };
 
   //Update logical tiles then visual tiles
-    function updateSubmissions(tileId, talkId){
+  //called on tick
+    function updateTile(tileId, index, status){
 
-      console.log("ID: " + tileId  + "  " + "current" + talkId);
+      console.log("ID: " + tileId  + "  " + "current" + index);
       //loop used to find the tile with the right id
-      for(var i = 0; i< tiles2.length; i++)
-      {
-
-        var tile = tiles2[i];
-        if(tile.id == tileId)
+      if(index){
+        for(var i = 0; i< tiles2.length; i++)
         {
-        talkId = talkId % tile.total;
-        //assign new text and id to logical tile
-        tile.text= tile.submissions[talkId].title;
-        tile.submissionId = tile.submissions[tile.current]._id;
-        //assign new current value to logical tile
-        tile.current = talkId;
 
-        //update visual tiles
-        //tiles is the visual tiles, tiles2 are the logical tiles
-        tiles[i].innerHTML = tile.text;
-        tiles[i].setAttribute("submissionId", tile.submissionId)
-        if(tile.isInSchedule){
-          tiles[i].innerHTML += "In Schedule";
-          tiles[i].setAttribute("isInSchedule", true);
-        }
-        else{
-          tiles[i].innerHTML += " Not In Schedule";
-          tiles[i].setAttribute("isInSchedule", false);
-        }
-        
-        //Code to update highlighted crumb
-        //Get this tile's crumbs
-        var crumbs = $('#'+tileId).parent().children('.circle');
+          var tile = tiles2[i];
+          if(tile.id == tileId)
+          {
+          index = index % tile.total;
+          //Update logical tiles
+          //assign new text, schedule_status and id to logical tile
+          tile.text= tile.submissions[index].title;
+          tile.submissionId = tile.submissions[tile.current]._id;
+          tiles.isInSchedule = status;
+          //assign new current value to logical tile
+          tile.current = index;
 
-        //Highlight current
-        //crumbs[talkId].classList.remove('circle');
-        //crumbs[talkId].classList.toggle('circle_selected');
-
-        for(var j =0; j<crumbs.length;j++){
-          if(talkId != j)
-          crumbs[j].style.backgroundColor = 'gray';
-          else{
-          crumbs[talkId].style.backgroundColor = 'white';
-
+          //update visual tiles
+          //tiles is the visual tiles, tiles2 are the logical tiles
+          tiles[i].innerHTML = tile.text;
+          tiles[i].setAttribute("submissionId", tile.submissionId)
+          if(tile.isInSchedule){
+            tiles[i].innerHTML += "In Schedule";
+            tiles[i].setAttribute("isInSchedule", true);
           }
-
-        }
-
+          else{
+            tiles[i].innerHTML += " Not In Schedule";
+            tiles[i].setAttribute("isInSchedule", false);
+          }
+          }
         }
       }
-
-
     };
 
     //function called after we iterate through all session events
@@ -343,19 +293,16 @@
       //gray details button again
       var $details = $("#" + tileId).parent().parent().parent().parent().find('.details-btn');
       $details.css("opacity","0.1");
-      }
+    }
 
     //Function triggered by the server every X milliseconds
     socket.on('tick', function(count) {
         console.log("tick");
-        console.log(count);
         if(!count.isEmpty)
          {
           for(var id in count)
           {
-             updateSubmissions(id, count[id]);
-             console.log("Called update for id: " +  id);
-
+             updateTile(id, count[id]);
             for(var i = 0; i<tiles.length;i++)
             {
               if(id == tiles[i].getAttribute("id"))
@@ -370,18 +317,6 @@
             }
           }
          }
-
-      // if(!timer)
-      //   createTimer();
-      // else{
-      //   timer.reset()
-      // }
-      
-      // if($("#" + count[id]).html() != "Select a keyword"){  
-      //      var $details = $(this).parent().parent().parent().parent().find('.details-btn');
-      //     $details.css("opacity","1");
-      // }
-    
     });
 
     $(".tile").on("vclick", function(){
@@ -391,22 +326,14 @@
 
         if (isInSchedule) {
              NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
-             updateTile(tileId,true);
+             updateTile(tileId,0,true);
         }
         else{
              NativeBridge.call('addToSchedule',submissionId,thisiscallback);
-             updateTile(tileId,false);
+             updateTile(tileId,0,false);
         };
     });
 
-    function updateTile(id, status){
-      for(var i =0; i< tiles2.length; i++){
-        if(tiles2[i].id == id){
-          tiles2[i].isInSchedule = status;
-        }
-      }
-        loadData();
-    };
     function mapId(id){
         id = id.replace(/pn/,"chi")
             .replace(/crs/,"cr")
@@ -440,7 +367,8 @@
       }       
     });
 
-
+    //Called at load
+    createTiles();
     loadData();
     });
   </script>
