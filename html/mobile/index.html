@@ -206,9 +206,8 @@
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
                 var mappedId = mapId(tile.submissionId);
-                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback); 
-                alert(NativeBridge.call('isInSchedule', mappedId,thisiscallback));
-                //tile.isInSchedule = "true";                 
+//                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback); 
+
                 }
               }
             }
