@@ -321,10 +321,10 @@
         var submissionId = mapId($(this).attr("submissionid"));
         var isInSchedule = $(this).attr("isInSchedule");
         var tileId = $(this).attr("id");
-        var index = $(this).attr("current")
-        ;
+        var index = $(this).attr("current");
+
         console.log("Is in schedule? " + isInSchedule);
-        if (isInSchedule ==="true") {
+        if (isInSchedule === "true") {
             // NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
              // updateTile(tileId,index,false);
 
@@ -359,7 +359,11 @@
         // temp fix for testing on web
         if(status == undefined)
           status = false;
+
+        if(status == "True")
+          status = "true";
         return status;
+
     }
 
     //Function called after a new filter is posted to server
