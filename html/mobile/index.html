@@ -208,7 +208,7 @@
                 if (tile.total > 0){
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
-                tile.isInSchedule = checkStatus(tile.submissionId);      
+                tile.isInSchedule = checkStatus(tile.submissionId);
                 }
               }
             }
@@ -233,7 +233,7 @@
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
           tiles[i].setAttribute("current", tile.current);
 
-          if(tile.isInSchedule === "true"){
+          if(tile.isInSchedule === true){
               $('#'+tile.id).toggleClass("check");
             }
           else{
@@ -275,8 +275,8 @@
             $('#'+tile.id).addClass("check");
           }
           else{
-            $('#'+tile.id).removeClass("check");
             tiles[i].setAttribute("isInSchedule", false);
+            $('#'+tile.id).removeClass("check");
           }
           }
         }
@@ -336,6 +336,9 @@
         };
     });
 
+/*
+ Maps IDs from the couchDB database to the PCS databse, required to interact with iOS app 
+*/
     function mapId(id){
       if(id){
         id = id.replace(/pn/,"chi")
@@ -350,13 +353,22 @@
       else return false;
     }
 
+/*
+Calls native iOS function call to check if submission is in schedule
+Returns true or false depending on bridge call result which can be:
+"Error","True","False" 
+*/
     function checkStatus(id){
       var status = NativeBridge.call('isInSchedule', mapId(id), thisiscallback);
-        // temp fix for testing on web
+      
+      // temp fix for testing on web
       if(status == undefined)
         return false;
-      else if(status == "True")
-        return  true;
+
+      if(status === "True")
+          return  true;
+          else
+            return false;
     }
 
     //Function called after a new filter is posted to server

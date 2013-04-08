@@ -24,6 +24,7 @@
     width:48% !important;
     padding: 5px 5px;
     text-shadow:none;
+    overflow:hidden;
   }
   .remove{
      background: url('images/remove.png') no-repeat bottom right;
