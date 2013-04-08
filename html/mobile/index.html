@@ -14,7 +14,13 @@
 <body> 
 
 <div data-role="page" id="home" data-add-back-btn="true">
+  <script>
+    function closeISchedule(){
+      NativeBridge.call('closeISchedule');
+    }  
+  </script>
   <div data-role="header" data-position="fixed">
+      <a href="#" data-role="button" data-icon="arrow-l" onclick="closeISchedule();">More</a>     
       <h1>iSchedule</h1>
   </div>
   <div data-role="content"> 
@@ -35,18 +41,18 @@
   <div data-role="content"> 
     <h3> The label at the top says...</h3>
     <ul  id="screen_list" data-role="listview" data-filter="false">
-      <li><h3><a href="#options?screen=1" data-transition="slide">Screen 1</a></h3></li>
-      <li><h3><a href="#options?screen=2" data-transition="slide">Screen 2</a></h3></li>
-      <li><h3><a href="#options?screen=3" data-transition="slide">Screen 3</a></h3></li>
-      <li><h3><a href="#options?screen=4" data-transition="slide">Screen 4</a></h3></li>
-      <li><h3><a href="#options?screen=5" data-transition="slide">Screen 5</a></h3></li>
-      <li><h3><a href="#options?screen=6" data-transition="slide">Screen 6</a></h3></li>
+      <li><h3><a href="#tiles?screen=1" data-transition="slide">Screen 1</a></h3></li>
+      <li><h3><a href="#tiles?screen=2" data-transition="slide">Screen 2</a></h3></li>
+      <li><h3><a href="#tiles?screen=3" data-transition="slide">Screen 3</a></h3></li>
+      <li><h3><a href="#tiles?screen=4" data-transition="slide">Screen 4</a></h3></li>
+      <li><h3><a href="#tiles?screen=5" data-transition="slide">Screen 5</a></h3></li>
+      <li><h3><a href="#tiles?screen=6" data-transition="slide">Screen 6</a></h3></li>
     </ul>
   </div>
 </div>
 
 
-<div data-role="page" id="options" data-add-back-btn="true" data-back-btn-text="Screens">
+<!-- <div data-role="page" id="options" data-add-back-btn="true" data-back-btn-text="Screens">
   <div data-role="header" data-position="fixed" >
     <h1>iSchedule</h1>
   </div>
@@ -57,7 +63,7 @@
     <p> I want to show stuff relevant to my interest on the big display. I want to <a href="#search" data-transition="slide">search. </a></p>
   </div>
  
-</div>
+</div> -->
 
 <div data-role="page" id="search"  data-add-back-btn="true"  data-back-btn-text="Back">
   <script>
@@ -209,6 +215,7 @@
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
                 tile.isInSchedule = checkStatus(tile.submissionId);
+                //tile.isInSchedule = true;
                 }
               }
             }
@@ -243,15 +250,13 @@
     };
 
   //Update logical tiles then visual tiles
-  //called on tick
+  //called on thisiscallback
     function updateTile(tileId, index, status){      
-      //loop used to find the tile with the right id
-        // console.log("Update tile - ID: " + tileId  + "  " + "index: " + index + " status: " + status);
-        for(var i = 0; i< tiles2.length; i++)
+      for(var i = 0; i< tiles2.length; i++)
+      {
+        var tile = tiles2[i];
+        if(tile.id == tileId)
         {
-          var tile = tiles2[i];
-          if(tile.id == tileId)
-          {
           index = index % tile.total;
           //Update logical tiles
           //assign new text, schedule_status and id to logical tile
@@ -260,7 +265,7 @@
           if(status !== "ignore")
             tile.isInSchedule = status;
           else
-            // tile.isInSchedule = checkStatus(tileId);
+           tile.isInSchedule = checkStatus(tileId);
           //assign new current value to logical tile
           tile.current = index;
 
@@ -278,9 +283,8 @@
             tiles[i].setAttribute("isInSchedule", false);
             $('#'+tile.id).removeClass("check");
           }
-          }
         }
-      
+      }
     };
 
     //function called after we iterate through all session events
@@ -321,19 +325,17 @@
         var isInSchedule = $(this).attr("isInSchedule");
         var tileId = $(this).attr("id");
         var index = $(this).attr("current");
+        var text = $(this).text();
 
-        console.log("Was in shedule before click in schedule? " + isInSchedule);
-        if (isInSchedule === "true") {
-            // NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
-             // updateTile(tileId,index,false);
-             NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
-        }
-        else if(isInSchedule === "false"){
-             //NativeBridge.call('addToSchedule',submissionId,thisiscallback);
-             // updateTile(tileId,index,true);
-             NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
-
-        };
+        if(text === "...")
+            $.mobile.changePage("#search?ID="+tileId, "slide", true, true);
+        else
+          if (isInSchedule === "true") {
+               NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+          }
+          else if(isInSchedule === "false"){
+               NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+          };
     });
 
 /*
@@ -400,7 +402,7 @@ Returns true or false depending on bridge call result which can be:
  
   <div id ="main_grid" data-role="content"> 
     <div  class="ui-grid-a">
-      <div id="A" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">Interactivity</a></div>
+      <div id="A" class="ui-block-a tile green"><a href="#search" data-transition="slide">...</a></div>
       <div id="B" class="ui-block-b tile green"><a href="#tiles" data-transition="slide">...</a> </div>
       <div id="C" class="ui-block-a tile blue"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="D" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">...</a></div>
