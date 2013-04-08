@@ -233,7 +233,7 @@
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
           tiles[i].setAttribute("current", tile.current);
 
-          if(tile.isInSchedule){
+          if(tile.isInSchedule === "true"){
               $('#'+tile.id).toggleClass("check");
             }
           else{
@@ -246,10 +246,9 @@
   //called on tick
     function updateTile(tileId, index, status){      
       //loop used to find the tile with the right id
-        console.log("Update tile - ID: " + tileId  + "  " + "index: " + index + " status: " + status);
+        // console.log("Update tile - ID: " + tileId  + "  " + "index: " + index + " status: " + status);
         for(var i = 0; i< tiles2.length; i++)
         {
-
           var tile = tiles2[i];
           if(tile.id == tileId)
           {
@@ -261,7 +260,7 @@
           if(status !== "ignore")
             tile.isInSchedule = status;
           else
-            tile.isInSchedule = checkStatus(tileId);
+            // tile.isInSchedule = checkStatus(tileId);
           //assign new current value to logical tile
           tile.current = index;
 
@@ -323,20 +322,17 @@
         var tileId = $(this).attr("id");
         var index = $(this).attr("current");
 
-        console.log("Is in schedule? " + isInSchedule);
+        console.log("Was in shedule before click in schedule? " + isInSchedule);
         if (isInSchedule === "true") {
             // NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
              // updateTile(tileId,index,false);
-
              NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
-             console.log("removed from schedule");
         }
         else if(isInSchedule === "false"){
              //NativeBridge.call('addToSchedule',submissionId,thisiscallback);
              // updateTile(tileId,index,true);
-
              NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
-             console.log("added to schedule");
+
         };
     });
 
@@ -357,13 +353,10 @@
     function checkStatus(id){
       var status = NativeBridge.call('isInSchedule', mapId(id), thisiscallback);
         // temp fix for testing on web
-        if(status == undefined)
-          status = false;
-
-        if(status == "True")
-          status = "true";
-        return status;
-
+      if(status == undefined)
+        return false;
+      else if(status == "True")
+        return  true;
     }
 
     //Function called after a new filter is posted to server
