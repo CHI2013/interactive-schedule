@@ -18,8 +18,14 @@ html/lib/findBiggestTimeSlot.js
 
 bootstrap_scripts/paper_sessions_modified.csv
 bootstrap_scripts/json
+<<<<<<< HEAD
 bootstrap_scripts/json-old/authors-2013-1-4-11-32-16.json
 bootstrap_scripts/json-old/groups-2013-1-4-11-32-9.json
 bootstrap_scripts/json-old/schedule-2013-1-4-11-32-13.json
 bootstrap_scripts/json-old/sessions-2013-1-4-11-32-11.json
 bootstrap_scripts/json-old/submissions-2013-1-4-11-32-5.json
+=======
+glance.log
+
+glance.log
+>>>>>>> Testing Native OS calls

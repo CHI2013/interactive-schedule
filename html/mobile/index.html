@@ -10,7 +10,6 @@
   <script src="js/NativeBridge.js"></script>
   <script src="js/jquery.mobile-1.3.0.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <!--<script src="../lib/phone.js"></script> -->
 </head> 
 <body> 
 
@@ -19,7 +18,6 @@
       <h1>iSchedule</h1>
   </div>
   <div data-role="content"> 
-
       <h3> Welcome to CHI'13 interactive schedule. </h3>
       <p> Here you can interact with the large displays found through the conference and discover interesting events and add them to your schedule.</p>
       <p> You found one of the large displays? Great! Now, <a href="#screens" data-transition="slide">which one is it?</a></p>
@@ -169,13 +167,18 @@
     };
 
     Tile.prototype.reset = function(){
-      this.text = "Select a keyword";
+      this.text = "Search stuff";
       this.total = 0;
       this.current = 0;
       this.submissionId = 0;
       this.submissions = {};
       this.isInSchedule = false;
     };
+
+    function init(){
+      createTiles();
+      loadData();
+    }
 
     //Creates 8 Tile objects
     function createTiles(){
@@ -205,9 +208,7 @@
                 if (tile.total > 0){
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = tile.submissions[tile.current]._id;
-                var mappedId = mapId(tile.submissionId);
-//                tile.isInSchedule = NativeBridge.call('isInSchedule', mappedId,thisiscallback); 
-
+                tile.isInSchedule = checkStatus(tile.submissionId);      
                 }
               }
             }
@@ -223,30 +224,27 @@
       {
         var tile = tiles2[i];
         if(tile.total > 0 && tile.id == tiles[i].getAttribute(
-          "id"))
-        {
-        //tiles is the visual tiles, tiles2 are the logical tiles
-        tiles[i].innerHTML = tile.text;
-        tiles[i].setAttribute("submissionId", tile.submissionId);
-        tiles[i].setAttribute("total", tile.total);
-        tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
-        tiles[i].setAttribute("current", tile.current);
+            "id"))
+          {
+          //tiles is the visual tiles, tiles2 are the logical tiles
+          tiles[i].innerHTML = tile.text;
+          tiles[i].setAttribute("submissionId", tile.submissionId);
+          tiles[i].setAttribute("total", tile.total);
+          tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
+          tiles[i].setAttribute("current", tile.current);
 
-        if(tile.isInSchedule){
-          tiles[i].innerHTML += " In Schedule";
-        }
-        else{
-          tiles[i].innerHTML += " Not In Schedule";
-        }
+          if(tile.isInSchedule){
+              $('#'+tile.id).toggleClass("check");
+            }
+          else{
+          }
         }
       }
     };
 
   //Update logical tiles then visual tiles
   //called on tick
-    function updateTile(tileId, index, status){
-
-      
+    function updateTile(tileId, index, status){      
       //loop used to find the tile with the right id
         console.log("Update tile - ID: " + tileId  + "  " + "index: " + index + " status: " + status);
         for(var i = 0; i< tiles2.length; i++)
@@ -261,7 +259,9 @@
           tile.text= tile.submissions[index].title;
           tile.submissionId = tile.submissions[tile.current]._id;
           if(status !== "ignore")
-          tile.isInSchedule = status;
+            tile.isInSchedule = status;
+          else
+            tile.isInSchedule = checkStatus(tileId);
           //assign new current value to logical tile
           tile.current = index;
 
@@ -272,11 +272,11 @@
           tiles[i].setAttribute("current", tile.current);
 
           if(tile.isInSchedule){
-            tiles[i].innerHTML += "In Schedule";
             tiles[i].setAttribute("isInSchedule", true);
+            $('#'+tile.id).addClass("check");
           }
           else{
-            tiles[i].innerHTML += " Not In Schedule";
+            $('#'+tile.id).removeClass("check");
             tiles[i].setAttribute("isInSchedule", false);
           }
           }
@@ -291,13 +291,6 @@
       tiles[index].innerHTML = tile.text;
       tiles[index].setAttribute("submissionId", tile.submissionId)
       tiles[index].setAttribute("total", tile.total)
-
-      //remove breadcrumbs
-      $('#'+tileId).parent().children('div').remove('.circle');
-
-      //gray details button again
-      var $details = $("#" + tileId).parent().parent().parent().parent().find('.details-btn');
-      $details.css("opacity","0.1");
     }
 
     //Function triggered by the server every X milliseconds
@@ -333,17 +326,22 @@
         console.log("Is in schedule? " + isInSchedule);
         if (isInSchedule ==="true") {
             // NativeBridge.call('removeFromSchedule',submissionId,thisiscallback);
-             updateTile(tileId,index,false);
-             console.log("ororor");
+             // updateTile(tileId,index,false);
+
+             NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+             console.log("removed from schedule");
         }
         else if(isInSchedule === "false"){
              //NativeBridge.call('addToSchedule',submissionId,thisiscallback);
-             updateTile(tileId,index,true);
-             console.log("rarararar");
+             // updateTile(tileId,index,true);
+
+             NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+             console.log("added to schedule");
         };
     });
 
     function mapId(id){
+      if(id){
         id = id.replace(/pn/,"chi")
             .replace(/crs/,"cr")
             .replace(/tochi/,"to")
@@ -352,6 +350,16 @@
             .replace(/sig/,"si")
             .replace(/alt/,"alt");
         return id;
+      }
+      else return false;
+    }
+
+    function checkStatus(id){
+      var status = NativeBridge.call('isInSchedule', mapId(id), thisiscallback);
+        // temp fix for testing on web
+        if(status == undefined)
+          status = false;
+        return status;
     }
 
     //Function called after a new filter is posted to server
@@ -361,8 +369,7 @@
     });
 
     socket.on('doneTile', function(data) { 
-      if(onsync)
-      {
+
         for(var i = 0; i<tiles2.length;i++)
         {
           if(data.tileId == tiles2[i].id)
@@ -370,15 +377,11 @@
             doneTile(data.tileId, i);
           }
         }
-      }
-      else{
-        missed.push(data.tileId);
-      }       
+     
     });
 
     //Called at load
-    createTiles();
-    loadData();
+    init();
     });
   </script>
 

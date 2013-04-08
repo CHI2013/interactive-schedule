@@ -23,9 +23,14 @@
     margin: 4px;
     width:48% !important;
     padding: 5px 5px;
-    overflow:hidden;
+    text-shadow:none;
   }
-
+  .remove{
+     background: url('images/remove.png') no-repeat bottom right;
+  }
+ .check{
+     background: url('images/check.png') no-repeat bottom right;
+  }
   .green{
     background-color: #B5E27D;
   }
