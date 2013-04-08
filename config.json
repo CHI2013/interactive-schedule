@@ -8,6 +8,7 @@
     "fixedTime": [2013, 4, 30, 10, 21],
     "timeOffset": 600000,
     "searchFields": ["authors", "room", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries"],
+    "searchFields": ["authors", "room", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries", "letterCode"],
     "breakTiles": {
         "A": {
             "type": "filter"
