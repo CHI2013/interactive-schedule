@@ -7,6 +7,7 @@ chidb = nano.db.use('chi2013');
 submissionData = require('./' + process.argv[2]).rows
 sessionData = require('./' + process.argv[3]).rows
 schedule = require('./' + process.argv[4]).rows
+interactivity = require('./' + process.argv[5]).rows
 letterCodes = require './letterCodes.json'
 
 sessionLength = 80
@@ -126,19 +127,18 @@ for session in sessionData
                 sessionDoc.letterCode = letterCodes.code[sch.id]
             sessionDoc.room = sch.value.room
             sessionDoc.venue = sch.value.venue
-    
-    day = session.value.timeslot.split(' ')[0]
-    start = session.value.timeslot.split(' ')[1].split('-')[0].split(':').map (val) -> parseInt val #Whoa!
-    for id, dayValue of days
-        if dayValue.name == day
-            for timeslot in dayValue.timeslots
-                if timeslots[timeslot].start[0] == start[0]
-                    sessionDoc.timeslot = timeslot
-                    timeslots[timeslot].sessions.push session.value._id
-
+    if session.value.timeslot? and session.value.timeslot.length > 0
+        day = session.value.timeslot.split(' ')[0]
+        start = session.value.timeslot.split(' ')[1].split('-')[0].split(':').map (val) -> parseInt val #Whoa!
+        for id, dayValue of days
+            if dayValue.name == day
+                for timeslot in dayValue.timeslots
+                    if timeslots[timeslot].start[0] == start[0]
+                        sessionDoc.timeslot = timeslot
+                        timeslots[timeslot].sessions.push session.value._id
 submissions = {}
 
-for submission in submissionData
+addSubmission = (submission) ->
     submissionValue = submission.value
     if submissionValue.authorKeywords?
         submissionValue.authorKeywords = submissionValue.authorKeywords.split(/[\n\t,;\\]+/).map (word) ->
@@ -151,7 +151,7 @@ for submission in submissionData
         submissionValue.room = sessions[submissionValue.session].room
     else if submissionValue.sessions?
         submissionValue.room = sessions[submissionValue.sessions[0]].room
-    
+
     institutions = []
     cities = []
     states = []
@@ -184,8 +184,16 @@ for submission in submissionData
         submissionValue.countries  = countries
     
     submissions[submission.id] = submissionValue
+    
+for submission in submissionData
+    addSubmission submission
+
+for submission in interactivity
+    submission.session = 'interactivity'
+    addSubmission submission
 
 computeTimeForSubmission = (id, submission) ->
+    console.log submission.session
     if submission.session?
         session = sessions[submission.session]
     else if submission.sessions? #Submission is multi-session, take start of first
