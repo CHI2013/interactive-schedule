@@ -11,55 +11,59 @@
     "searchFields": ["authors", "room", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries", "letterCode"],
     "breakTiles": {
         "A": {
-            "type": "filter"
+            "type": "filter",
+            "filter": {
+                "when": "now",
+                "room": ["251", "252A"]
+            }
         },
         "B": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["241", "242", "243"]
+                "room": ["252B", "253"]
             }
         },
         "C": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["251", "252"]
+                "room": ["241", "242"]
             }
         },
         "D": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["253", "Blue"]
+                "room": ["243", "Blue"]
             }
         },
         "E": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["Bordeaux", "341"]
+                "venue": "interactivity"
             }
         },
         "F": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["342", "343"]
+                "room": ["Havane", "351", "352"]
             }
         },
         "G": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["Havane", "351"]
+                "room": ["Bordeaux", "342A", "343"]
             }
         },
         "H": {
             "type": "filter",
             "filter": {
                 "when": "now",
-                "room": ["352", "353"]
+                "room": ["361", "362/363"]
             }
         }
     },

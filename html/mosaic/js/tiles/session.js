@@ -51,7 +51,7 @@ function init() {
         html += '<div class="info">';
         html += '<h2>' + item.title + '</h2>';
         html += '<h3>' + authorList.join(', ') + '</h3>';
-        html += '<h3 class="code">abc</h3>';
+        html += '<h3 class="code">' + item.letterCode + '</h3>';
         // html += '<h4>' + item.affiliation + '</h4>';
         html += '</div></div>';
         $('#submissions').append(html);
@@ -69,9 +69,9 @@ function init() {
 
     $('h1').text('Loading...');
 
-    // Set heights
-    var fullHeight = $('body').height() - 15 - $('h1').height();
-    $('#submissions').height(fullHeight);
+    // // Set heights
+    // var fullHeight = $('body').height() - 15 - $('h1').height();
+    // $('#submissions').height(fullHeight);
 }
 
 function tick(ti) {
@@ -81,6 +81,7 @@ function tick(ti) {
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
+    $('body').attr('class', '').addClass('room_' + items[itemIndex].room.replace('362/363', '362'));
     $('h1').text('Room: ' + items[itemIndex].room);
     $('#timeline .schedule').hide();
     $('#timeline .' + items[itemIndex].room).removeClass('active').show();

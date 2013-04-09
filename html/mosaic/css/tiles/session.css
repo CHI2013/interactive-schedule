@@ -6,38 +6,64 @@ body {
     font-family: 'PT Sans', sans-serif;
 }
 
-h1 {
-    display: inline-block;
-    font-variant: small-caps;
-    font-size: 18px;
-    margin: 0;
-    padding: 0;
-    letter-spacing: 1px;
+#header {
+    position: absolute;
+    top: 10px;
+    left: 0px;
+    width: 540px;
+    height: 30px;
 }
 
+#header svg {
+    position: absolute;
+    top: -5px;
+    height: 40px;
+    left: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+#header circle { 
+    display: none;
+    stroke-width: 5; 
+}
+#header circle.theatre { fill: #fff; }
+#header line { 
+    display: none; 
+    stroke-width: 6;
+}
+
+#metro {
+    position: absolute;
+    top: 5px;
+    height: 7px;
+}
 
 #timeline {
     position: absolute;
-    left: 250px;
-    right: 10px;
-    top: 7px;
+    top: 18px;
+    left: 145px;
+    width: 250px;
+    
 }
 
 .schedule {
     float: left;
     display: none;
-    border-width: 1px;
-    border-style: solid;
+    border: 1px solid #7f8184;
     border-radius: 10px;
     box-sizing: border-box;
     height: 10px;
-    margin: 5px 0px;
 }
+
+.schedule.active { background: #7f8184;}
 
 #submissions { 
     position: absolute; 
+    top: 45px;
     left: 10px;
-    right: 10px;
+    width: 520px;
+    height: 360px;
 }
 
 .submission {
@@ -46,82 +72,239 @@ h1 {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    border: 2px solid transparent;
     border-radius: 5px;
 }
 
 .submission .video {
     display: block;
     background: #000;
-    height: 80%;
-    width: 100%;
+    height: 280px;
+    width: 520px;
     margin: 0;
     padding: 0;
     float: left;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    /*width: 100% !important;*/
 }
 
 .submission .info { 
     display: block;
     float: left;
-    padding: 5px 10px; 
-    width: 100%;
-    height: 20%;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    padding: 10px; 
+    width: 520px;
+    height: 80px;
+    color: #fff;
 }
 
 h2 {
-    margin: 0;
+    margin: 0 0 5px 0;
     font-size: 18px;
     line-height: 20px;
-    width: 93%;
+    width: 490px;
 }
 
 h3 {
     margin: 0;
     font-weight: normal;
     font-size: 14px;
-    width: 93%;
+    width: 440px;
 }
 
 h3.code {
     display: block;
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 5px;
+    right: 5px;
     width: 50px;
     text-align: center;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #fff;
-    border-top-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    background: #454648;
+    border: 1px solid #39393c;
+    border-radius: 10px;
+}
+
+/* Tile Metro */
+#tile_A #metro, #tile_C #metro, #tile_E #metro, 
+#tile_F #metro, #tile_G #metro { 
+    left: 10px;
+    right: 0;
+    border-top-left-radius: 10px; 
+    border-bottom-left-radius: 10px;
+}
+
+#tile_B #metro, #tile_D #metro, #tile_E #metro,
+#tile_F #metro, #tile_H #metro {
+    left: 0;
+    right: 5px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 /* Colors */
-#tile_A h1 { color: #f1a16d;}
-#tile_A .schedule { border-color: #f1a16d;}
-#tile_A .submission .info, #tile_A .schedule.active { background: #f1a16d; }
-#tile_A .code { background: #63412a; }
+.room_251   circle, .room_251   line,
+.room_252A  circle, .room_252A  line,
+.room_252B  circle, .room_252B  line,
+.room_252AB circle, .room_252AB line,
+.room_253   circle, .room_253   line {
+    fill: rgb(38, 94, 48);
+    stroke: rgb(38, 94, 48);
+}
 
-#tile_B h1 { color: #B5E27D;}
-#tile_B .schedule { border-color: #B5E27D;}
-#tile_B .submission .info, #tile_B .schedule.active { background: #B5E27D; }
-#tile_B .code { background: #4b6530; }
+.room_251   .submission,
+.room_252A  .submission,
+.room_252B  .submission,
+.room_252AB .submission,
+.room_253   .submission {
+    border-color: rgb(38, 94, 48);
+}
 
-#tile_C h1, #tile_D h1 { color: #AACDE5;}
-#tile_C .schedule, #tile_D .schedule { border-color: #AACDE5;}
-#tile_C .submission .info, #tile_D .submission .info, #tile_C .schedule.active, #tile_D .schedule.active { background: #AACDE5; }
-#tile_C .code, #tile_D .code { background: #1B5097; }
+.room_251   .submission .info, .room_251   #metro, 
+.room_252A  .submission .info, .room_252A  #metro,
+.room_252B  .submission .info, .room_252B  #metro,
+.room_252AB .submission .info, .room_252AB #metro,
+.room_253   .submission .info, .room_253   #metro {
+    background-color: rgb(38, 94, 48); 
+}
 
-#tile_E h1, #tile_F h1 { color: #F59A99;}
-#tile_E .schedule, #tile_F .schedule { border-color: #F59A99;}
-#tile_E .submission .info, #tile_F .submission .info, #tile_E .schedule.active, #tile_F .schedule.active { background: #F59A99; }
-#tile_E .code, #tile_F .code { background: #865252; }
+.room_241   circle, .room_241   line,
+.room_242A  circle, .room_242A  line,
+.room_242B  circle, .room_242B  line,
+.room_242AB circle, .room_242AB line,
+.room_243   circle, .room_243   line,
+.room_Blue  circle, .room_Blue  line {
+    fill: rgb(27, 85, 118);
+    stroke: rgb(27, 85, 118);
+}
 
-#tile_G h1, #tile_H h1 { color: #CAB2D9;}
-#tile_G .schedule, #tile_H .schedule { border-color: #CAB2D9;}
-#tile_G .submission .info, #tile_H .submission .info, #tile_G .schedule.active, #tile_H .schedule.active { background: #CAB2D9; }
-#tile_G .code, #tile_H .code { background: #5C5065; }
+.room_241   .submission,
+.room_242A  .submission,
+.room_242B  .submission,
+.room_242AB .submission,
+.room_243   .submission,
+.room_Blue  .submission {
+    border-color: rgb(27, 85, 118);
+}
+
+.room_241   .submission .info, .room_241   #metro, 
+.room_242A  .submission .info, .room_242A  #metro,
+.room_242B  .submission .info, .room_242B  #metro,
+.room_242AB .submission .info, .room_242AB #metro,
+.room_243   .submission .info, .room_243   #metro,
+.room_Blue  .submission .info, .room_Blue  #metro {
+    background-color: rgb(27, 85, 118); 
+}
+
+.room_Bordeaux circle, .room_Bordeaux line,
+.room_342A     circle, .room_342A     line,
+.room_342B     circle, .room_342B     line,
+.room_342AB    circle, .room_342AB    line,
+.room_343      circle, .room_343      line,
+.room_361      circle, .room_361      line,
+.room_362      circle, .room_362      line {
+    fill: rgb(152, 52, 60);
+    stroke: rgb(152, 52, 60);
+}
+
+.room_Bordeaux .submission,
+.room_342A     .submission,
+.room_342B     .submission,
+.room_342AB    .submission,
+.room_343      .submission,
+.room_361      .submission,
+.room_362      .submission {
+    border-color: rgb(152, 52, 60);
+}
+
+.room_Bordeaux .submission .info, .room_Bordeaux #metro, 
+.room_342A     .submission .info, .room_342A     #metro,
+.room_342B     .submission .info, .room_342B     #metro,
+.room_342AB    .submission .info, .room_342AB    #metro,
+.room_343      .submission .info, .room_343      #metro,
+.room_361      .submission .info, .room_361      #metro,
+.room_362      .submission .info, .room_362      #metro {
+    background-color: rgb(152, 52, 60); 
+}
+
+.room_Havane circle, .room_Havane line,
+.room_352A   circle, .room_352A   line,
+.room_352B   circle, .room_352B   line,
+.room_352AB  circle, .room_352AB  line,
+.room_351    circle, .room_351    line {
+    fill: rgb(211, 120, 60);
+    stroke: rgb(211, 120, 60);
+}
+
+.room_Havane .submission,
+.room_352A   .submission,
+.room_352B   .submission,
+.room_352AB  .submission,
+.room_351    .submission {
+    border-color: rgb(211, 120, 60);
+}
+
+.room_Havane .submission .info, .room_Havane #metro, 
+.room_352A   .submission .info, .room_352A #metro,
+.room_352B   .submission .info, .room_352B #metro,
+.room_352AB  .submission .info, .room_352AB #metro,
+.room_351    .submission .info, .room_351 #metro {
+    background-color: rgb(211, 120, 60); 
+}
+
+#tile_A .left, #tile_C .left, #tile_E .left, 
+#tile_F .left, #tile_G .left , 
+#tile_B .right, #tile_D .right, #tile_E .right,
+#tile_F .right, #tile_H .right {
+    display: block;
+}
+
+.room_251   circle.blue, .room_251   circle.red, .room_251   circle.orange, 
+.room_252A  circle.blue, .room_252A  circle.red, .room_252A  circle.orange, 
+.room_252B  circle.blue, .room_252B  circle.red, .room_252B  circle.orange, 
+.room_252AB circle.blue, .room_252AB circle.red, .room_252AB circle.orange, 
+.room_253   circle.blue, .room_253   circle.red, .room_253   circle.orange, 
+.room_241   circle.green, .room_241   circle.red, .room_241   circle.orange,
+.room_242A  circle.green, .room_242A  circle.red, .room_242A  circle.orange,
+.room_242B  circle.green, .room_242B  circle.red, .room_242B  circle.orange,
+.room_242AB circle.green, .room_242AB circle.red, .room_242AB circle.orange,
+.room_243   circle.green, .room_243   circle.red, .room_243   circle.orange,
+.room_Blue  circle.green, .room_Blue  circle.red, .room_Blue  circle.orange,
+.room_Bordeaux circle.green, .room_Bordeaux circle.blue, .room_Bordeaux circle.orange,
+.room_342A     circle.green, .room_342A     circle.blue, .room_342A     circle.orange,
+.room_342B     circle.green, .room_342B     circle.blue, .room_342B     circle.orange,
+.room_342AB    circle.green, .room_342AB    circle.blue, .room_342AB    circle.orange,
+.room_343      circle.green, .room_343      circle.blue, .room_343      circle.orange,
+.room_361      circle.green, .room_361      circle.blue, .room_361      circle.orange,
+.room_362      circle.green, .room_362      circle.blue, .room_362      circle.orange,
+.room_Havane circle.green, .room_Havane circle.blue, .room_Havane circle.red,
+.room_352A   circle.green, .room_352A   circle.blue, .room_352A   circle.red,
+.room_352B   circle.green, .room_352B   circle.blue, .room_352B   circle.red,
+.room_352AB  circle.green, .room_352AB  circle.blue, .room_352AB  circle.red,
+.room_351    circle.green, .room_351    circle.blue, .room_351    circle.red {
+    display: none !important;
+}
+
+.room_251   .line_251,
+.room_252A  .line_252A,
+.room_252B  .line_252B,
+.room_252AB .line_252AB, .room_252AB .line_252A, .room_252AB .line_252AB,
+.room_253   .line_253,
+.room_241   .line_241,
+.room_242A  .line_242A,
+.room_242B  .line_242B,
+.room_242AB .line_242AB, .room_242AB .line_242A, .room_242AB .line_242B,
+.room_243   .line_243,
+.room_Blue  .line_Blue,
+.room_Bordeaux .line_Bordeaux,
+.room_352A     .line_352A,
+.room_342B     .line_342B,
+.room_342AB    .line_342AB, .room_342AB .line_342A, .room_342AB .line_342B,
+.room_361      .line_361,
+.room_362    .line_362,
+.room_Havane .line_Havane,
+.room_352A   .line_352A,
+.room_352B   .line_352B,
+.room_352AB  .line_352AB, .room_352AB .line_352A, .room_352AB .line_352B,
+.room_351    .line_351 { 
+    display: block !important; 
+}

@@ -17,18 +17,27 @@ body {
 .tile {
     position: absolute;
     width: 540px;
-    height: 384px;
+    height: 405px;
     border: 0;
 }
 
 .row1 { top: 0; }
-.row2 { top: 384px; }
-.row3 { top: 768px; }
-.row4 { top: 1152px; }
-.row5 { top: 1536px; }
+.row2 { top: 405px; }
+.row3 { top: 810px; }
+.row4 { top: 1215px; }
+.row5 { top: 1620px; }
 
 .col1 { left: 0; }
 .col2 { left: 540px; }
+
+.social {
+  position: absolute;
+  top: 1620px;
+  left: 0;
+  width: 1080px;
+  height: 300px;
+  border: 0;
+}
 
 #map {
   position: absolute;
