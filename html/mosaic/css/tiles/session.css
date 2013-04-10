@@ -125,20 +125,24 @@ h3.code {
 }
 
 /* Tile Metro */
-#tile_A #metro, #tile_C #metro, #tile_E #metro, 
-#tile_F #metro, #tile_G #metro { 
+#tile_A #metro, #tile_C #metro, #tile_G #metro { 
     left: 10px;
     right: 0;
     border-top-left-radius: 10px; 
     border-bottom-left-radius: 10px;
 }
 
-#tile_B #metro, #tile_D #metro, #tile_E #metro,
-#tile_F #metro, #tile_H #metro {
+#tile_B #metro, #tile_D #metro, #tile_H #metro {
     left: 0;
     right: 5px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
+}
+
+#tile_E #metro, #tile_F #metro {
+    left: 10px;
+    right: 5px;
+    border-radius: 10px;
 }
 
 /* Colors */
