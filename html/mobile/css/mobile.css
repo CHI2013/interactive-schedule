@@ -25,6 +25,8 @@
     padding: 5px 5px;
     text-shadow:none;
     overflow:hidden;
+    color: white;
+    font-family: 'PT Sans', sans-serif;
   }
   .remove{
      background: url('images/remove.png') no-repeat bottom right;
@@ -33,19 +35,23 @@
      background: url('images/check.png') no-repeat bottom right;
   }
   .green{
-    background-color: #B5E27D;
+    background-color: rgb(38,94,48);
   }
 
   .blue{
-    background-color: #AACDE5;
+    background-color: rgb(27,85,118);
   }
 
   .red{
-    background-color: #F59A99;
+    background-color: rgb(152,52,60);
   }
 
   .purple{
-    background-color: #CAB2D9;
+    background-color: rgb(97,68,122);
+  }
+
+  .orange{
+    background-color: rgb(211,120,60);
   }
 
 div[data-role="content"]{
