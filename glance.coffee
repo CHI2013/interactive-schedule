@@ -494,14 +494,19 @@ class GlanceServer
                     
         filterAutocompleteList = (substring, list) ->
             result = _.clone list
-            todelete = []
-            re = new RegExp substring, 'i'
-            keys = Object.keys list
-            for key in keys
-                if key.search(re) == -1
-                    todelete.push key
-            for key in todelete
-                delete result[key]
+            for source, words of list
+                filteredWords = _.clone words
+                todelete = []
+                re = new RegExp substring, 'i'
+                keys = Object.keys filteredWords
+                for key in keys
+                    if key.search(re) == -1
+                        todelete.push key
+                for key in todelete
+                    delete filteredWords[key]
+                result[source] = filteredWords
+                if Object.keys(filteredWords).length == 0
+                    delete result[source]
             return result
         
         
@@ -526,12 +531,12 @@ class GlanceServer
                                         word = word.trim()
                                         if word.length == 0
                                             continue
-                                        if not _.contains list, word
-                                            newResult[word] = {'source': key, 'submissions': [submission._id]}
-                                            list.push word
-                                        else
-                                            if not _.contains newResult[word].submissions, submission._id
-                                                newResult[word].submissions.push submission._id
+                                        if not newResult[key]?
+                                            newResult[key] = {}
+                                        if not newResult[key][word]?
+                                            newResult[key][word] = []
+                                        if not _.contains newResult[key][word], submission._id
+                                            newResult[key][word].push submission._id
                                 else if _.isArray submission[key]
                                     for substring in submission[key]
                                         split = substring.split(',')
@@ -539,11 +544,12 @@ class GlanceServer
                                             word = word.trim()
                                             if word.length == 0
                                                 continue
-                                            if not _.contains list, word
-                                                newResult[word] = {'source': key, 'submissions': [submission._id]}
-                                                list.push word
-                                            if not _.contains newResult[word].submissions, submission._id
-                                                newResult[word].submissions.push submission._id
+                                            if not newResult[key]?
+                                                newResult[key] = {}
+                                            if not newResult[key][word]?
+                                                newResult[key][word] = []
+                                            if not _.contains newResult[key][word], submission._id
+                                                newResult[key][word].push submission._id
                                             
                     @autoCompleteList  = newResult                
                     result = @autoCompleteList
