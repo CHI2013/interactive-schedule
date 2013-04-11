@@ -10,12 +10,15 @@ var lastPhotoAdded = 0;
 
 function tick() {
     var pseudoCoinFlip = Math.floor((Math.random()*3));
-    if(pseudoCoinFlip == 2 && allPhotos.length > 0)
-        addPhoto(--lastPhotoAdded);
-    else if(allTweets.length > 0)
-        addTweet(--lastTweetAdded);
+    var row = Math.floor((Math.random()*2)); 
 
-    window.setTimeout(tick, 3*1000);
+    if(allPhotos.length > 0 && lastPhotoAdded > 0)
+        addItem(addPhoto(), row);
+    
+    if(allTweets.length > 0 && lastTweetAdded > 0)
+        addItem(addTweet(), row^1);
+
+    window.setTimeout(tick, 7*1000);
 }
 
 function getTweets() {
@@ -45,31 +48,15 @@ function getPhotos(url) {
 $(document).ready(function() {
     getTweets();
     getPhotos(defaultUrl);
-    // $('#social').isotope({
-    //   // options
-    //   itemSelector : '.item',
-    //   masonryHorizontal: {
-    //     rowHeight: 238
-    //   },
-    //   animationEngine: 'css',
-    //   onLayout: function( $elems, instance ) {
-    //     $elems.each(function(i) {
-    //         if($(this).offset().top > 300)
-    //             $(this).remove();
-    //     })
-    //   }
-    // });
 });
 
-function addTweet(i) {
-    var tweet = allTweets[i];
+function addTweet() {
+    var tweet = allTweets[--lastTweetAdded];
 
-    var html = $('<div class="tweet item" id="tweet_' + tweet.id + '">' + 
+    var html = $('<div class="item"><div class="tweet" id="tweet_' + tweet.id + '">' + 
         '<div class="userpic"><img src="' + tweet.profile_image_url + '" /></div>' + 
-        '<div class="byline"><span class="name">' + tweet.from_user_name + '</span> <span class="username">@' + tweet.from_user + '</span><span class="date">' + relative_time(tweet.created_at) + '</span></div>' +
-        '<div class="text">' + tweet.text + '</div></div>');
-
-    addItem(html);
+        '<div class="byline"><span class="name">' + tweet.from_user_name + '</span><br /><span class="username">@' + tweet.from_user + '</span><span class="date">' + relative_time(tweet.created_at) + '</span></div>' +
+        '<div class="text">' + tweet.text + '</div></div></div>');
 
     shownTweets[tweet.id] = tweet;
 
@@ -78,44 +65,35 @@ function addTweet(i) {
         $('#tweet_' + id + ' .byline .date').text(relative_time(t.created_at));                
     }); 
 
-    if(i == 0)
-        getTweets();  
+    if(lastTweetAdded == 0)
+        getTweets(); 
+
+    return html; 
 }
 
 function addPhoto(i) {
-    var photo = allPhotos[i];
-    var which = Math.floor(Math.random()*2) + 5;
+    var photo = allPhotos[--lastPhotoAdded];
+    while(photo.images[5].width < photo.images[5].height && lastPhotoAdded > 0)
+        photo = allPhotos[--lastPhotoAdded];
 
-    var html = $('<img class="photo item" src="' + photo.images[which].source + '" />');
-    addItem(html);
+    var html = $('<div class="photo item"><img src="' + photo.images[5].source + '" /></div>');
 
-    if(i == 0)
+    if(lastPhotoAdded == 0)
         getPhotos(defaultUrl);  
+
+    return html;
 }
 
-function addItem(html) {
-    $('#social').prepend(html)
-        .freetile({
-            animate: true, 
-            elementDelay: 50,
-            callback: function() {
-                $('#social .item').each(function(i) {
-                    var e = $(this), o = e.offset(), h = e.height(),
-                        r = false;
-                    
-                    if(e.hasClass('tweet')) {
-                        r = ((o.top + h) > 300);
-                    } else {
-                        r = (((300 - o.top) / h) < 0.33);
-                    }
-
-                    if(r)
-                        e.fadeOut(200, function() {
-                            $(this).remove();
-                        })
-                })
-            }
-        });
+function addItem(html, container) {
+    container = '#row-' + container;
+    $(html).css('display', 'none');
+    $(container).prepend(html);
+    $(container + ' .item:first').fadeIn(200, function() {
+        var last = $(container + ' .item:last');
+        var offset = last.offset();
+        if((container == '#row-0' && offset.top > 140) || (container == '#row-1' && offset.top > 280))
+            last.remove();
+    });
 }
 
 function relative_time(time_value) {

@@ -6,18 +6,32 @@
     border-top: 5px solid #352537;
 }
 
+.row {
+    float: left;
+    width: 1080px !important;
+    height: 135px !important;
+    overflow: hidden !important;
+}
+
 .item {
     display: block;
     float: left;
     width: 255px;
+    height: 130px;
     margin: 5px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .tweet {
-    background: #352537;
+    display: block;
+    float: left;
     width: 235px;
+    height: 100px;
     padding: 10px;
+    margin: 5px 0;
+    background: #352537;
+    border-radius: 5px;
     color: #ccc;
     font-family: 'PT Sans', sans-serif;
     font-size: 12px;
@@ -45,3 +59,11 @@
 }
 .tweet .byline .date { float: right; }
 /*.tweet .text { margin-left: 45pxpx; }*/
+
+.photo img {
+    display: block;
+    height: 116px;
+    margin: auto auto;
+    border: 7px solid #352537;
+    border-radius: 5px;
+}
