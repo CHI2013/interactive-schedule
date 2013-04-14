@@ -61,7 +61,7 @@ function init() {
         var schedule = durations[room];
         for(var i = 0; i < schedule.length; i++) {
             $('<div></div>')
-                .addClass('schedule').addClass(room).addClass(schedule[i].id)
+                .addClass('schedule').addClass(room.replace('362/363', '362')).addClass(schedule[i].id)
                 .css('width', schedule[i].duration / 80 * 100 + '%')
                 .appendTo('#timeline');
         }

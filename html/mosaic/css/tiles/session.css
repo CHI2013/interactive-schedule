@@ -47,6 +47,21 @@ body {
     
 }
 
+.label {
+    display: none;
+    position: absolute;
+    font-size: 12px;
+    font-weight: normal;
+    top: 6px;
+    color: #fff;
+}
+
+.one { left: 40px; }
+.two { left: 420px;}
+.mid { left: 440px; }
+.one-theatre { left: 25px; }
+.two-theatre { left: 475px; }
+
 .schedule {
     float: left;
     display: none;
@@ -288,27 +303,28 @@ h3.code {
     display: none !important;
 }
 
-.room_251   .line_251,
-.room_252A  .line_252A,
-.room_252B  .line_252B,
-.room_252AB .line_252AB, .room_252AB .line_252A, .room_252AB .line_252AB,
-.room_253   .line_253,
-.room_241   .line_241,
-.room_242A  .line_242A,
-.room_242B  .line_242B,
-.room_242AB .line_242AB, .room_242AB .line_242A, .room_242AB .line_242B,
-.room_243   .line_243,
-.room_Blue  .line_Blue,
-.room_Bordeaux .line_Bordeaux,
-.room_352A     .line_352A,
-.room_342B     .line_342B,
-.room_342AB    .line_342AB, .room_342AB .line_342A, .room_342AB .line_342B,
-.room_361      .line_361,
-.room_362    .line_362,
-.room_Havane .line_Havane,
-.room_352A   .line_352A,
-.room_352B   .line_352B,
-.room_352AB  .line_352AB, .room_352AB .line_352A, .room_352AB .line_352B,
-.room_351    .line_351 { 
+.room_251 .label_251, .room_251   .line_251,
+.room_252A .label_252A, .room_252A  .line_252A,
+.room_252B .label_252B, .room_252B  .line_252B,
+.room_252AB .label_252AB, .room_252AB .line_252AB, .room_252AB .line_252A, .room_252AB .line_252AB,
+.room_253 .label_253, .room_253   .line_253,
+.room_241 .label_241, .room_241   .line_241,
+.room_242A .label_242A, .room_242A  .line_242A,
+.room_242B .label_242B, .room_242B  .line_242B,
+.room_242AB .label_242AB, .room_242AB .line_242AB, .room_242AB .line_242A, .room_242AB .line_242B,
+.room_243 .label_243, .room_243   .line_243,
+.room_Blue .label_Blue, .room_Blue  .line_Blue,
+.room_Bordeaux .label_Bordeaux, .room_Bordeaux .line_Bordeaux,
+.room_342A .label_342A, .room_342A     .line_342A,
+.room_342B .label_342B, .room_342B     .line_342B,
+.room_342AB .label_342AB, .room_342AB    .line_342AB, .room_342AB .line_342A, .room_342AB .line_342B,
+.room_343 .label_343, .room_343     .line_343,
+.room_361 .label_361, .room_361      .line_361,
+.room_362 .label_362, .room_362    .line_362,
+.room_Havane .label_Havane, .room_Havane .line_Havane,
+.room_352A .label_352A, .room_352A   .line_352A,
+.room_352B .label_352B, .room_352B   .line_352B,
+.room_352AB .label_352AB, .room_352AB  .line_352AB, .room_352AB .line_352A, .room_352AB .line_352B,
+.room_351 .label_351, .room_351    .line_351 { 
     display: block !important; 
 }
