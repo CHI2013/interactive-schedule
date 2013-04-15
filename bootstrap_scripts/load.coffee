@@ -136,6 +136,16 @@ for session in sessionData
                     if timeslots[timeslot].start[0] == start[0]
                         sessionDoc.timeslot = timeslot
                         timeslots[timeslot].sessions.push session.value._id
+sessions['sInteractivity'] = { 
+    type: 'session',
+    venue: 'interactivity',
+    title: 'Interactivity',
+    submissions: [],
+    timeslot: 'always' 
+}
+
+console.log sessions
+
 submissions = {}
 
 addSubmission = (submission) ->
@@ -188,12 +198,9 @@ addSubmission = (submission) ->
 for submission in submissionData
     addSubmission submission
 
-for submission in interactivity
-    submission.session = 'interactivity'
-    addSubmission submission
+console.log sessions['sInteractivity']
 
 computeTimeForSubmission = (id, submission) ->
-    console.log submission.session
     if submission.session?
         session = sessions[submission.session]
     else if submission.sessions? #Submission is multi-session, take start of first
@@ -224,6 +231,11 @@ computeTimeForSubmission = (id, submission) ->
 
 for id, submission of submissions
     computeTimeForSubmission id, submission
+    
+for submission in interactivity
+    submission.session = 'sInteractivity'
+    sessions[submission.session].submissions.push submission.id
+    addSubmission submission
     
 insertInDb = (dict) ->
     for id, value of dict

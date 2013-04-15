@@ -978,10 +978,16 @@ class GlanceServer
                         if err?
                             cb err, null
                         else
-                            sessions = body.rows.map (row) -> row.doc
-                            @inlineSubmissionsForSessions sessions, 0, () =>
-                                result.sessions = sessions
-                                cb null, result
+                            @db.view 'session', 'always', (err, alwaysOngoing) =>
+                                alwaysOngoing.rows.map (row) -> 
+                                    row.doc = row.value
+                                    delete row.value
+                                rows = body.rows.concat alwaysOngoing.rows
+                                
+                                sessions = rows.map (row) -> row.doc
+                                @inlineSubmissionsForSessions sessions, 0, () =>
+                                    result.sessions = sessions
+                                    cb null, result
                 
     getOngoingSubmissions: (cb) ->
         result = {}
@@ -1009,8 +1015,6 @@ class GlanceServer
                 matches = _.union matches, submatches
         else
             matches = s.matchArray submissions, query
-            if matches.length == 0
-                console.log "MATCHES", matches, query
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
