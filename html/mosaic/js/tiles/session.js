@@ -1,5 +1,6 @@
 var items = [];
 var durations = {};
+var roomOrder = ['251', '252A', '252B', '253', '241', '242A', '242B', '242AB', '243', 'Blue', 'Havane', '351', '352AB', 'Bordeaux', '342A', '343', '361', '362/363', 'interactivity'];
 
 function init() {
     items = [];
@@ -16,28 +17,23 @@ function init() {
     $('body').attr('id', 'tile_' + tileId);
 
     // Submissions will be for multiple rooms, sort rooms in order
-    var submissions = filter.submissions;
-    submissions.sort(function(a, b) {
-        var roomA = parseInt(a.room),
-            roomB = parseInt(b.room);
+    var submissions = {};
 
-        if(roomA != NaN && roomB != NaN)
-            return (roomA - roomB);
+    filter.submissions.forEach(function(s) {
+        var loc = s.room || s.venue;
+        submissions[loc] || (submissions[loc] = []);
+        submissions[loc].push(s);
 
-        if(a.room == 'Bordeaux' || a.room == 'Havane' || b.room == 'Blue')
-            return -1;
-
-        if(a.room == 'Blue' || b.room == 'Bordeaux' || b.room == 'Havane')
-            return 1;  
-    });
-
-    submissions.forEach(function(s) {
-        items.push(s);
-        durations[s['room']] || (durations[s['room']] = []);
-        durations[s['room']].push({
+        durations[loc] || (durations[loc] = []);
+        durations[loc].push({
             id: s['_id'],
             duration: s.duration > 80 ? 80 : s.duration
         });
+    });
+
+    roomOrder.forEach(function(r) { 
+        if(submissions[r])
+            items = items.concat(submissions[r]); 
     });
 
     for(var i = 0; i < items.length; i++) {
@@ -57,21 +53,17 @@ function init() {
         $('#submissions').append(html);
     }
 
-    for(var room in durations) {
-        var schedule = durations[room];
-        for(var i = 0; i < schedule.length; i++) {
-            $('<div></div>')
-                .addClass('schedule').addClass(room.replace('362/363', '362')).addClass(schedule[i].id)
-                .css('width', schedule[i].duration / 80 * 100 + '%')
-                .appendTo('#timeline');
+    if(!tile.filter.query.hasOwnProperty('venue')) {
+        for(var room in durations) {
+            var schedule = durations[room];
+            for(var i = 0; i < schedule.length; i++) {
+                $('<div></div>')
+                    .addClass('schedule').addClass(getRoom(room)).addClass(schedule[i].id)
+                    .css('width', schedule[i].duration / 80 * 100 + '%')
+                    .appendTo('#timeline');
+            }
         }
     }
-
-    $('h1').text('Loading...');
-
-    // // Set heights
-    // var fullHeight = $('body').height() - 15 - $('h1').height();
-    // $('#submissions').height(fullHeight);
 }
 
 function tick(ti) {
@@ -81,10 +73,10 @@ function tick(ti) {
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
-    $('body').attr('class', '').addClass('room_' + items[itemIndex].room.replace('362/363', '362'));
+    $('body').attr('class', '').addClass(getClass(items[itemIndex])).addClass(tile.when + '_tile').addClass('volatile_' + tile.volatile);
     $('h1').text('Room: ' + items[itemIndex].room);
     $('#timeline .schedule').hide();
-    $('#timeline .' + items[itemIndex].room).removeClass('active').show();
+    $('#timeline .' + getRoom(items[itemIndex].room)).removeClass('active').show();
     $('#timeline .' + items[itemIndex]['_id']).addClass('active');
 
     $('.submission.active').each(function(index, self) {
@@ -102,8 +94,8 @@ function tick(ti) {
     }).animate({
         left: 0
     }, 500, 'swing', function() {
-        if(items[itemIndex].videoPreviewFile)
-            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://92.243.30.77:8000/videos/' + items[itemIndex].videoPreviewFile + '"></video>');
+        if(items[itemIndex].letterCode)
+            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://chischedule.org/2013/' + items[itemIndex].letterCode + '"></video>');
     });
 
     $('#progress_bar circle').removeClass('active');
@@ -117,4 +109,15 @@ function doneTile() {
     $('#submissions').html('');
     $('#progress_bar').svg('destroy');
     $('#progress_bar').html('');
+}
+
+function getClass(item) {
+    if(item.room)
+        return 'room_' + getRoom(item.room);
+    else if(item.venue)
+        return 'venue_' + item.venue;
+}
+
+function getRoom(r) {
+    return r.replace('362/363', '362');
 }

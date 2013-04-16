@@ -56,12 +56,6 @@ body {
     color: #fff;
 }
 
-.one { left: 40px; }
-.two { left: 420px;}
-.mid { left: 440px; }
-.one-theatre { left: 25px; }
-.two-theatre { left: 475px; }
-
 .schedule {
     float: left;
     display: none;
@@ -139,26 +133,56 @@ h3.code {
     border-radius: 10px;
 }
 
+.session_tile .session,
+.break_tile .break {
+    display: block;
+}
+
+.session_tile .break,
+.break_tile .session {
+    display: none;
+}
+
+.volatile_true #metro { display: none; }
+
 /* Tile Metro */
-#tile_A #metro, #tile_C #metro, #tile_G #metro { 
+.break_tile #tile_A #metro, .break_tile #tile_C #metro, .break_tile #tile_G #metro { 
     left: 10px;
     right: 0;
     border-top-left-radius: 10px; 
     border-bottom-left-radius: 10px;
 }
 
-#tile_B #metro, #tile_D #metro, #tile_H #metro {
+.break_tile #tile_B #metro, .break_tile #tile_D #metro, .break_tile #tile_H #metro {
     left: 0;
     right: 5px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-#tile_E #metro, #tile_F #metro {
+.break_tile #tile_E #metro, .break_tile #tile_F #metro, .session_tile #metro {
     left: 10px;
     right: 5px;
     border-radius: 10px;
 }
+
+/* Metro Labels */
+
+.break_tile .one { left: 40px; }
+.break_tile .two { left: 420px;}
+.break_tile .mid { left: 440px; }
+.break_tile .one-theatre { left: 25px; }
+.break_tile .two-theatre { left: 475px; }
+.break_tile .label_Maillot { left: 180px; }
+
+.session_tile .label { top: 8px !important; }
+.session_tile .one { left: 50px; }
+.session_tile .two { left: 85px;}
+.session_tile .twoa { left: 45px;}
+.session_tile .twob { left: 93px;}
+.session_tile .twoab { left: 40px;}
+.session_tile .three { left: 425px; }
+.session_tile .four { right: 40px; }
 
 /* Colors */
 .room_251   circle, .room_251   line,
@@ -270,6 +294,15 @@ h3.code {
     background-color: rgb(211, 120, 60); 
 }
 
+.venue_interactivity .submission, .venue_interactivity circle.purple {
+    border-color: rgb(97, 68, 122);
+    stroke: rgb(97, 68, 122);
+}
+
+.venue_interactivity .submission .info, .venue_interactivity #metro {
+    background-color: rgb(97, 68, 122);
+}
+
 #tile_A .left, #tile_C .left, #tile_E .left, 
 #tile_F .left, #tile_G .left , 
 #tile_B .right, #tile_D .right, #tile_E .right,
@@ -277,29 +310,30 @@ h3.code {
     display: block;
 }
 
-.room_251   circle.blue, .room_251   circle.red, .room_251   circle.orange, 
-.room_252A  circle.blue, .room_252A  circle.red, .room_252A  circle.orange, 
-.room_252B  circle.blue, .room_252B  circle.red, .room_252B  circle.orange, 
-.room_252AB circle.blue, .room_252AB circle.red, .room_252AB circle.orange, 
-.room_253   circle.blue, .room_253   circle.red, .room_253   circle.orange, 
-.room_241   circle.green, .room_241   circle.red, .room_241   circle.orange,
-.room_242A  circle.green, .room_242A  circle.red, .room_242A  circle.orange,
-.room_242B  circle.green, .room_242B  circle.red, .room_242B  circle.orange,
-.room_242AB circle.green, .room_242AB circle.red, .room_242AB circle.orange,
-.room_243   circle.green, .room_243   circle.red, .room_243   circle.orange,
-.room_Blue  circle.green, .room_Blue  circle.red, .room_Blue  circle.orange,
-.room_Bordeaux circle.green, .room_Bordeaux circle.blue, .room_Bordeaux circle.orange,
-.room_342A     circle.green, .room_342A     circle.blue, .room_342A     circle.orange,
-.room_342B     circle.green, .room_342B     circle.blue, .room_342B     circle.orange,
-.room_342AB    circle.green, .room_342AB    circle.blue, .room_342AB    circle.orange,
-.room_343      circle.green, .room_343      circle.blue, .room_343      circle.orange,
-.room_361      circle.green, .room_361      circle.blue, .room_361      circle.orange,
-.room_362      circle.green, .room_362      circle.blue, .room_362      circle.orange,
-.room_Havane circle.green, .room_Havane circle.blue, .room_Havane circle.red,
-.room_352A   circle.green, .room_352A   circle.blue, .room_352A   circle.red,
-.room_352B   circle.green, .room_352B   circle.blue, .room_352B   circle.red,
-.room_352AB  circle.green, .room_352AB  circle.blue, .room_352AB  circle.red,
-.room_351    circle.green, .room_351    circle.blue, .room_351    circle.red {
+.room_251   circle.blue, .room_251   circle.red, .room_251   circle.orange,  .room_251 circle.purple,
+.room_252A  circle.blue, .room_252A  circle.red, .room_252A  circle.orange,  .room_252A circle.purple,
+.room_252B  circle.blue, .room_252B  circle.red, .room_252B  circle.orange,  .room_252B circle.purple,
+.room_252AB circle.blue, .room_252AB circle.red, .room_252AB circle.orange,  .room_252AB circle.purple,
+.room_253   circle.blue, .room_253   circle.red, .room_253   circle.orange,  .room_253 circle.purple,
+.room_241   circle.green, .room_241   circle.red, .room_241   circle.orange, .room_241 circle.purple,
+.room_242A  circle.green, .room_242A  circle.red, .room_242A  circle.orange, .room_242A circle.purple,
+.room_242B  circle.green, .room_242B  circle.red, .room_242B  circle.orange, .room_242B circle.purple,
+.room_242AB circle.green, .room_242AB circle.red, .room_242AB circle.orange, .room_242AB circle.purple,
+.room_243   circle.green, .room_243   circle.red, .room_243   circle.orange, .room_243 circle.purple,
+.room_Blue  circle.green, .room_Blue  circle.red, .room_Blue  circle.orange, .room_Blue circle.purple,
+.room_Bordeaux circle.green, .room_Bordeaux circle.blue, .room_Bordeaux circle.orange, .room_Bordeaux circle.purple,
+.room_342A     circle.green, .room_342A     circle.blue, .room_342A     circle.orange, .room_342A circle.purple,
+.room_342B     circle.green, .room_342B     circle.blue, .room_342B     circle.orange, .room_342B circle.purple,
+.room_342AB    circle.green, .room_342AB    circle.blue, .room_342AB    circle.orange, .room_342AB circle.purple,
+.room_343      circle.green, .room_343      circle.blue, .room_343      circle.orange, .room_343 circle.purple,
+.room_361      circle.green, .room_361      circle.blue, .room_361      circle.orange, .room_361 circle.purple,
+.room_362      circle.green, .room_362      circle.blue, .room_362      circle.orange, .room_362 circle.purple,
+.room_Havane circle.green, .room_Havane circle.blue, .room_Havane circle.red, .room_Havane circle.purple,
+.room_352A   circle.green, .room_352A   circle.blue, .room_352A   circle.red, .room_352A circle.purple,
+.room_352B   circle.green, .room_352B   circle.blue, .room_352B   circle.red, .room_352B circle.purple,
+.room_352AB  circle.green, .room_352AB  circle.blue, .room_352AB  circle.red, .room_352AB circle.purple,
+.room_351    circle.green, .room_351    circle.blue, .room_351    circle.red, .room_351 circle.purple, 
+.venue_interactivity circle.red, .venue_interactivity circle.green, .venue_interactivity circle.blue, .venue_interactivity circle.orange {
     display: none !important;
 }
 
@@ -325,6 +359,7 @@ h3.code {
 .room_352A .label_352A, .room_352A   .line_352A,
 .room_352B .label_352B, .room_352B   .line_352B,
 .room_352AB .label_352AB, .room_352AB  .line_352AB, .room_352AB .line_352A, .room_352AB .line_352B,
-.room_351 .label_351, .room_351    .line_351 { 
+.room_351 .label_351, .room_351    .line_351,
+.venue_interactivity .label_Maillot { 
     display: block !important; 
 }
