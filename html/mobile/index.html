@@ -277,7 +277,7 @@
           //Update logical tiles
           //assign new text, schedule_status and id to logical tile
           tile.text= tile.submissions[index].title;
-          tile.submissionId = tile.submissions[tile.current]._id;
+          tile.submissionId = mapId(tile.submissions[tile.current]._id);
           if(status !== "ignore")
             tile.isInSchedule = status;
           else
@@ -337,7 +337,7 @@
     });
 
     $(".tile").on("vclick", function(){
-        var submissionId = mapId($(this).attr("submissionid"));
+        var submissionId = $(this).attr("submissionid");
         var isInSchedule = $(this).attr("isInSchedule");
         var tileId = $(this).attr("id");
         var index = $(this).attr("current");
