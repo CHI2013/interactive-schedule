@@ -67,7 +67,7 @@ showalert: function showalert()
 
 function thisiscallback(arg)
 {
-    alert(arg);
+  //  alert(arg);
 };
 
 

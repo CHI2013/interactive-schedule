@@ -64,6 +64,8 @@
   <script>
   $(document).on("pageinit","#search", function(){
 
+    var url = $( "#page2_id" ).attr("data-url");
+    console.log(url);
     var result = "";
     $( document ).on( "listviewbeforefilter", '#autocomplete', function ( e, data ) {
         var $ul = $( this ),
@@ -123,9 +125,27 @@
     });
 
     $('#post').on("click", function(){
+      postFilter(result);
+      console.log(result);
       $.mobile.changePage("#tiles", "slide", true, true);
     })
 
+  function postFilter(result){
+    //$.post("http://localhost:8000/filters",
+    // Add your ip here to test with mobile device
+    // $.post("http://92.243.30.77:8000/filters",
+     $.post("http://92.243.30.77:8000/filters", 
+      {
+        "all": result,
+        "when": "now",
+        "volatile": true//,
+        //"tile": tagTileId
+      },
+      function(data, status)
+      {
+        console.log("Updated session: " + data);
+      });
+  };
 
     $.fn.exists = function () {
       return this.length !== 0;
@@ -209,7 +229,7 @@
 
                 if (tile.total > 0){
                 tile.text = tile.submissions[tile.current].title;
-                tile.submissionId = tile.submissions[tile.current]._id;
+                tile.submissionId = mapId(tile.submissions[tile.current]._id);
                 tile.isInSchedule = checkStatus(tile.submissionId);
                 //tile.isInSchedule = true;
                 }
@@ -324,7 +344,11 @@
         var text = $(this).text();
 
         if(text === "...")
-            $.mobile.changePage("#search?ID="+tileId, "slide", true, true);
+            $.mobile.changePage("#search", {
+              transition: "slide",
+              data:{id:tileId}
+              }
+              );
         else
           if (isInSchedule === "true") {
                NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
@@ -357,8 +381,8 @@ Returns true or false depending on bridge call result which can be:
 "Error","True","False" 
 */
     function checkStatus(id){
-      var status = NativeBridge.call('isInSchedule', mapId(id), thisiscallback);
-      
+      var status = NativeBridge.call('isInSchedule', id, thisiscallback);
+
       // temp fix for testing on web
       if(status == undefined)
         return false;
@@ -405,7 +429,7 @@ Returns true or false depending on bridge call result which can be:
       <div id="E" class="ui-block-a tile orange"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="F" class="ui-block-b tile orange"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="G" class="ui-block-a tile red"><a href="#tiles" data-transition="slide">...</a></div>
-      <div id="H" class="ui-block-b tile red"><a href="#tiles" data-transition="slide">...</a></div>
+      <div id="H" class="ui-block-b tile red"><a href="#search" data-transition="slide">Load videos in this tile.</a></div>
     </div>
   </div>
 </div>
