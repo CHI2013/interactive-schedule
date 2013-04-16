@@ -77,12 +77,13 @@ class GlanceServer
                 tileSetup = _.clone @config.sessionTiles
             else
                 tileSetup  = _.clone @config.breakTiles
-        
+            
             @getOngoingSubmissions (err1, ongoingSubmissions) =>
                 @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
                     for tile, val of tileSetup
                         @tiles[tile] = {}
                         @tiles[tile].type = val.type
+                        @tiles[tile].when = val.when
                         if val.type == 'filter'
                             if val.filter?
                                 filter = _.clone val.filter

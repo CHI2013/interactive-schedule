@@ -12,6 +12,7 @@
     "breakTiles": {
         "A": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["251", "252A"]
@@ -19,6 +20,7 @@
         },
         "B": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["252B", "253"]
@@ -26,6 +28,7 @@
         },
         "C": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["241", "242"]
@@ -33,6 +36,7 @@
         },
         "D": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["243", "Blue"]
@@ -40,6 +44,7 @@
         },
         "E": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "venue": "interactivity"
@@ -47,6 +52,7 @@
         },
         "F": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["Havane", "351", "352"]
@@ -54,6 +60,7 @@
         },
         "G": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["Bordeaux", "342A", "343"]
@@ -61,6 +68,7 @@
         },
         "H": {
             "type": "filter",
+            "when": "break",
             "filter": {
                 "when": "now",
                 "room": ["361", "362/363"]
@@ -70,6 +78,7 @@
     "sessionTiles": {
         "A": {
             "type": "filter",
+            "when": "session",
             "filter": {
                 "when": "now",
                 "room": ["241", "242", "243", "251", "252"]
@@ -77,6 +86,7 @@
         },
         "B": {
             "type": "filter",
+            "when": "session",
             "filter": {
                 "when": "now",
                 "room": ["253", "Blue", "Bordeaux", "341"]
@@ -84,6 +94,7 @@
         },
         "C": {
             "type": "filter",
+            "when": "session",
             "filter": {
                 "when": "now",
                 "room": ["342", "343", "Havane", "351"]
@@ -91,22 +102,27 @@
         },
         "D": {
             "type": "filter",
+            "when": "session",
             "filter": {
                 "when": "now",
                 "room": ["352", "353"]
             }
         },
         "E": {
-            "type": "filter"
+            "type": "filter",
+            "when": "session"
         },
         "F": {
-            "type": "filter"
+            "type": "filter",
+            "when": "session"
         },
         "G": {
-            "type": "filter"
+            "type": "filter",
+            "when": "session"
         },
         "H": {
-            "type": "filter"
+            "type": "filter",
+            "when": "session"
         }
     }
 }
