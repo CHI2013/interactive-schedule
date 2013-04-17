@@ -16,6 +16,7 @@ body {
 
 #header svg {
     position: absolute;
+    display: none;
     top: -5px;
     height: 40px;
     left: 10px;
@@ -23,11 +24,8 @@ body {
     z-index: 10;
 }
 
-#header circle { 
-    display: none;
-    stroke-width: 5; 
-}
-#header circle.theatre { fill: #fff; }
+#header circle { display: none; }
+#header circle.theatre { fill: #fff !important; }
 #header line { 
     display: none; 
     stroke-width: 6;
@@ -42,10 +40,11 @@ body {
 #timeline {
     position: absolute;
     top: 18px;
-    left: 145px;
-    width: 250px;
-    
+    width: 250px;   
 }
+
+.volatile_true #timeline { right: 10px;}
+.volatile_false #timeline { left: 145px; }
 
 .label {
     display: none;
@@ -56,9 +55,26 @@ body {
     color: #fff;
 }
 
+.volatile_true #volatile_room {
+    display: block;
+    position: absolute;
+    right: 265px;
+    top: 0px !important;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 100px;
+}
+
+.volatile_true #volatile_label {
+    display: block;
+    position: absolute;
+    left: 15px;
+    top: -8px !important;
+    font-size: 12px;
+}
+
 .schedule {
     float: left;
-    display: none;
     border: 1px solid #7f8184;
     border-radius: 10px;
     box-sizing: border-box;
@@ -72,7 +88,12 @@ body {
     top: 45px;
     left: 10px;
     width: 520px;
-    height: 360px;
+    height: 355px;
+    border: 1px dashed #352537;
+}
+
+.break_tile #submissions, .session_tile #submissions {
+    border: 0;
 }
 
 .submission {
@@ -133,17 +154,44 @@ h3.code {
     border-radius: 10px;
 }
 
+#action {
+    display: block;
+    position: absolute;
+    top: 128px;
+    left: 135px;
+    background: #352537;
+    border-radius: 5px;
+    color: #fff;
+    width: 250px;
+    height: 130px;
+    padding: 10px;
+}
+
+#action h1 { font-size: 18px; }
+#action p  { font-size: 13px;}
+
+.break_tile #action, 
+.session_tile #action {
+    display: none !important;
+}
+
 .session_tile .session,
 .break_tile .break {
-    display: block;
+    display: block !important;
 }
 
 .session_tile .break,
 .break_tile .session {
-    display: none;
+    display: none !important;
 }
 
-.volatile_true #metro { display: none; }
+.volatile_true #metro, 
+.volatile_true .metro_stops, .volatile_true .metro_labels { 
+    display: none !important; 
+}
+
+.volatile_false #volatile_label,
+.volatile_false #volatile_room { display: none; }
 
 /* Tile Metro */
 .break_tile #tile_A #metro, .break_tile #tile_C #metro, .break_tile #tile_G #metro { 
@@ -166,6 +214,9 @@ h3.code {
     border-radius: 10px;
 }
 
+.break_tile #header circle { stroke-width: 5; }
+.session_tile #header circle { stroke-width: 4; }
+
 /* Metro Labels */
 
 .break_tile .one { left: 40px; }
@@ -185,123 +236,178 @@ h3.code {
 .session_tile .four { right: 40px; }
 
 /* Colors */
-.room_251   circle, .room_251   line,
-.room_252A  circle, .room_252A  line,
-.room_252B  circle, .room_252B  line,
-.room_252AB circle, .room_252AB line,
-.room_253   circle, .room_253   line {
-    fill: rgb(38, 94, 48);
-    stroke: rgb(38, 94, 48);
+
+.room_251   circle.green, .room_251   line,
+.room_252A  circle.green, .room_252A  line,
+.room_252B  circle.green, .room_252B  line,
+.room_252AB circle.green, .room_252AB line,
+.room_253   circle.green, .room_253   line {
+    fill: rgb(38, 94, 48) !important;
+    stroke: rgb(38, 94, 48) !important;
 }
 
+.volatile_true.room_251 .schedule,
 .room_251   .submission,
+.volatile_true.room_252A .schedule,
 .room_252A  .submission,
+.volatile_true.room_252B .schedule,
 .room_252B  .submission,
+.volatile_true.room_252AB .schedule,
 .room_252AB .submission,
+.volatile_true.room_253 .schedule,
 .room_253   .submission {
-    border-color: rgb(38, 94, 48);
+    border-color: rgb(38, 94, 48) !important;
 }
 
+.room_251   #volatile_room, .volatile_true.room_251 .schedule.active,
 .room_251   .submission .info, .room_251   #metro, 
+.room_252A  #volatile_room, .volatile_true.room_252A .schedule.active,
 .room_252A  .submission .info, .room_252A  #metro,
+.room_252B  #volatile_room, .volatile_true.room_252B .schedule.active,
 .room_252B  .submission .info, .room_252B  #metro,
+.room_252AB #volatile_room, .volatile_true.room_252AB .schedule.active,
 .room_252AB .submission .info, .room_252AB #metro,
+.room_253   #volatile_room, .volatile_true.room_253 .schedule.active,
 .room_253   .submission .info, .room_253   #metro {
-    background-color: rgb(38, 94, 48); 
+    background-color: rgb(38, 94, 48) !important; 
 }
 
-.room_241   circle, .room_241   line,
-.room_242A  circle, .room_242A  line,
-.room_242B  circle, .room_242B  line,
-.room_242AB circle, .room_242AB line,
-.room_243   circle, .room_243   line,
-.room_Blue  circle, .room_Blue  line {
-    fill: rgb(27, 85, 118);
-    stroke: rgb(27, 85, 118);
+.room_241   circle.blue, .room_241   line,
+.room_242A  circle.blue, .room_242A  line,
+.room_242B  circle.blue, .room_242B  line,
+.room_242AB circle.blue, .room_242AB line,
+.room_243   circle.blue, .room_243   line,
+.room_Blue  circle.blue, .room_Blue  line {
+    fill: rgb(27, 85, 118) !important;
+    stroke: rgb(27, 85, 118) !important;
 }
 
+.volatile_true.room_241 .schedule, 
 .room_241   .submission,
+.volatile_true.room_242A .schedule, 
 .room_242A  .submission,
+.volatile_true.room_242B .schedule, 
 .room_242B  .submission,
+.volatile_true.room_242AB .schedule, 
 .room_242AB .submission,
+.volatile_true.room_243 .schedule, 
 .room_243   .submission,
+.volatile_true.room_Blue .schedule, 
 .room_Blue  .submission {
-    border-color: rgb(27, 85, 118);
+    border-color: rgb(27, 85, 118) !important;
 }
 
+.room_241   #volatile_room, .volatile_true.room_241 .schedule.active,
 .room_241   .submission .info, .room_241   #metro, 
+.room_242A  #volatile_room, .volatile_true.room_242A .schedule.active,
 .room_242A  .submission .info, .room_242A  #metro,
+.room_242B  #volatile_room, .volatile_true.room_242B .schedule.active,
 .room_242B  .submission .info, .room_242B  #metro,
+.room_242AB #volatile_room, .volatile_true.room_242AB .schedule.active,
 .room_242AB .submission .info, .room_242AB #metro,
+.room_243   #volatile_room, .volatile_true.room_243 .schedule.active,
 .room_243   .submission .info, .room_243   #metro,
+.room_Blue  #volatile_room, .volatile_true.room_Blue .schedule.active,
 .room_Blue  .submission .info, .room_Blue  #metro {
-    background-color: rgb(27, 85, 118); 
+    background-color: rgb(27, 85, 118) !important; 
 }
 
-.room_Bordeaux circle, .room_Bordeaux line,
-.room_342A     circle, .room_342A     line,
-.room_342B     circle, .room_342B     line,
-.room_342AB    circle, .room_342AB    line,
-.room_343      circle, .room_343      line,
-.room_361      circle, .room_361      line,
-.room_362      circle, .room_362      line {
-    fill: rgb(152, 52, 60);
-    stroke: rgb(152, 52, 60);
+.room_Bordeaux circle.red, .room_Bordeaux line,
+.room_342A     circle.red, .room_342A     line,
+.room_342B     circle.red, .room_342B     line,
+.room_342AB    circle.red, .room_342AB    line,
+.room_343      circle.red, .room_343      line,
+.room_361      circle.red, .room_361      line,
+.room_362      circle.red, .room_362      line {
+    fill: rgb(152, 52, 60) !important;
+    stroke: rgb(152, 52, 60) !important;
 }
 
+.volatile_true.room_Bordeaux .schedule,
 .room_Bordeaux .submission,
+.volatile_true.room_342A .schedule,
 .room_342A     .submission,
+.volatile_true.room_342B .schedule,
 .room_342B     .submission,
+.volatile_true.room_342AB .schedule,
 .room_342AB    .submission,
+.volatile_true.room_343 .schedule,
 .room_343      .submission,
+.volatile_true.room_361 .schedule,
 .room_361      .submission,
+.volatile_true.room_362 .schedule,
 .room_362      .submission {
-    border-color: rgb(152, 52, 60);
+    border-color: rgb(152, 52, 60) !important;
 }
 
+.room_Bordeaux #volatile_room, .volatile_true.room_Bordeaux .schedule.active,
 .room_Bordeaux .submission .info, .room_Bordeaux #metro, 
+.room_342A      #volatile_room, .volatile_true.room_342A .schedule.active,
 .room_342A     .submission .info, .room_342A     #metro,
+.room_342B      #volatile_room, .volatile_true.room_342B .schedule.active,
 .room_342B     .submission .info, .room_342B     #metro,
+.room_342AB     #volatile_room, .volatile_true.room_342AB .schedule.active,
 .room_342AB    .submission .info, .room_342AB    #metro,
+.room_343       #volatile_room, .volatile_true.room_343 .schedule.active,
 .room_343      .submission .info, .room_343      #metro,
+.room_361       #volatile_room, .volatile_true.room_361 .schedule.active,
 .room_361      .submission .info, .room_361      #metro,
+.room_362       #volatile_room, .volatile_true.room_362 .schedule.active,
 .room_362      .submission .info, .room_362      #metro {
-    background-color: rgb(152, 52, 60); 
+    background-color: rgb(152, 52, 60) !important; 
 }
 
-.room_Havane circle, .room_Havane line,
-.room_352A   circle, .room_352A   line,
-.room_352B   circle, .room_352B   line,
-.room_352AB  circle, .room_352AB  line,
-.room_351    circle, .room_351    line {
-    fill: rgb(211, 120, 60);
-    stroke: rgb(211, 120, 60);
+.room_Havane circle.orange, .room_Havane line,
+.room_352A   circle.orange, .room_352A   line,
+.room_352B   circle.orange, .room_352B   line,
+.room_352AB  circle.orange, .room_352AB  line,
+.room_351    circle.orange, .room_351    line {
+    fill: rgb(211, 120, 60) !important;
+    stroke: rgb(211, 120, 60) !important;
 }
 
+.volatile_true.room_Havane .schedule,
 .room_Havane .submission,
+.volatile_true.room_352A .schedule,
 .room_352A   .submission,
+.volatile_true.room_352B .schedule,
 .room_352B   .submission,
+.volatile_true.room_352AB .schedule,
 .room_352AB  .submission,
+.volatile_true.room_351 .schedule,
 .room_351    .submission {
-    border-color: rgb(211, 120, 60);
+    border-color: rgb(211, 120, 60) !important;
 }
 
+.room_Havane #volatile_room, .volatile_true.room_Havane .schedule.active,
 .room_Havane .submission .info, .room_Havane #metro, 
+.room_352A   #volatile_room, .volatile_true.room_352A .schedule.active,
 .room_352A   .submission .info, .room_352A #metro,
+.room_352B   #volatile_room, .volatile_true.room_352B .schedule.active,
 .room_352B   .submission .info, .room_352B #metro,
+.room_352AB  #volatile_room, .volatile_true.room_352AB .schedule.active,
 .room_352AB  .submission .info, .room_352AB #metro,
+.room_351    #volatile_room, .volatile_true.room_351 .schedule.active,
 .room_351    .submission .info, .room_351 #metro {
-    background-color: rgb(211, 120, 60); 
+    background-color: rgb(211, 120, 60) !important; 
 }
 
 .venue_interactivity .submission, .venue_interactivity circle.purple {
-    border-color: rgb(97, 68, 122);
-    stroke: rgb(97, 68, 122);
+    border-color: rgb(97, 68, 122) !important;
+    stroke: rgb(97, 68, 122) !important;
 }
 
 .venue_interactivity .submission .info, .venue_interactivity #metro {
-    background-color: rgb(97, 68, 122);
+    background-color: rgb(97, 68, 122) !important;
 }
+
+.venue_interactivity #volatile_room {
+    background-color: rgb(97, 68, 122) !important;
+    right: 10px;
+}
+
+.volatile_true .submission { border-color: #352537 !important; }
+.volatile_true .submission .info { background-color: #352537 !important; }
 
 #tile_A .left, #tile_C .left, #tile_E .left, 
 #tile_F .left, #tile_G .left , 
