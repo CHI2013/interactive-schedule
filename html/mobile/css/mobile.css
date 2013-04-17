@@ -54,6 +54,10 @@
     background-color: rgb(211,120,60);
   }
 
+  .light_purple{
+    background-color: #352537;
+  }
+
 div[data-role="content"]{
   background-color: #fff;
   margin:5px;
