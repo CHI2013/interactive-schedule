@@ -18,7 +18,8 @@ lengths = {
     'Note': sessionLength / 8, 
     'SIG': sessionLength, 
     'casestudy': sessionLength / 4, 
-    'panel': sessionLength
+    'panel': sessionLength,
+    'altchi': sessionLength / 8
 }
 
 
