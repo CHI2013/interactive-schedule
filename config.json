@@ -14,7 +14,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["251", "252A"]
             }
         },
@@ -22,7 +21,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["252B", "253"]
             }
         },
@@ -30,7 +28,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["241", "242"]
             }
         },
@@ -38,7 +35,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["243", "Blue"]
             }
         },
@@ -46,7 +42,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "venue": "interactivity"
             }
         },
@@ -54,7 +49,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["Havane", "351", "352"]
             }
         },
@@ -62,7 +56,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["Bordeaux", "342A", "343"]
             }
         },
@@ -70,7 +63,6 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "when": "now",
                 "room": ["361", "362/363"]
             }
         }
@@ -80,7 +72,6 @@
             "type": "filter",
             "when": "session",
             "filter": {
-                "when": "now",
                 "room": ["241", "242", "243", "251", "252"]
             }
         },
@@ -88,7 +79,6 @@
             "type": "filter",
             "when": "session",
             "filter": {
-                "when": "now",
                 "room": ["253", "Blue", "Bordeaux", "341"]
             }
         },
@@ -96,7 +86,6 @@
             "type": "filter",
             "when": "session",
             "filter": {
-                "when": "now",
                 "room": ["342", "343", "Havane", "351"]
             }
         },
@@ -104,7 +93,6 @@
             "type": "filter",
             "when": "session",
             "filter": {
-                "when": "now",
                 "room": ["352", "353"]
             }
         },

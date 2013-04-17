@@ -79,28 +79,23 @@ class GlanceServer
                 tileSetup  = _.clone @config.breakTiles
             
             @getOngoingSubmissions (err1, ongoingSubmissions) =>
-                @getRemainingSubmissionsForToday (err2, todaysSubmissions) =>
-                    for tile, val of tileSetup
-                        @tiles[tile] = {}
-                        @tiles[tile].type = val.type
-                        @tiles[tile].when = val.when
-                        if val.type == 'filter'
-                            if val.filter?
-                                filter = _.clone val.filter
-                                if not err?
-                                    ongoing = false
-                                    if filter.when and filter.when == 'now'
-                                        ongoing = true
-                                        delete filter.when
-                                    data = if ongoing then ongoingSubmissions.submissions else todaysSubmissions
-                                    if filter?
-                                        @filterSubmissions tile, filter, data
-                            else
-                                @availableTiles.push tile
+                for tile, val of tileSetup
+                    @tiles[tile] = {}
+                    @tiles[tile].type = val.type
+                    @tiles[tile].when = val.when
+                    if val.type == 'filter'
+                        if val.filter?
+                            filter = _.clone val.filter
+                            if not err?
+                                data = ongoingSubmissions.submissions
+                                if filter?
+                                    @filterSubmissions tile, filter, data
                         else
-                            @tile[tile] = val
-                        @iosocket.sockets.emit 'newTile', {'tileId': tile}
-                    cb()
+                            @availableTiles.push tile
+                    else
+                        @tile[tile] = val
+                    @iosocket.sockets.emit 'newTile', {'tileId': tile}
+                cb()
 
 
     cleanTile: (tileId) ->
@@ -215,12 +210,10 @@ class GlanceServer
             query = req.body
             tileId = @getTile query
             
-            ongoing = false
-            if query.when and query.when == 'now'
-                ongoing = true
+            if query.when
                 delete query.when
             
-            callback = (err, data) =>
+            @getOngoingSubmissions (err, data) =>
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
@@ -229,13 +222,7 @@ class GlanceServer
                     @logger.info "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
-                    @iosocket.sockets.emit 'newTile', {'tileId': tileId}
-            
-            if ongoing
-                @getOngoingSubmissions callback
-            else
-                @getRemainingSubmissionsForToday callback
-                
+                    @iosocket.sockets.emit 'newTile', {'tileId': tileId}                
         
         #Returns a list of all sessions
         @app.get '/submission', (req, res) =>
