@@ -1016,6 +1016,26 @@ class GlanceServer
                 matches = _.union matches, submatches
         else
             matches = s.matchArray submissions, query
+        matches.sort (s1, s2) -> #Sort by room and order by startTime
+            room1 = if s1.room? then s1.room else ''
+            room2 = if s2.room? then s2.room else ''
+            if room1 != room2
+                if room1 < room2
+                    return -1
+                else
+                    return 1
+            else
+                if s1.startTime? and not s2.startTime?
+                    return -1
+                else if not s1.startTime? and s2.startTime?
+                    return 1
+                else if not s1.startTime? and not s2.startTime?
+                    return 0
+                else if s1.startTime < s2.startTime
+                    return -1
+                else
+                    return 1
+            return 0
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
