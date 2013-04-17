@@ -2,7 +2,7 @@
     "name": "Lobby",
     "db": "chi2013",
     "port": 8000,
-    "tickFrequency": 10000,
+    "tickFrequency": 30000,
     "videoDir": "http://92.243.30.77:8000/videos",
     "orientation": "vertical",
     "fixedTime": [2013, 4, 30, 9, 21],

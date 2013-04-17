@@ -52,18 +52,6 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
-
-    if(!tile.filter.query.hasOwnProperty('venue')) {
-        for(var room in durations) {
-            var schedule = durations[room];
-            for(var i = 0; i < schedule.length; i++) {
-                $('<div></div>')
-                    .addClass('schedule').addClass(getRoom(room)).addClass(schedule[i].id)
-                    .css('width', schedule[i].duration / 80 * 100 + '%')
-                    .appendTo('#timeline');
-            }
-        }
-    }
 }
 
 function tick(ti) {
@@ -73,11 +61,21 @@ function tick(ti) {
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
-    $('body').attr('class', '').addClass(getClass(items[itemIndex])).addClass(tile.when + '_tile').addClass('volatile_' + tile.volatile);
-    $('h1').text('Room: ' + items[itemIndex].room);
-    $('#timeline .schedule').hide();
-    $('#timeline .' + getRoom(items[itemIndex].room)).removeClass('active').show();
-    $('#timeline .' + items[itemIndex]['_id']).addClass('active');
+    var item = items[itemIndex],
+        room = getRoom(item.room || item.venue);
+
+    $('body').attr('class', '').addClass(getClass(item)).addClass(tile.when + '_tile').addClass('volatile_' + tile.volatile);
+
+    $('#timeline').html('');
+    if(item.hasOwnProperty('sessionDurations')) {
+        item.sessionDurations.forEach(function(d) {
+            $('<div></div>')
+                .addClass('schedule').addClass(room).addClass(d.submission)
+                .css('width', d.duration / 80 * 100 + '%')
+                .appendTo('#timeline');
+        });
+    }
+    $('#timeline .' + item['_id']).addClass('active');
 
     $('.submission.active').each(function(index, self) {
         $('.submission.active .video').html('');
@@ -94,21 +92,18 @@ function tick(ti) {
     }).animate({
         left: 0
     }, 500, 'swing', function() {
-        if(items[itemIndex].letterCode)
-            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://chischedule.org/2013/' + items[itemIndex].letterCode + '"></video>');
+        if(item.letterCode)
+            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="http://chischedule.org/2013/' + item.letterCode + '"></video>');
     });
 
-    $('#progress_bar circle').removeClass('active');
-    $('#progress_bar circle:eq(' + ti + ')').addClass('active');
+    $('#volatile_label').html(titleCaps(tile.filter.query.authorKeywords.join(' & ')) + '<br />' + (ti+1) + '/' + items.length);
+    $('#volatile_room').text(room);
 }
 
 function doneTile() {
-    $('body').attr('id', '');
-    $('h1').text('');
+    $('body').attr('id', '').attr('class', '');
     $('#timeline').html('');
     $('#submissions').html('');
-    $('#progress_bar').svg('destroy');
-    $('#progress_bar').html('');
 }
 
 function getClass(item) {
