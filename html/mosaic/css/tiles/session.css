@@ -194,21 +194,21 @@ h3.code {
 .volatile_false #volatile_room { display: none; }
 
 /* Tile Metro */
-.break_tile #tile_A #metro, .break_tile #tile_C #metro, .break_tile #tile_G #metro { 
+.break_tile#tile_A #metro, .break_tile#tile_C #metro, .break_tile#tile_G #metro { 
     left: 10px;
     right: 0;
     border-top-left-radius: 10px; 
     border-bottom-left-radius: 10px;
 }
 
-.break_tile #tile_B #metro, .break_tile #tile_D #metro, .break_tile #tile_H #metro {
+.break_tile#tile_B #metro, .break_tile#tile_D #metro, .break_tile#tile_H #metro {
     left: 0;
     right: 5px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.break_tile #tile_E #metro, .break_tile #tile_F #metro, .session_tile #metro {
+.break_tile#tile_E #metro, .break_tile#tile_F #metro, .session_tile #metro {
     left: 10px;
     right: 5px;
     border-radius: 10px;
