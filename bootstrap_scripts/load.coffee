@@ -18,7 +18,8 @@ lengths = {
     'Note': sessionLength / 8, 
     'SIG': sessionLength, 
     'casestudy': sessionLength / 4, 
-    'panel': sessionLength
+    'panel': sessionLength,
+    'altchi': sessionLength / 8
 }
 
 
@@ -144,8 +145,6 @@ sessions['sInteractivity'] = {
     timeslot: 'always' 
 }
 
-console.log sessions
-
 submissions = {}
 
 addSubmission = (submission) ->
@@ -198,8 +197,6 @@ addSubmission = (submission) ->
 for submission in submissionData
     addSubmission submission
 
-console.log sessions['sInteractivity']
-
 computeTimeForSubmission = (id, submission) ->
     if submission.session?
         session = sessions[submission.session]
@@ -213,6 +210,7 @@ computeTimeForSubmission = (id, submission) ->
     start = new Date startArray[0], startArray[1], startArray[2], startArray[3], startArray[4]
     t = 0
     if not submission.sessions?
+        sessionDurations= []
         for s in session.submissions #We'll accumulate the time up to the given submission
             if submissions[s].venue == 'paper'
                 duration = lengths[submissions[s].subtype] #Paper or Note
@@ -222,12 +220,26 @@ computeTimeForSubmission = (id, submission) ->
                 venue = submissions[s].venue
                 break
             t += duration
+        for s in session.submissions
+            if submissions[s].venue == 'paper'
+                duration = lengths[submissions[s].subtype] #Paper or Note
+            else
+                duration = lengths[submissions[s].venue]
+            durationObj = {}
+            durationObj.submission = s
+            durationObj.duration = duration 
+            sessionDurations.push durationObj
         submissionStart = new Date(start.getTime() + t * 60000)
         submission.startTime = [submissionStart.getFullYear(), submissionStart.getMonth(), submissionStart.getDate(), submissionStart.getHours(), submissionStart.getMinutes()]
         submission.duration = duration
+        submission.sessionDurations = sessionDurations
     else #We are dealing with a multi-session submission
         submission.startTime = [start.getFullYear(), start.getMonth(), start.getDate(), start.getHours(), start.getMinutes()]
         submission.duration = submission.sessions.length * sessionLength
+        durationObj = {}
+        durationObj.submission = id
+        durationObj.duration = sessionLength
+        submission.sessionDurations = [durationObj]
 
 for id, submission of submissions
     computeTimeForSubmission id, submission
