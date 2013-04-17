@@ -344,11 +344,7 @@
         var text = $(this).text();
 
         if(text === "...")
-            $.mobile.changePage("#search", {
-              transition: "slide",
-              data:{id:tileId}
-              }
-              );
+            $.mobile.changePage("#search", "slide", true, true);
         else
           if (isInSchedule === "true") {
                NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
@@ -368,8 +364,7 @@
             .replace(/tochi/,"to")
             .replace(/case/,"cs")
             .replace(/pan/,"pl")
-            .replace(/sig/,"si")
-            .replace(/alt/,"alt");
+            .replace(/sig/,"si");
         return id;
       }
       else return false;
@@ -422,14 +417,14 @@ Returns true or false depending on bridge call result which can be:
  
   <div id ="main_grid" data-role="content"> 
     <div  class="ui-grid-a">
-      <div id="A" class="ui-block-a tile green"><a href="#search" data-transition="slide">...</a></div>
+      <div id="A" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="B" class="ui-block-b tile green"><a href="#tiles" data-transition="slide">...</a> </div>
       <div id="C" class="ui-block-a tile blue"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="D" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="E" class="ui-block-a tile orange"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="F" class="ui-block-b tile orange"><a href="#tiles" data-transition="slide">...</a></div>
       <div id="G" class="ui-block-a tile red"><a href="#tiles" data-transition="slide">...</a></div>
-      <div id="H" class="ui-block-b tile red"><a href="#search" data-transition="slide">Load videos in this tile.</a></div>
+      <div id="H" class="ui-block-b tile red"><a href="#tiles" data-transition="slide">Filter and display videos</a></div>
     </div>
   </div>
 </div>
