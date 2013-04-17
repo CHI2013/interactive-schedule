@@ -217,7 +217,7 @@ class GlanceServer
                 if err?
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
-                    data = if ongoing then data.submissions else data
+                    data = data.submissions
                     @filterSubmissions tileId, query, data, true
                     @logger.info "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     res.jsonp {'status': 'ok', 'tileId': tileId}
