@@ -245,8 +245,9 @@ for id, submission of submissions
     computeTimeForSubmission id, submission
     
 for submission in interactivity
-    submission.session = 'sInteractivity'
-    sessions[submission.session].submissions.push submission.id
+    submission.value.session = 'sInteractivity'
+    submission.value.type = 'submission'
+    sessions[submission.value.session].submissions.push submission.id
     addSubmission submission
     
 insertInDb = (dict) ->
