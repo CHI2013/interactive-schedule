@@ -21,7 +21,7 @@
       NativeBridge.call('closeISchedule');
     }  
 
-    //Apply styling depending on platform, iOS or Android
+    //Apply style depending on platform, iOS or Android
     //Default is android, if not android loads iOS theme
     var ua = navigator.userAgent.toLowerCase();
     var isAndroid = ua.indexOf("android") > -1; //&& ua.indexOf("mobile");
@@ -63,9 +63,12 @@
 <div data-role="page" id="tiles"  data-add-back-btn="true"  data-back-btn-text="Back">
  
   <script>
-  var selectedTile = "";
+    //Global variable to pass between tiles and search pages.
+    var selectedTile = "";
 
     $(document).on("pageinit","#tiles", function(){
+
+    //main cloud server  
     var glanceHost = "92.243.30.77:8000";
 
     var socket = io.connect("http://"+window.location.hostname, {port: 8000});
@@ -74,7 +77,7 @@
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
-    var tiles2 = [];
+    var tilesData = [];
 
     //Logical structure for each tile data
     function Tile (id){
@@ -106,7 +109,7 @@
       var ids = ["A","B","C","D","E","F","G","H"];
       for (var i=0; i< ids.length; i++){
         var tile = new Tile(ids[i]);
-        tiles2.push(tile);
+        tilesData.push(tile);
       }
     };
 
@@ -114,13 +117,13 @@
     function loadData(){
       $.get('/tiles', function(data){
         console.log(data);
-        for(id in data){
-          if(data[id].type == "filter" && data[id].hasOwnProperty("filter"))
+        for(var id in data){
+          if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
           {
             var filter = data[id];
-            for(var i = 0; i<tiles2.length;i++)
+            for(var i = 0; i<tilesData.length; i++)
             { 
-              var tile = tiles2[i];
+              var tile = tilesData[i];
               if(tile.id === filter.filter.tileId)
               { 
                 tile.total = filter.total;
@@ -130,7 +133,6 @@
                 tile.text = tile.submissions[tile.current].title;
                 tile.submissionId = mapId(tile.submissions[tile.current]._id);
                 tile.isInSchedule = checkStatus(tile.submissionId);
-                //tile.isInSchedule = true;
                 }
               }
             }
@@ -142,35 +144,32 @@
 
     //Load logical tiles' data into visual tiles
     function showSubmissions(){
-      for(var i = 0; i< tiles2.length; i++)
+      for(var i = 0; i< tilesData.length; i++)
       {
-        var tile = tiles2[i];
+        var tile = tilesData[i];
         if(tile.total > 0 && tile.id == tiles[i].getAttribute(
             "id"))
           {
-          //tiles is the visual tiles, tiles2 are the logical tiles
+          //tiles is the visual tiles, tilesData are the logical tiles
           tiles[i].innerHTML = tile.text;
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("total", tile.total);
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
           tiles[i].setAttribute("current", tile.current);
-
+          
           if(tile.isInSchedule === true){
               $('#'+tile.id).toggleClass("check");
             }
-          else{
-          }
         }
       }
     };
 
   //Update logical tiles then visual tiles
-  //called on thisiscallback
     function updateTile(tileId, index, status){      
-      for(var i = 0; i< tiles2.length; i++)
+      for(var i = 0; i< tilesData.length; i++)
       {
-        var tile = tiles2[i];
-        if(tile.id == tileId)
+        var tile = tilesData[i];
+        if(tile.id === tileId)
         {
           index = index % tile.total;
           //Update logical tiles
@@ -185,7 +184,7 @@
           tile.current = index;
 
           //update visual tiles
-          //tiles is the visual tiles, tiles2 are the logical tiles
+          //tiles is the visual tiles, tilesData are the logical tiles
           tiles[i].innerHTML = tile.text;
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("current", tile.current);
@@ -204,7 +203,7 @@
 
     //function called after we iterate through all session events
     function doneTile(tileId,index){
-      tile = tiles2[index];
+      tile = tilesData[index];
       tile.reset();
       tiles[index].innerHTML = tile.text;
       tiles[index].setAttribute("submissionId", tile.submissionId)
@@ -221,7 +220,7 @@
              updateTile(id, count[id], "ignore");
             for(var i = 0; i<tiles.length;i++)
             {
-              if(id == tiles[i].getAttribute("id"))
+              if(id === tiles[i].getAttribute("id"))
               {
                 $('#'+id).fadeTo(250, 0.5, function() {
                   // Animation complete.
@@ -280,7 +279,7 @@ Returns true or false depending on bridge call result which can be:
       var status = NativeBridge.call('isInSchedule', id, thisiscallback);
 
       // temp fix for testing on web
-      if(status == undefined)
+      if(status === undefined)
         return false;
 
       if(status === "True")
@@ -296,15 +295,13 @@ Returns true or false depending on bridge call result which can be:
     });
 
     socket.on('doneTile', function(data) { 
-
-        for(var i = 0; i<tiles2.length;i++)
+        for(var i = 0; i<tilesData.length;i++)
         {
-          if(data.tileId == tiles2[i].id)
+          if(data.tileId === tilesData[i].id)
           { 
             doneTile(data.tileId, i);
           }
         }
-     
     });
 
     //Called at load
@@ -341,8 +338,6 @@ Returns true or false depending on bridge call result which can be:
  
 <div data-role="page" id="search"  data-add-back-btn="true"  data-back-btn-text="Back">
   <script>
-
-
   $(document).on("pageinit","#search", function(){
     var url = $( "#page2_id" ).attr("data-url");
     var result = "";
@@ -370,7 +365,6 @@ Returns true or false depending on bridge call result which can be:
                     html += "<li  class='result' data-source=" + i + ">" + j + "<span class='ui-li-count'>" + val[j].length + "</span></li>";
                   })
                 });
-
                 $ul.html( html );
                 $ul.listview( "refresh" );
                 $ul.trigger( "updatelayout");
@@ -385,7 +379,6 @@ Returns true or false depending on bridge call result which can be:
           return out;
       }
     });
-
 
     $("#autocomplete").delegate('.result', 'vclick', function(){
       $(this).toggleClass("selected");
@@ -407,7 +400,7 @@ Returns true or false depending on bridge call result which can be:
       postFilter(result);
       console.log(result);
       $.mobile.changePage("#tiles", "slide", true, true);
-    })
+    });
 
   function postFilter(result){
     //$.post("http://localhost:8000/filters",
@@ -433,7 +426,7 @@ Returns true or false depending on bridge call result which can be:
   </script>
   <div data-role="header" data-position="fixed">
     <h1>Search</h1>
-    <a id="post" class=" ui-btn-right invisible" href="#tiles" data-icon="check">Post</a>
+    <a id="post" class=" ui-btn-right invisible" href="#tiles" data-icon="check">Show</a>
   </div>
  
   <div data-role="content"> 
@@ -441,6 +434,5 @@ Returns true or false depending on bridge call result which can be:
     </ul>
   </div>
 </div>
-
 </body>
 </html>
