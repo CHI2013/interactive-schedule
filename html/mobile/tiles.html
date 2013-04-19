@@ -1,0 +1,393 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+  <title>CHI'13 Interactive Schedule</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
+  <!-- <link rel="stylesheet" href="css/ios.css" /> -->
+  <link rel="stylesheet" href="css/AndroidHoloDarkLight.min.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  <link rel="stylesheet" href="css/roboto/fonts.css" />
+  <script src="js/jquery-1.8.3.min.js"></script>
+  <script src="js/NativeBridge.js"></script>
+  <script src="js/jquery.mobile-1.3.0.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head> 
+<body> 
+
+<div data-role="page" id="tiles"  data-add-back-btn="true"  data-back-btn-text="Back">
+ 
+  <script>
+    //Global variable to pass between tiles and search pages.
+    var selectedTile = "";
+
+    $(document).on("pageinit","#tiles", function(){
+
+    //main cloud server  
+    var glanceHost = "92.243.30.77:8000";
+
+    var socket = io.connect("http://"+window.location.hostname, {port: 8000});
+    //var socket = io.connect("http://92.243.30.77", {port: 8000});
+    
+    //visual tiles
+    var tiles = $(".tile");
+    //logical tiles
+    var tilesData = [];
+
+    //Logical structure for each tile data
+    function Tile (id){
+      this.id = id;
+      this.text = "";
+      this.total = 0;
+      this.current = 0;
+      this.submissionId = 0;
+      this.submissions = {};
+      this.isInSchedule = false;
+    };
+
+    Tile.prototype.reset = function(){
+      this.text = "Filter videos";
+      this.total = 0;
+      this.current = 0;
+      this.submissionId = 0;
+      this.submissions = {};
+      this.isInSchedule = false;
+    };
+
+    function init(){
+      createTiles();
+      loadData();
+    };
+
+    //Creates 8 Tile objects
+    function createTiles(){
+      var ids = ["A","B","C","D","E","F","G","H"];
+      for (var i=0; i< ids.length; i++){
+        var tile = new Tile(ids[i]);
+        tilesData.push(tile);
+      }
+    };
+
+    //Load existing JSON data from /tiles and assign it to logical tiles
+    function loadData(){
+      $.get('/tiles', function(data){
+        console.log(data);
+        for(var id in data){
+          if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
+          {
+            var filter = data[id];
+            for(var i = 0; i<tilesData.length; i++)
+            { 
+              var tile = tilesData[i];
+              if(tile.id === filter.filter.tileId)
+              { 
+                tile.total = filter.total;
+                tile.submissions = filter.filter.submissions;
+
+                if (tile.total > 0){
+                tile.text = tile.submissions[tile.current].title;
+                tile.submissionId = mapId(tile.submissions[tile.current]._id);
+                tile.isInSchedule = checkStatus(tile.submissionId);
+                }
+              }
+            }
+          }
+        }
+        showSubmissions();
+      });
+    };
+
+    //Load logical tiles' data into visual tiles
+    function showSubmissions(){
+      for(var i = 0; i< tilesData.length; i++)
+      {
+        var tile = tilesData[i];
+        if(tile.total > 0 && tile.id == tiles[i].getAttribute(
+            "id"))
+          {
+          //tiles is the visual tiles, tilesData are the logical tiles
+          tiles[i].innerHTML = tile.text;
+          tiles[i].setAttribute("submissionId", tile.submissionId);
+          tiles[i].setAttribute("total", tile.total);
+          tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
+          tiles[i].setAttribute("current", tile.current);
+          
+          if(tile.isInSchedule === true){
+              $('#'+tile.id).toggleClass("check");
+            }
+        }
+      }
+    };
+
+  //Update logical tiles then visual tiles
+    function updateTile(tileId, index, status){      
+      for(var i = 0; i< tilesData.length; i++)
+      {
+        var tile = tilesData[i];
+        if(tile.id === tileId)
+        {
+          index = index % tile.total;
+          //Update logical tiles
+          //assign new text, schedule_status and id to logical tile
+          tile.text= tile.submissions[index].title;
+          tile.submissionId = mapId(tile.submissions[tile.current]._id);
+          if(status !== "ignore")
+            tile.isInSchedule = status;
+          else
+           tile.isInSchedule = checkStatus(tileId);
+          //assign new current value to logical tile
+          tile.current = index;
+
+          //update visual tiles
+          //tiles is the visual tiles, tilesData are the logical tiles
+          tiles[i].innerHTML = tile.text;
+          tiles[i].setAttribute("submissionId", tile.submissionId);
+          tiles[i].setAttribute("current", tile.current);
+
+          if(tile.isInSchedule){
+            tiles[i].setAttribute("isInSchedule", true);
+            $('#'+tile.id).addClass("check");
+          }
+          else{
+            tiles[i].setAttribute("isInSchedule", false);
+            $('#'+tile.id).removeClass("check");
+          }
+        }
+      }
+    };
+
+    //function called after we iterate through all session events
+    function doneTile(tileId,index){
+      tile = tilesData[index];
+      tile.reset();
+      tiles[index].innerHTML = tile.text;
+      tiles[index].setAttribute("submissionId", tile.submissionId)
+      tiles[index].setAttribute("total", tile.total)
+    };
+
+    //Function triggered by the server every X milliseconds
+    socket.on('tick', function(count) {
+        console.log("tick");
+        if(!count.isEmpty)
+         {
+          for(var id in count)
+          {
+             updateTile(id, count[id], "ignore");
+            for(var i = 0; i<tiles.length;i++)
+            {
+              if(id === tiles[i].getAttribute("id"))
+              {
+                $('#'+id).fadeTo(250, 0.5, function() {
+                  // Animation complete.
+                 });
+                $('#'+id).fadeTo(250, 1, function() {
+                  // Animation complete.
+                 });
+              }
+            }
+          }
+         }
+    });
+
+    $(".tile").on("vclick", function(){
+        var submissionId = $(this).attr("submissionid");
+        var isInSchedule = $(this).attr("isInSchedule");
+        var tileId = $(this).attr("id");
+        var index = $(this).attr("current");
+        var text = $(this).text();
+
+        if(text === "Filter videos"){
+            selectedTile = tileId;
+            $.mobile.changePage("#search", "slide", true, true);
+        }
+        else
+          if (isInSchedule === "true") {
+               NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+          }
+          else if(isInSchedule === "false"){
+               NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+          };
+    });
+
+/*
+ Maps IDs from the couchDB database to the PCS databse, required to interact with iOS app 
+*/
+  function mapId(id){
+      if(id){
+        id = id.replace(/pn/,"chi")
+            .replace(/crs/,"cr")
+            .replace(/tochi/,"to")
+            .replace(/case/,"cs")
+            .replace(/pan/,"pl")
+            .replace(/sig/,"si");
+        return id;
+      }
+      else return false;
+    };
+
+/*
+Calls native iOS function call to check if submission is in schedule
+Returns true or false depending on bridge call result which can be:
+"Error","True","False" 
+*/
+  function checkStatus(id){
+      var status = NativeBridge.call('isInSchedule', id, thisiscallback);
+
+      // temp fix for testing on web
+      if(status === undefined)
+        return false;
+
+      if(status === "True")
+          return  true;
+          else
+            return false;
+    };
+
+    //Function called after a new filter is posted to server
+    //Populates arrays with all titles for each filter
+    socket.on('tilesUpdated', function(data) {
+          loadData();
+    });
+
+    socket.on('doneTile', function(data) { 
+        for(var i = 0; i<tilesData.length;i++)
+        {
+          if(data.tileId === tilesData[i].id)
+          { 
+            doneTile(data.tileId, i);
+          }
+        }
+    });
+
+    //Called at load
+    init();
+
+    });
+  </script>
+
+  <div data-role="header" data-position="fixed">
+    <h1>Tap to Add</h1>
+  </div>
+ 
+  <div id ="main_grid" data-role="content"> 
+    <div  class="ui-grid-a">
+    <!--   <div id="A" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="B" class="ui-block-b tile green"><a href="#tiles" data-transition="slide">Filter videos</a> </div>
+      <div id="C" class="ui-block-a tile blue"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="D" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="E" class="ui-block-a tile orange"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="F" class="ui-block-b tile orange"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="G" class="ui-block-a tile red"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="H" class="ui-block-b tile red"><a href="#tiles" data-transition="slide">Filter videos</a></div> -->
+      <div id="A" class="ui-block-a tile light_purple"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="B" class="ui-block-b tile light_purple"><a href="#tiles" data-transition="slide">Filter videos</a> </div>
+      <div id="C" class="ui-block-a tile light_purple"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="D" class="ui-block-b tile light_purple"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="E" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="F" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="G" class="ui-block-a tile orange"><a href="#tiles" data-transition="slide">Filter videos</a></div>
+      <div id="H" class="ui-block-b tile red"><a href="#tiles" data-transition="slide">Filter videos</a></div>    
+    </div>
+  </div>
+</div>
+ 
+<div data-role="page" id="search"  data-add-back-btn="true"  data-back-btn-text="Back">
+  <script>
+  $(document).on("pageinit","#search", function(){
+    var url = $( "#page2_id" ).attr("data-url");
+    var result = "";
+    $( document ).on( "listviewbeforefilter", '#autocomplete', function ( e, data ) {
+        var $ul = $( this ),
+            $input = $( data.input ),
+            value = $input.val(),
+            html = "";
+        $ul.html( "" );
+        if ( value && value.length > 2 ) {
+            $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
+            $ul.listview( "refresh" );
+            $.ajax({
+                url: "http://92.243.30.77:8000/autocompletelist",
+                dataType: "jsonp",
+                crossDomain: true,
+                data: {
+                    substring: $input.val()
+                }
+            })
+            .then( function ( response ) {
+              console.log(response);
+                $.each( response, function ( i, val ) {
+                  $.each(val, function(j){
+                    html += "<li  class='result' data-source=" + i + ">" + j + "<span class='ui-li-count'>" + val[j].length + "</span></li>";
+                  })
+                });
+                $ul.html( html );
+                $ul.listview( "refresh" );
+                $ul.trigger( "updatelayout");
+            });
+        }
+    });
+
+    $("#autocomplete").listview({
+      autodividers: true,
+      autodividersSelector: function ( li ) {
+          var out = $(li).attr('data-source');
+          return out;
+      }
+    });
+
+    $("#autocomplete").delegate('.result', 'vclick', function(){
+      $(this).toggleClass("selected");
+      result = "";
+      if($(".selected").exists()){
+         $("#post").css("visibility","visible");
+         var $selected = $(".selected");
+         for(var i = 0; i< $selected.length; i++){
+          var temp = $selected[i].innerText;
+          result += temp.substring(0, temp.length - 1) + " ";
+         }
+      }
+      else{
+         $("#post").css("visibility","hidden");
+      }
+    });
+
+    $('#post').on("click", function(){
+      postFilter(result);
+      console.log(result);
+      $.mobile.changePage("#tiles", "slide", true, true);
+    });
+
+  function postFilter(result){
+    //$.post("http://localhost:8000/filters",
+    // Add your ip here to test with mobile device
+    // $.post("http://92.243.30.77:8000/filters",
+     $.post("http://92.243.30.77:8000/filters", 
+      {
+        "all": result,
+        "when": "now",
+        "volatile": true,
+        "tile": selectedTile
+      },
+      function(data, status)
+      {
+        console.log("Updated session: " + data);
+      });
+  };
+
+    $.fn.exists = function () {
+      return this.length !== 0;
+    }
+  });
+  </script>
+  <div data-role="header" data-position="fixed">
+    <h1>Search</h1>
+    <a id="post" class=" ui-btn-right invisible" href="#tiles" data-icon="check">Show</a>
+  </div>
+ 
+  <div data-role="content"> 
+    <ul id='autocomplete' data-role='listview' data-inset='false' data-filter='true' data-filter-placeholder='Search everything'  data-autodividers="true"> 
+    </ul>
+  </div>
+</div>
+</body>
+</html>
