@@ -4,7 +4,6 @@
   <title>CHI'13 Interactive Schedule</title> 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/jquery.mobile-1.3.0.min.css" />
-  <!-- <link rel="stylesheet" href="css/ios.css" /> -->
   <link rel="stylesheet" href="css/AndroidHoloDarkLight.min.css" />
   <link rel="stylesheet" href="css/mobile.css" />
   <link rel="stylesheet" href="css/roboto/fonts.css" />
@@ -18,7 +17,7 @@
 <div data-role="page" id="tiles"  data-add-back-btn="true"  data-back-btn-text="Back">
  
   <script>
-    //Global variable to pass between tiles and search pages.
+    //Global variable to pass the selected tile to the search page.
     var selectedTile = "";
 
     $(document).on("pageinit","#tiles", function(){
@@ -294,8 +293,10 @@ Returns true or false depending on bridge call result which can be:
 <div data-role="page" id="search"  data-add-back-btn="true"  data-back-btn-text="Back">
   <script>
   $(document).on("pageinit","#search", function(){
-    var url = $( "#page2_id" ).attr("data-url");
+    // all selected titles from the search interface
     var result = "";
+    // all selected ids from the search interface
+    var letterCodes= [];
     $( document ).on( "listviewbeforefilter", '#autocomplete', function ( e, data ) {
         var $ul = $( this ),
             $input = $( data.input ),
@@ -317,7 +318,7 @@ Returns true or false depending on bridge call result which can be:
               console.log(response);
                 $.each( response, function ( i, val ) {
                   $.each(val, function(j){
-                    html += "<li  class='result' data-source=" + i + ">" + j + "<span class='ui-li-count'>" + val[j].length + "</span></li>";
+                    html += "<li  class='result' data-source=" + i + " data-ids=" + val[j] +">" + j + "<span class='ui-li-count'>" + val[j].length + "</span></li>";
                   })
                 });
                 $ul.html( html );
@@ -338,13 +339,16 @@ Returns true or false depending on bridge call result which can be:
     $("#autocomplete").delegate('.result', 'vclick', function(){
       $(this).toggleClass("selected");
       result = "";
+      letterCodes = [];
       if($(".selected").exists()){
          $("#post").css("visibility","visible");
          var $selected = $(".selected");
          for(var i = 0; i< $selected.length; i++){
           var temp = $selected[i].innerText;
           result += temp.substring(0, temp.length - 1) + " ";
+          letterCodes = letterCodes.concat(getCodes($selected[i]));
          }
+      console.log(letterCodes);
       }
       else{
          $("#post").css("visibility","hidden");
@@ -357,16 +361,22 @@ Returns true or false depending on bridge call result which can be:
       $.mobile.changePage("#tiles", "slide", true, true);
     });
 
+  function getCodes(item){
+    var ids = $(item).attr("data-ids").split(",");
+    return ids;
+  }
+
   function postFilter(result){
     //$.post("http://localhost:8000/filters",
     // Add your ip here to test with mobile device
     // $.post("http://92.243.30.77:8000/filters",
      $.post("http://92.243.30.77:8000/filters", 
       {
-        "all": result,
+        "name": result,
         "when": "now",
         "volatile": true,
-        "tile": selectedTile
+        "tile": selectedTile,
+        "letterCode": letterCodes
       },
       function(data, status)
       {
