@@ -15,6 +15,12 @@
 <body> 
   <div data-role="page" id="home" data-add-back-btn="true">
     <script>
+     $(document).bind("mobileinit", function(){
+        $.extend(  $.mobile , {
+          touchOverflowEnabled: true,
+          orientationChangeEnabled: false
+        })
+      });
       function closeISchedule(){
         NativeBridge.call('closeISchedule');
       }  
@@ -27,6 +33,8 @@
         $($("link[rel=stylesheet]")[1]).attr({href : "css/ios.css"});
         $($("link[rel=stylesheet]")[2]).remove();
       }
+
+
     </script>
     <div data-role="header" data-position="fixed">
         <a href="#" data-role="button" data-icon="arrow-l" onclick="closeISchedule();">More</a>     

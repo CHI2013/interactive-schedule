@@ -78,12 +78,19 @@ div[data-role="content"]{
 .selected{
   /*background-color: rgba(166,166,166,1) !important;*/
   /*Had to do it this way to override JQM android theme styling AND iOS*/
-  background-image: linear-gradient(rgba(166,166,166,1), rgba(166,166,166,1)) !important;
+  background-image: linear-gradient(#aaaaaa, #aaaaaa) !important;
+}
+.ui-li-divider{
+
 }
 
 /*Ends style for search page*/
 
 /*General styles*/
+div[data-role="header"]{
+  position:fixed;
+  z-index:1000;
+}
 .green{
   background-color: rgb(38,94,48);
 }
