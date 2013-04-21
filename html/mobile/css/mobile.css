@@ -7,6 +7,19 @@
   display: block;
   }
 
+#welcome{
+  margin-top: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: rgba(30,30,30,.25);
+}
+
+ul li h4 a{
+  text-decoration: none;
+  font-weight: 400 !important;
+  font-size: 16px;
+}
+
 /*Ends style for landing page*/
 
 
@@ -47,7 +60,7 @@
 }
 
 .tile:hover, .tile:focus {
-  background: #356094;
+  /*background: #356094;*/
   border: solid 1px #000;
   text-decoration: none;
 }
@@ -56,7 +69,7 @@
   -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
   -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
-  background: #2E5481;
+  /*background: #2E5481;*/
   border: solid 1px #203E5F;
 }
 
@@ -117,4 +130,8 @@ div[data-role="header"]{
 .invisible{
   visibility:hidden;
   }
+
+.centered{
+  text-align: center;
+}
 /*End general styles*/
