@@ -285,7 +285,7 @@ Returns true or false depending on bridge call result which can be:
       <div id="E" class="ui-block-a tile green"><a href="#tiles" data-transition="slide">Filter videos</a></div>
       <div id="F" class="ui-block-b tile blue"><a href="#tiles" data-transition="slide">Filter videos</a></div>
       <div id="G" class="ui-block-a tile orange"><a href="#tiles" data-transition="slide">Filter videos</a></div>
-      <div id="H" class="ui-block-b tile red"><a href="#tiles" data-transition="slide">Filter videos</a></div>    
+      <div id="H" class="ui-block-b tile red"><a href="#search" data-transition="slide">Filter videos</a></div>    
     </div>
   </div>
 </div>
@@ -348,7 +348,6 @@ Returns true or false depending on bridge call result which can be:
           result += temp.substring(0, temp.length - 1) + " ";
           letterCodes = letterCodes.concat(getCodes($selected[i]));
          }
-      console.log(letterCodes);
       }
       else{
          $("#post").css("visibility","hidden");
@@ -382,7 +381,7 @@ Returns true or false depending on bridge call result which can be:
       {
         console.log("Updated session: " + data);
       });
-  };
+  } ;
 
     $.fn.exists = function () {
       return this.length !== 0;
