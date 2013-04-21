@@ -100,10 +100,10 @@ div[data-role="content"]{
 /*Ends style for search page*/
 
 /*General styles*/
-div[data-role="header"]{
+/*div[data-role="header"]{
   position:fixed;
   z-index:1000;
-}
+}*/
 .green{
   background-color: rgb(38,94,48);
 }

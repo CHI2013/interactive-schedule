@@ -187,7 +187,7 @@
           }
          }
     });
-
+//When tapping a tile it toggle's the current display submission status on the schedule
     $(".tile").on("vclick", function(){
         var submissionId = $(this).attr("submissionid");
         var isInSchedule = $(this).attr("isInSchedule");
@@ -201,10 +201,20 @@
         }
         else
           if (isInSchedule === "true") {
+              if(isAndroid){
+                AndroidBridge.togglePaperFavorite(submissionId, false);
+              }
+              else{
                NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+              }
           }
           else if(isInSchedule === "false"){
+              if(isAndroid){
+                AndroidBridge.togglePaperFavorite(submissionId, true);
+              }
+              else{
                NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+              }
           };
     });
 
@@ -230,16 +240,22 @@ Returns true or false depending on bridge call result which can be:
 "Error","True","False" 
 */
   function checkStatus(id){
-      var status = NativeBridge.call('isInSchedule', id, thisiscallback);
-
-      // temp fix for testing on web
-      if(status === undefined)
-        return false;
-
-      if(status === "True")
-          return  true;
-          else
-            return false;
+    var status = false;
+    if(isAndroid){
+      status = AndroidBridge.isPaperFavorite(id);
+    }
+    else{
+      status = NativeBridge.call('isInSchedule', id, thisiscallback);
+    }
+    // temp fix for testing on web
+    if(status === undefined)
+      return false;
+    //fix for string return value
+    if(status === "True")
+        status =  true;
+        else
+          status = false;
+    return status;
     };
 
     //Function called after a new filter is posted to server
