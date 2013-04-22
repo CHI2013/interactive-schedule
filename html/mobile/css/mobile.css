@@ -54,9 +54,9 @@ ul li h4 a{
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
 
-  -webkit-transition-duration: 0.2s;
+/*  -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
-  transition-duration: 0.2s;
+  transition-duration: 0.2s;*/
 }
 
 .tile:hover, .tile:focus {
@@ -84,26 +84,25 @@ div[data-role="content"]{
   background-color: #fff;
   margin:5px;
   border-radius: 4px;
+  margin-top: 45px;
 }
 /*Ends style for tiles page*/
 
 /*Style for search page*/
 .selected{
-  /*background-color: rgba(166,166,166,1) !important;*/
+  background-color: rgba(166,166,166,1) !important;
   /*Had to do it this way to override JQM android theme styling AND iOS*/
   background-image: linear-gradient(#aaaaaa, #aaaaaa) !important;
-}
-.ui-li-divider{
-
 }
 
 /*Ends style for search page*/
 
 /*General styles*/
-/*div[data-role="header"]{
+div[data-role="header"]{
   position:fixed;
+  width:100%;
   z-index:1000;
-}*/
+}
 .green{
   background-color: rgb(38,94,48);
 }
