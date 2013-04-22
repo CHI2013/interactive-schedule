@@ -196,6 +196,13 @@ class GlanceServer
             
         @app.get '/tiles', (req, res) =>
             res.jsonp @tiles
+            
+        @app.post '/log', (req, res) =>
+            if req.body.message?
+                @logger.info "Client:", {'message': req.body.message, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
+                res.jsonp {'status': 'ok'}
+            else
+                res.jsonp {'status': 'error', 'message': "no message"}, 500
         
         #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
         #IF the query contains a named tile this will be used IF it is available, otherwise it will be given another tile.
