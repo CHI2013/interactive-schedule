@@ -46,9 +46,16 @@ class GlanceServer
                 @setupSocketIO()
                 @setupRest()
                 @setupTiles () =>
-                    tickWrapper = () => #Ugly scoping hack
-                        @tick()
-                    setInterval tickWrapper, @config.tickFrequency
+                    @startTick()
+
+    clearTicker: () ->
+        if @ticker?
+            clearInterval @ticker
+
+    startTick: () ->
+        tickWrapper = () => #Ugly scoping hack
+            @tick()
+        @ticker = setInterval tickWrapper, @config.tickFrequency
     
     loadConfig: (cb) ->
         if process.argv[2]?
@@ -96,7 +103,7 @@ class GlanceServer
                         @tile[tile] = val
                     @iosocket.sockets.emit 'newTile', {'tileId': tile}
                 cb()
-
+                
 
     cleanTile: (tileId) ->
         delete @tiles[tileId]['filter']
@@ -140,7 +147,12 @@ class GlanceServer
                     @currentTimeslot = null
                 @logger.info "Changing timeslot", {'new': @currentTimeslot, 'old': oldTimeslot}
                 @autoCompleteList = undefined
+                @clearTicker()
                 @setupTiles () =>
+                    @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
+                    @tickCount++
+                    @startTick()
+                    
         
     setupExpress: () ->
         app = express()
