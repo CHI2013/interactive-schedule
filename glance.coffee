@@ -544,8 +544,8 @@ class GlanceServer
                                             newResult[key] = {}
                                         if not newResult[key][word]?
                                             newResult[key][word] = []
-                                        if not _.contains newResult[key][word], submission._id
-                                            newResult[key][word].push submission._id
+                                        if not _.contains newResult[key][word], submission.letterCode
+                                            newResult[key][word].push submission.letterCode
                                 else if _.isArray submission[key]
                                     for substring in submission[key]
                                         split = substring.split(',')
@@ -557,8 +557,8 @@ class GlanceServer
                                                 newResult[key] = {}
                                             if not newResult[key][word]?
                                                 newResult[key][word] = []
-                                            if not _.contains newResult[key][word], submission._id
-                                                newResult[key][word].push submission._id
+                                            if not _.contains newResult[key][word], submission.letterCode
+                                                newResult[key][word].push submission.letterCode
                                             
                     @autoCompleteList  = newResult                
                     result = @autoCompleteList
