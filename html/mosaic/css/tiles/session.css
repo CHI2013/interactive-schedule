@@ -155,7 +155,7 @@ h3.code {
 }
 
 #action {
-    display: block;
+    display: none;
     position: absolute;
     top: 128px;
     left: 135px;
@@ -169,6 +169,17 @@ h3.code {
 
 #action h1 { font-size: 18px; }
 #action p  { font-size: 13px;}
+
+#loading {
+    display: block;
+    height: 85px;
+    width: 135px;
+    position: absolute;
+    top: 200px;
+    left: 245px;
+    font-size: 18px;
+    color: #fff;
+}
 
 .break_tile #action, 
 .session_tile #action {

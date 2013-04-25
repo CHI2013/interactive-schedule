@@ -12,6 +12,8 @@ $(document).ready(function() {
     socket.on('tick', function(data) {
         if(listenToTicks && data.hasOwnProperty(tileId))
             tick(data[tileId])
+        else
+            tick(-1);
     });
 
     var getTile = function() {
@@ -20,7 +22,6 @@ $(document).ready(function() {
             init();
 
             listenToTicks = true;
-            tick(0);
         });
     };
 

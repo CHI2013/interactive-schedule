@@ -1,6 +1,5 @@
 var items = [];
 var durations = {};
-var roomOrder = ['251', '252A', '252B', '253', '241', '242A', '242B', '242AB', '243', 'Blue', 'Havane', '351', '352AB', 'Bordeaux', '342A', '343', '361', '362/363', 'interactivity'];
 
 function init() {
     items = [];
@@ -16,24 +15,15 @@ function init() {
 
     $('body').attr('id', 'tile_' + tileId);
 
-    // Submissions will be for multiple rooms, sort rooms in order
-    var submissions = {};
-
     filter.submissions.forEach(function(s) {
         var loc = s.room || s.venue;
-        submissions[loc] || (submissions[loc] = []);
-        submissions[loc].push(s);
+        items.push(s);
 
         durations[loc] || (durations[loc] = []);
         durations[loc].push({
             id: s['_id'],
             duration: s.duration > 80 ? 80 : s.duration
         });
-    });
-
-    roomOrder.forEach(function(r) { 
-        if(submissions[r])
-            items = items.concat(submissions[r]); 
     });
 
     for(var i = 0; i < items.length; i++) {
@@ -56,13 +46,19 @@ function init() {
 
 function tick(ti) {
     itemIndex = ti % items.length;
-    if(!tile.hasOwnProperty('filter'))
+    if(!tile.hasOwnProperty('filter') || ti == -1) {
+        $('#loading').hide();
+        $('#action').show();
         return;
+    }
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
     var item = items[itemIndex],
         room = getRoom(item.room || item.venue);
+
+    $('#loading').hide();
+    $('#action').hide();    
 
     $('body').attr('class', '').addClass(getClass(item)).addClass(tile.when + '_tile').addClass('volatile_' + tile.volatile);
 
