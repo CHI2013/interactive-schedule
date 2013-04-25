@@ -1048,10 +1048,13 @@ class GlanceServer
                     return 1
                 else if not s1.startTime? and not s2.startTime?
                     return 0
-                else if s1.startTime < s2.startTime
-                    return -1
-                else
-                    return 1
+                else 
+                    start1 = new Date(s1.startTime[0], s1.startTime[1], s1.startTime[2], s1.startTime[3], s1.startTime[4])
+                    start2 = new Date(s2.startTime[0], s2.startTime[1], s2.startTime[2], s2.startTime[3], s2.startTime[4])
+                    if start1 < start2
+                        return -1
+                    else
+                        return 1
             return 0
         filter = {'query': query, 'submissions': matches, 'tileId': tileId, 'name': filterName}
         @tiles[tileId]['filter'] = filter
