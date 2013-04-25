@@ -27,7 +27,7 @@
 
     var socket = io.connect("http://"+window.location.hostname, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    
+    console.log(window.location.hostname);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -365,7 +365,8 @@ Returns true or false depending on bridge call result which can be:
         // "name": result,
         // "when": "now",
         // "volatile": true,
-        // "tile": selectedTile//,
+        "filterName": result,
+        "tile": selectedTile,
         "all": letterCodes
       },
       function(data, status)
