@@ -27,7 +27,6 @@ function getTweets() {
     $.getJSON('http://search.twitter.com/search.json?rpp=100&callback=?&q=%23chi2013', function(data) { 
         allTweets = data.results;
         lastTweetAdded = allTweets.length;
-        tick();
     });
 }
 
@@ -48,6 +47,7 @@ function getPhotos(url) {
 $(document).ready(function() {
     getTweets();
     getPhotos(defaultUrl);
+    tick();
 });
 
 function addTweet() {
