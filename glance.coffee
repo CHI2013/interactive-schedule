@@ -1051,10 +1051,9 @@ class GlanceServer
                 else
                     return 1
             return 0
-        filter = {'query': query, 'submissions': matches, 'tileId': tileId}
+        filter = {'query': query, 'submissions': matches, 'tileId': tileId, 'filterName': filterName}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
-        @tiles[tileId]['filterName'] = filterName
         @tiles[tileId]['total'] = matches.length
         @tiles[tileId]['volatile'] = volatile
         @tickIndex[tileId] = -1
