@@ -153,7 +153,6 @@ class GlanceServer
                 @autoCompleteList = undefined
                 @clearTicker()
                 @setupTiles () =>
-                    @sendTick()
                     @startTick()
                     
         
