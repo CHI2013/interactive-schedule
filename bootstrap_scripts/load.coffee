@@ -42,7 +42,7 @@ days = {
                 'type': 'day',
                 'number': 3,
                 'name': 'Monday',
-                'timeslots': ['timeslot_9', 'timeslot_10', 'timeslot_11', 'timeslot_12'],
+                'timeslots': ['timeslot_10', 'timeslot_11', 'timeslot_12'],
                 'date': [2013, 4, 29]
             },
         'day_4': {
@@ -63,7 +63,7 @@ days = {
                 'type': 'day',
                 'number': 6,
                 'name': 'Thursday',
-                'timeslots': ['timeslot_21', 'timeslot_22', 'timeslot_23', 'timeslot_24'],
+                'timeslots': ['timeslot_22', 'timeslot_23'],
                 'date': [2013, 5, 2]
             }
     }
@@ -107,6 +107,7 @@ for id, day of days
         'end': [17, 20],
         'day': id
     }
+
 
 sessions = {}
 
