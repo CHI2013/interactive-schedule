@@ -24,7 +24,6 @@
 
       $(document).on("pageinit","#home", function(){
         $('#more').css("display","none");
-
       });
       }
 
@@ -84,6 +83,7 @@
     function loadData(){
       $.get('/tiles', function(data){
         console.log(data);
+        var kind;
         for(var id in data){
           if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
           {
@@ -97,17 +97,62 @@
                 tile.submissions = filter.filter.submissions;
 
                 if (tile.total > 0){
-                tile.text = tile.submissions[tile.current].title;
-                tile.submissionId = mapId(tile.submissions[tile.current]._id);
-                tile.isInSchedule = checkStatus(tile.submissionId);
+                  tile.text = tile.submissions[tile.current].title;
+                  tile.submissionId = mapId(tile.submissions[tile.current]._id);
+                  tile.isInSchedule = checkStatus(tile.submissionId);
                 }
               }
             }
           }
+          kind = data[id].when;
         }
+        colorTiles(kind);
         showSubmissions();
       });
     };
+
+    function colorTiles(kind){
+      if(kind === "session"){
+
+        $('#A').removeClass("blue");
+        $('#B').removeClass("blue");
+        $('#C').removeClass("green");
+        $('#D').removeClass("green");
+        $('#E').removeClass("purple");
+        $('#F').removeClass("orange");
+        $('#G').removeClass("red");
+        $('#H').removeClass("red");
+
+        $('#A').addClass("light_purple");
+        $('#B').addClass("light_purple");
+        $('#C').addClass("light_purple");
+        $('#D').addClass("light_purple");
+        $('#E').addClass("green");
+        $('#F').addClass("blue");
+        $('#G').addClass("orange");
+        $('#H').addClass("red");
+      }
+      else{
+
+        $('#A').removeClass("light_purple");
+        $('#B').removeClass("light_purple");
+        $('#C').removeClass("light_purple");
+        $('#D').removeClass("light_purple");
+        $('#E').removeClass("green");
+        $('#F').removeClass("blue");
+        $('#G').removeClass("orange");
+        $('#H').removeClass("red");
+
+        $('#A').addClass("blue");
+        $('#B').addClass("blue");
+        $('#C').addClass("green");
+        $('#D').addClass("green");
+        $('#E').addClass("purple");
+        $('#F').addClass("orange");
+        $('#G').addClass("red");
+        $('#H').addClass("red");
+      }
+    }
 
     //Load logical tiles' data into visual tiles
     function showSubmissions(){
@@ -380,7 +425,7 @@ Returns true or false depending on bridge call result which can be:
         // "volatile": true,
         "filterName": result,
         "tile": selectedTile,
-        "all": letterCodes
+        "letterCode": letterCodes
       },
       function(data, status)
       {
