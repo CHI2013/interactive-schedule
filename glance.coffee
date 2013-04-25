@@ -119,6 +119,11 @@ class GlanceServer
             sock.on 'disconnect', () =>
                 @logger.info "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
             
+     
+    sendTick: () ->
+        console.log 'tick', @tickCount
+        @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
+        @tickCount++
             
     tick: () ->
         for tileId, i of @tickIndex
@@ -137,8 +142,7 @@ class GlanceServer
             else
                 if (doc? and @currentTimeslot == doc._id) or (not doc? and not @currentTimeslot?)
 
-                    @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
-                    @tickCount++
+                    @sendTick()
                     return
                 oldTimeslot = @currentTimeslot
                 if doc? and @currentTimeslot != doc._id
@@ -149,8 +153,6 @@ class GlanceServer
                 @autoCompleteList = undefined
                 @clearTicker()
                 @setupTiles () =>
-                    @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
-                    @tickCount++
                     @startTick()
                     
         
