@@ -7,9 +7,11 @@ fs = require 'fs'
 _ = require 'underscore'
 expressWinston = require 'express-winston'
 winston = require 'winston'
+process.env.TZ = 'Europe/Paris' 
 
 class GlanceServer
     constructor: () ->
+        
         @transports = [
               new winston.transports.File {
                   filename: 'glance.log',
@@ -719,7 +721,7 @@ class GlanceServer
             date = new Date()
         if @config.timeOffset?
             date = new Date(date.getTime() + @config.timeOffset)
-        return [date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes()]
+        return [date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes()]
     
     createTimeVal: (hour, minute) ->
         hourStr = "" + hour
