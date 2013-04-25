@@ -96,7 +96,8 @@ function tick(ti) {
             $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
     });
 
-    $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);
+    if(tile.filter.name)
+        $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);
     $('#volatile_room').text(room);
 }
 
