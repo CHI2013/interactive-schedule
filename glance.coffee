@@ -230,6 +230,10 @@ class GlanceServer
             
             query = req.body
             tileId = @getTile query
+            filterName = ""
+            if query.filterName?
+                filterName = query.filterName
+                delete query.filterName
             
             if query.when
                 delete query.when
@@ -239,7 +243,7 @@ class GlanceServer
                     res.jsonp {'status': 'error', 'message': err}, 500
                 else
                     data = data.submissions
-                    @filterSubmissions tileId, query, data, true
+                    @filterSubmissions tileId, query, data, filterName, true
                     @logger.info "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
@@ -1013,7 +1017,7 @@ class GlanceServer
                 result.submissions = submissions
                 cb null, result
 
-    filterSubmissions: (tileId, query, submissions, volatile = false) ->
+    filterSubmissions: (tileId, query, submissions, filterName, volatile = false) ->
         matches = []
         if query.all?
             toQuery = @config.searchFields
@@ -1050,6 +1054,7 @@ class GlanceServer
         filter = {'query': query, 'submissions': matches, 'tileId': tileId}
         @tiles[tileId]['filter'] = filter
         @tiles[tileId]['timestamp'] = new Date()
+        @tiles[tileId]['filterName'] = filterName
         @tiles[tileId]['total'] = matches.length
         @tiles[tileId]['volatile'] = volatile
         @tickIndex[tileId] = -1
