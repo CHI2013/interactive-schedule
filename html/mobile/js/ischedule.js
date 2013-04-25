@@ -19,15 +19,16 @@
 
     //Global variable to pass the selected tile to the search page.
     var selectedTile = "";
+    var host = "http://" + window.location.hostname + ":8000";
 
     $(document).on("pageinit","#tiles", function(){
 
     //main cloud server  
     var glanceHost = "92.243.30.77:8000";
-
+  
     var socket = io.connect("http://"+window.location.hostname, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    console.log(window.location.hostname);
+
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -297,7 +298,7 @@ Returns true or false depending on bridge call result which can be:
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url: "http://92.243.30.77:8000/autocompletelist",
+                url:"http://localhost:8000/autocompletelist",
                 dataType: "jsonp",
                 crossDomain: true,
                 data: {
@@ -358,9 +359,9 @@ Returns true or false depending on bridge call result which can be:
     console.log(result);
     console.log(selectedTile);
     console.log(letterCodes);
-    $.post("http://localhost:8000/filters",
+    // $.post("http://localhost:8000/filters",
     // Add your ip here to test with mobile device
-     // $.post("http://92.243.30.77:8000/filters", 
+      $.post(host + "/filters", 
       {
         // "name": result,
         // "when": "now",
