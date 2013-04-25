@@ -7,9 +7,11 @@ fs = require 'fs'
 _ = require 'underscore'
 expressWinston = require 'express-winston'
 winston = require 'winston'
+process.env.TZ = 'Europe/Paris' 
 
 class GlanceServer
     constructor: () ->
+        
         @transports = [
               new winston.transports.File {
                   filename: 'glance.log',
