@@ -6,7 +6,6 @@
     "videoDir": "http://92.243.30.77:8000/videos",
     "roomOrder": ["251", "252A", "252B", "253", "Blue", "241", "242A", "242B", "242AB", "243", "Havane", "351", "352AB", "Bordeaux", "342A", "343", "361", "362/363", "interactivity"],
     "orientation": "vertical",
-    "timeOffset": 600000,
     "searchFields": ["authors", "room", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries", "letterCode"],
     "breakTiles": {
         "A": {
