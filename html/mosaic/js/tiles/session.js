@@ -4,6 +4,10 @@ var durations = {};
 function init() {
     items = [];
     durations = {};
+
+    $('#action').hide();
+    $('#loading').show();
+
     if(!tile.hasOwnProperty('filter'))
         return;
 

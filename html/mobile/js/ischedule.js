@@ -167,11 +167,12 @@
     //Function triggered by the server every X milliseconds
     socket.on('tick', function(count) {
         console.log("tick");
+        console.log(count);
         if(!count.isEmpty)
          {
           for(var id in count)
           {
-             updateTile(id, count[id], "ignore");
+             updateTile(id, count[id]);
             for(var i = 0; i<tiles.length;i++)
             {
               if(id === tiles[i].getAttribute("id"))
@@ -345,7 +346,6 @@ Returns true or false depending on bridge call result which can be:
 
     $('#post').on("click", function(){
       postFilter(result);
-      console.log(result);
       $.mobile.changePage("tiles.html", "slide", true, true);
     });
 
@@ -355,20 +355,23 @@ Returns true or false depending on bridge call result which can be:
   }
 
   function postFilter(result){
-    //$.post("http://localhost:8000/filters",
+    console.log(result);
+    console.log(selectedTile);
+    console.log(letterCodes);
+    $.post("http://localhost:8000/filters",
     // Add your ip here to test with mobile device
-    // $.post("http://92.243.30.77:8000/filters",
-     $.post("http://92.243.30.77:8000/filters", 
+     // $.post("http://92.243.30.77:8000/filters", 
       {
-        "name": result,
-        "when": "now",
-        "volatile": true,
-        "tile": selectedTile,
-        "letterCode": letterCodes
+        // "name": result,
+        // "when": "now",
+        // "volatile": true,
+        // "tile": selectedTile//,
+        "all": letterCodes
       },
       function(data, status)
       {
         console.log("Updated session: " + data);
+        console.log(data);
       });
   } ;
 
