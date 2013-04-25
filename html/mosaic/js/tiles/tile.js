@@ -16,6 +16,8 @@ $(document).ready(function() {
             tick(-1);
     });
 
+    $.ajaxSetup({ cache: false });
+
     var getTile = function() {
         return $.get('/tiles/' + tileId, function(data) {
             tile = data;
