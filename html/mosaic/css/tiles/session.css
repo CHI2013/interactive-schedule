@@ -232,6 +232,7 @@ h3.code {
 
 .break_tile .one { left: 40px; }
 .break_tile .two { left: 420px;}
+.break_tile .midOne { left: 65px; }
 .break_tile .mid { left: 440px; }
 .break_tile .one-theatre { left: 25px; }
 .break_tile .two-theatre { left: 475px; }
@@ -244,6 +245,9 @@ h3.code {
 .session_tile .twob { left: 93px;}
 .session_tile .twoab { left: 40px;}
 .session_tile .three { left: 425px; }
+.session_tile .threea { left: 423px; }
+.session_tile .threeb { left: 423px; }
+.session_tile .threeab { left: 423px; }
 .session_tile .four { right: 40px; }
 
 /* Colors */
