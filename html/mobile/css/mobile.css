@@ -111,6 +111,11 @@ div[data-role="content"]{
   background-image: linear-gradient(#aaaaaa, #aaaaaa) !important;
 }
 
+#searchBar{
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
 /*Ends style for search page*/
 
 /*General styles*/
