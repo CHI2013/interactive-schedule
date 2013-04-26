@@ -368,7 +368,7 @@ Returns true or false depending on bridge call result which can be:
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url:host+"/autocompletelist",
+                url:host+"autocompletelist",
                 dataType: "jsonp",
                 crossDomain: true,
                 data: {
@@ -432,7 +432,7 @@ Returns true or false depending on bridge call result which can be:
     console.log(letterCodes);
     // $.post("http://localhost:8000/filters",
     // Add your ip here to test with mobile device
-      $.post(host + "/filters", 
+      $.post(host + "filters", 
       {
         // "name": result,
         // "when": "now",
