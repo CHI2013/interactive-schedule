@@ -271,6 +271,9 @@
             selectedTile = tileId;
             $.mobile.changePage("search.html", "slide", true, true);
         }
+        else if( text ==="Syncing with display"){
+           return ;
+        }
         else
           if (isInSchedule === "true") {
               if(isAndroid){
