@@ -342,7 +342,7 @@ Returns true or false depending on bridge call result which can be:
     //update colors between session and breaks
     socket.on('newTile',function(data){
       console.log(data);
-
+      loadData();
     });
 
 
