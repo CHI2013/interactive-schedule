@@ -39,7 +39,8 @@
 
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    alert(window.location.pathname);
+    alert(window.location);
+    console.log($(location).attr('href'));
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -247,30 +248,6 @@
          }
     });
 
-    //Function triggered by the server every X milliseconds
-    socket.on('tick', function(count) {
-        console.log("tick");
-        console.log(count);
-        if(!count.isEmpty)
-         {
-          for(var id in count)
-          {
-             updateTile(id, count[id]);
-            for(var i = 0; i<tiles.length;i++)
-            {
-              if(id === tiles[i].getAttribute("id"))
-              {
-                $('#'+id).fadeTo(250, 0.5, function() {
-                  // Animation complete.
-                 });
-                $('#'+id).fadeTo(250, 1, function() {
-                  // Animation complete.
-                 });
-              }
-            }
-          }
-         }
-    });
 
 //When tapping a tile it toggle's the current display submission status on the schedule
     $(".tile").on("vclick", function(){
