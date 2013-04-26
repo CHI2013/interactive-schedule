@@ -37,10 +37,13 @@
 
     $(document).on("pageinit","#tiles", function(){
 
+    var host = $(location).attr('href')
+    host = host.substring(0, host.length - 10);
+
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    alert(window.location);
-    console.log($(location).attr('href'));
+
+    console.log(host);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
