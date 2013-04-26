@@ -396,6 +396,7 @@ Returns true or false depending on bridge call result which can be:
                 }
             })
             .then( function ( response ) {
+              result = value;
               console.log(response);
                 $.each( response, function ( i, val ) {
                   $.each(val, function(j){
@@ -419,14 +420,14 @@ Returns true or false depending on bridge call result which can be:
 
     $("#autocomplete").delegate('.result', 'vclick', function(){
       $(this).toggleClass("selected");
-      result = "";
+   //   result = "";
       letterCodes = [];
       if($(".selected").exists()){
          $("#post").css("visibility","visible");
          var $selected = $(".selected");
          for(var i = 0; i< $selected.length; i++){
           var temp = $selected[i].innerText;
-          result += temp.substring(0, temp.length - 1) + " ";
+       //   result += temp.substring(0, temp.length - 1) + " ";
           letterCodes = letterCodes.concat(getCodes($selected[i]));
          }
       }
