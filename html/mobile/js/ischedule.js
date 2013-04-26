@@ -4,6 +4,7 @@
           orientationChangeEnabled: false
         })
       });
+      //Go back to "More section on iOS"
       function closeISchedule(){
         NativeBridge.call('closeISchedule');
       }  
@@ -30,16 +31,24 @@
     //Global variable to pass the selected tile to the search page.
     var selectedTile = "";
     var host;
-
+    var justLoaded = true;
     function setScreen(ip){
        host = "http://" + ip;
     }
 
+    function reload(){
+       location.reload();
+    }
+
     $(document).on("pageinit","#tiles", function(){
-  
+
+    host = $(location).attr('href')
+    host = host.substring(0, host.length - 17);
+
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
 
+    console.log(host);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -118,19 +127,19 @@
         $('#B').removeClass("blue");
         $('#C').removeClass("green");
         $('#D').removeClass("green");
-        $('#E').removeClass("purple");
-        $('#F').removeClass("orange");
-        $('#G').removeClass("red");
-        $('#H').removeClass("red");
+        $('#E').removeClass("red");
+        $('#F').removeClass("red");
+        $('#G').removeClass("orange");
+        $('#H').removeClass("purple");
 
         $('#A').addClass("light_purple");
         $('#B').addClass("light_purple");
         $('#C').addClass("light_purple");
         $('#D').addClass("light_purple");
-        $('#E').addClass("green");
-        $('#F').addClass("blue");
-        $('#G').addClass("orange");
-        $('#H').addClass("red");
+        $('#E').addClass("blue");
+        $('#F').addClass("green");
+        $('#G').addClass("red");
+        $('#H').addClass("orange");
       }
       else{
 
@@ -138,19 +147,19 @@
         $('#B').removeClass("light_purple");
         $('#C').removeClass("light_purple");
         $('#D').removeClass("light_purple");
-        $('#E').removeClass("green");
-        $('#F').removeClass("blue");
-        $('#G').removeClass("orange");
-        $('#H').removeClass("red");
+        $('#E').removeClass("blue");
+        $('#F').removeClass("green");
+        $('#G').removeClass("red");
+        $('#H').removeClass("orange");
 
         $('#A').addClass("blue");
         $('#B').addClass("blue");
         $('#C').addClass("green");
         $('#D').addClass("green");
-        $('#E').addClass("purple");
-        $('#F').addClass("orange");
-        $('#G').addClass("red");
-        $('#H').addClass("red");
+        $('#E').addClass("red");
+        $('#F').addClass("red");
+        $('#G').addClass("orange");
+        $('#H').addClass("purple");
       }
     }
 
@@ -163,7 +172,11 @@
             "id"))
           {
           //tiles is the visual tiles, tilesData are the logical tiles
-          tiles[i].innerHTML = tile.text;
+          if(justLoaded){
+            tiles[i].innerHTML = "Syncing with display";
+          }
+          else
+            tiles[i].innerHTML = tile.text;
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("total", tile.total);
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
@@ -174,6 +187,7 @@
             }
         }
       }
+      justLoaded = false;
     };
 
   //Update logical tiles then visual tiles
@@ -246,6 +260,8 @@
           }
          }
     });
+
+
 //When tapping a tile it toggle's the current display submission status on the schedule
     $(".tile").on("vclick", function(){
         var submissionId = $(this).attr("submissionid");
@@ -257,6 +273,9 @@
         if(text === "Filter videos"){
             selectedTile = tileId;
             $.mobile.changePage("search.html", "slide", true, true);
+        }
+        else if( text ==="Syncing with display"){
+           return ;
         }
         else
           if (isInSchedule === "true") {
@@ -323,6 +342,16 @@ Returns true or false depending on bridge call result which can be:
           loadData();
     });
 
+    //update colors between session and breaks
+    socket.on('newTile',function(data){
+      console.log(data);
+      justLoaded = true;
+      loadData();
+
+
+    });
+
+
     socket.on('doneTile', function(data) { 
         for(var i = 0; i<tilesData.length;i++)
         {
@@ -355,7 +384,7 @@ Returns true or false depending on bridge call result which can be:
             $ul.html( "<li><div class='ui-loader'><span class='ui-icon ui-icon-loading'></span></div></li>" );
             $ul.listview( "refresh" );
             $.ajax({
-                url:host+":8000/autocompletelist",
+                url:host+"autocompletelist",
                 dataType: "jsonp",
                 crossDomain: true,
                 data: {
@@ -363,6 +392,7 @@ Returns true or false depending on bridge call result which can be:
                 }
             })
             .then( function ( response ) {
+              result = value;
               console.log(response);
                 $.each( response, function ( i, val ) {
                   $.each(val, function(j){
@@ -386,14 +416,14 @@ Returns true or false depending on bridge call result which can be:
 
     $("#autocomplete").delegate('.result', 'vclick', function(){
       $(this).toggleClass("selected");
-      result = "";
+   //   result = "";
       letterCodes = [];
       if($(".selected").exists()){
          $("#post").css("visibility","visible");
          var $selected = $(".selected");
          for(var i = 0; i< $selected.length; i++){
           var temp = $selected[i].innerText;
-          result += temp.substring(0, temp.length - 1) + " ";
+       //   result += temp.substring(0, temp.length - 1) + " ";
           letterCodes = letterCodes.concat(getCodes($selected[i]));
          }
       }
@@ -418,7 +448,7 @@ Returns true or false depending on bridge call result which can be:
     console.log(letterCodes);
     // $.post("http://localhost:8000/filters",
     // Add your ip here to test with mobile device
-      $.post(host + ":8000/filters", 
+      $.post(host + "filters", 
       {
         // "name": result,
         // "when": "now",
