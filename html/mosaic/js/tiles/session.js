@@ -38,6 +38,7 @@ function init() {
 
         var html = '<div class="submission">';
         html += '<div class="video" align="center"></div>';
+        html += '<div class="cbStatement" align="center"><p>' + (item.cbStatement || '') + '</p></div>';
         html += '<div class="info">';
         html += '<h2>' + item.title + '</h2>';
         html += '<h3>' + authorList.join(', ') + '</h3>';
@@ -92,8 +93,14 @@ function tick(ti) {
     }).animate({
         left: 0
     }, 500, 'swing', function() {
-        if(item.letterCode)
+        if(item.hasVideo && item.letterCode) {
             $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
+            $('.submission.active .cbStatement').hide();
+        } else {
+            $('.submission.active .video').hide();
+            $('.submission.active .cbStatement').show();
+        }
+
     });
 
     if(tile.filter.name)
