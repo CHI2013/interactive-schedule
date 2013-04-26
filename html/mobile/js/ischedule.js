@@ -39,7 +39,7 @@
 
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    alert(host);
+    alert(window.location.pathname);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -127,10 +127,10 @@
         $('#B').addClass("light_purple");
         $('#C').addClass("light_purple");
         $('#D').addClass("light_purple");
-        $('#E').addClass("green");
-        $('#F').addClass("blue");
-        $('#G').addClass("orange");
-        $('#H').addClass("red");
+        $('#E').addClass("blue");
+        $('#F').addClass("green");
+        $('#G').addClass("red");
+        $('#H').addClass("orange");
       }
       else{
 
@@ -138,10 +138,10 @@
         $('#B').removeClass("light_purple");
         $('#C').removeClass("light_purple");
         $('#D').removeClass("light_purple");
-        $('#E').removeClass("green");
-        $('#F').removeClass("blue");
-        $('#G').removeClass("orange");
-        $('#H').removeClass("red");
+        $('#E').removeClass("blue");
+        $('#F').removeClass("green");
+        $('#G').removeClass("red");
+        $('#H').removeClass("orange");
 
         $('#A').addClass("blue");
         $('#B').addClass("blue");
