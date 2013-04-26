@@ -31,7 +31,7 @@
     //Global variable to pass the selected tile to the search page.
     var selectedTile = "";
     var host;
-
+    var justLoaded = true;
     function setScreen(ip){
        host = "http://" + ip;
     }
@@ -172,9 +172,12 @@
             "id"))
           {
           //tiles is the visual tiles, tilesData are the logical tiles
-          //tiles[i].innerHTML = tile.text;
-          tiles[i].innerHTML = "Syncing with display";
-
+          if(justLoaded){
+            tiles[i].innerHTML = "Syncing with display";
+            justLoaded = false;
+          }
+          else
+            tiles[i].innerHTML = tile.text;
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("total", tile.total);
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
@@ -343,6 +346,7 @@ Returns true or false depending on bridge call result which can be:
     socket.on('newTile',function(data){
       console.log(data);
       loadData();
+      justLoaded = true;
     });
 
 
