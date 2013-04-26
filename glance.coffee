@@ -123,7 +123,6 @@ class GlanceServer
             
      
     sendTick: () ->
-        console.log 'tick', @tickCount
         @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
         @tickCount++
             
