@@ -6,8 +6,8 @@ body{
 }
 
 .ui-content {
-padding:0px;
-
+  padding:0px;
+  padding-bottom: 15px;
   }
 /*Style for landing page*/
 

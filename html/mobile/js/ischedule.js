@@ -172,7 +172,9 @@
             "id"))
           {
           //tiles is the visual tiles, tilesData are the logical tiles
-          tiles[i].innerHTML = tile.text;
+          //tiles[i].innerHTML = tile.text;
+          tiles[i].innerHTML = "Syncing with display";
+
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("total", tile.total);
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
