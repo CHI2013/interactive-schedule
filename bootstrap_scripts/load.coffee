@@ -10,6 +10,7 @@ schedule = require('./' + process.argv[4]).rows
 interactivity = require('./' + process.argv[5]).rows
 letterCodes = require './letterCodes.json'
 codesWithVideos = require './codesWithVideo.json'
+cbStatements = require './cbStatements.json'
 
 sessionLength = 80
 
@@ -153,6 +154,10 @@ addSubmission = (submission) ->
         submissionValue.room = sessions[submissionValue.session].room
     else if submissionValue.sessions?
         submissionValue.room = sessions[submissionValue.sessions[0]].room
+
+    if not submissionValue.cbStatement?
+        if cbStatements[submissionValue.letterCode]?
+            submissionValue.cbStatement =cbStatements[submissionValue.letterCode]
 
     institutions = []
     cities = []
