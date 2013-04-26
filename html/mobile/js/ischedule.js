@@ -36,10 +36,10 @@
     }
 
     $(document).on("pageinit","#tiles", function(){
-  
+
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-
+    alert(host);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -118,10 +118,10 @@
         $('#B').removeClass("blue");
         $('#C').removeClass("green");
         $('#D').removeClass("green");
-        $('#E').removeClass("purple");
-        $('#F').removeClass("orange");
-        $('#G').removeClass("red");
-        $('#H').removeClass("red");
+        $('#E').removeClass("red");
+        $('#F').removeClass("red");
+        $('#G').removeClass("orange");
+        $('#H').removeClass("purple");
 
         $('#A').addClass("light_purple");
         $('#B').addClass("light_purple");
@@ -147,10 +147,10 @@
         $('#B').addClass("blue");
         $('#C').addClass("green");
         $('#D').addClass("green");
-        $('#E').addClass("purple");
-        $('#F').addClass("orange");
-        $('#G').addClass("red");
-        $('#H').addClass("red");
+        $('#E').addClass("red");
+        $('#F').addClass("red");
+        $('#G').addClass("orange");
+        $('#H').addClass("purple");
       }
     }
 
@@ -246,6 +246,32 @@
           }
          }
     });
+
+    //Function triggered by the server every X milliseconds
+    socket.on('tick', function(count) {
+        console.log("tick");
+        console.log(count);
+        if(!count.isEmpty)
+         {
+          for(var id in count)
+          {
+             updateTile(id, count[id]);
+            for(var i = 0; i<tiles.length;i++)
+            {
+              if(id === tiles[i].getAttribute("id"))
+              {
+                $('#'+id).fadeTo(250, 0.5, function() {
+                  // Animation complete.
+                 });
+                $('#'+id).fadeTo(250, 1, function() {
+                  // Animation complete.
+                 });
+              }
+            }
+          }
+         }
+    });
+
 //When tapping a tile it toggle's the current display submission status on the schedule
     $(".tile").on("vclick", function(){
         var submissionId = $(this).attr("submissionid");
@@ -323,6 +349,13 @@ Returns true or false depending on bridge call result which can be:
           loadData();
     });
 
+    //update colors between session and breaks
+    socket.on('newTile',function(data){
+      console.log(data);
+
+    });
+
+
     socket.on('doneTile', function(data) { 
         for(var i = 0; i<tilesData.length;i++)
         {
@@ -363,6 +396,7 @@ Returns true or false depending on bridge call result which can be:
                 }
             })
             .then( function ( response ) {
+              result = value;
               console.log(response);
                 $.each( response, function ( i, val ) {
                   $.each(val, function(j){
@@ -386,14 +420,14 @@ Returns true or false depending on bridge call result which can be:
 
     $("#autocomplete").delegate('.result', 'vclick', function(){
       $(this).toggleClass("selected");
-      result = "";
+   //   result = "";
       letterCodes = [];
       if($(".selected").exists()){
          $("#post").css("visibility","visible");
          var $selected = $(".selected");
          for(var i = 0; i< $selected.length; i++){
           var temp = $selected[i].innerText;
-          result += temp.substring(0, temp.length - 1) + " ";
+       //   result += temp.substring(0, temp.length - 1) + " ";
           letterCodes = letterCodes.concat(getCodes($selected[i]));
          }
       }
