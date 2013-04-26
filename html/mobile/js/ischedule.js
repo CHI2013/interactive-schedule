@@ -33,6 +33,15 @@
     var host;
     var justLoaded = true;
 
+    function setScreen(ip){
+       host = "http://" + ip;
+    }
+
+    function reload(){
+       location.reload();
+    }
+
+    $(document).on("pageinit","#tiles", function(){
 
     var isOnline=setInterval(function(){checkOnlineStatus()},500);
 
@@ -50,16 +59,6 @@
         console.log(isOnline);
         return isOnline;
     }
-
-    function setScreen(ip){
-       host = "http://" + ip;
-    }
-
-    function reload(){
-       location.reload();
-    }
-
-    $(document).on("pageinit","#tiles", function(){
 
     host = $(location).attr('href')
     host = host.substring(0, host.length - 17);
