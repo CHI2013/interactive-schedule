@@ -37,7 +37,7 @@
 
     $(document).on("pageinit","#tiles", function(){
 
-    var host = $(location).attr('href')
+    host = $(location).attr('href')
     host = host.substring(0, host.length - 10);
 
     var socket = io.connect(host, {port: 8000});
