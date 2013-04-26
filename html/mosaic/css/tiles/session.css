@@ -260,7 +260,7 @@ h3.code {
 .session_tile .threeb { left: 423px; }
 .session_tile .threeab { left: 423px; }
 .session_tile .four { right: 40px; }
-.session_tile .label_Havane { left: 40px; } 
+.session_tile .label_Havane { left: 35px !important; } 
 
 /* Colors */
 
