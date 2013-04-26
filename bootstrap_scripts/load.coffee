@@ -19,7 +19,8 @@ lengths = {
     'SIG': sessionLength, 
     'casestudy': sessionLength / 4, 
     'panel': sessionLength,
-    'altchi': sessionLength / 8
+    'altchi': sessionLength / 8,
+    'special': sessionLength
 }
 
 
