@@ -37,9 +37,13 @@
 
     $(document).on("pageinit","#tiles", function(){
 
+    var host = $(location).attr('href')
+    host = host.substring(0, host.length - 10);
+
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
-    alert(host);
+
+    console.log(host);
     //visual tiles
     var tiles = $(".tile");
     //logical tiles
@@ -127,10 +131,10 @@
         $('#B').addClass("light_purple");
         $('#C').addClass("light_purple");
         $('#D').addClass("light_purple");
-        $('#E').addClass("green");
-        $('#F').addClass("blue");
-        $('#G').addClass("orange");
-        $('#H').addClass("red");
+        $('#E').addClass("blue");
+        $('#F').addClass("green");
+        $('#G').addClass("red");
+        $('#H').addClass("orange");
       }
       else{
 
@@ -138,10 +142,10 @@
         $('#B').removeClass("light_purple");
         $('#C').removeClass("light_purple");
         $('#D').removeClass("light_purple");
-        $('#E').removeClass("green");
-        $('#F').removeClass("blue");
-        $('#G').removeClass("orange");
-        $('#H').removeClass("red");
+        $('#E').removeClass("blue");
+        $('#F').removeClass("green");
+        $('#G').removeClass("red");
+        $('#H').removeClass("orange");
 
         $('#A').addClass("blue");
         $('#B').addClass("blue");
@@ -247,30 +251,6 @@
          }
     });
 
-    //Function triggered by the server every X milliseconds
-    socket.on('tick', function(count) {
-        console.log("tick");
-        console.log(count);
-        if(!count.isEmpty)
-         {
-          for(var id in count)
-          {
-             updateTile(id, count[id]);
-            for(var i = 0; i<tiles.length;i++)
-            {
-              if(id === tiles[i].getAttribute("id"))
-              {
-                $('#'+id).fadeTo(250, 0.5, function() {
-                  // Animation complete.
-                 });
-                $('#'+id).fadeTo(250, 1, function() {
-                  // Animation complete.
-                 });
-              }
-            }
-          }
-         }
-    });
 
 //When tapping a tile it toggle's the current display submission status on the schedule
     $(".tile").on("vclick", function(){
