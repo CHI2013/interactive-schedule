@@ -40,28 +40,28 @@
             "type": "filter",
             "when": "break",
             "filter": {
-                "venue": "interactivity"
+                "room": ["Bordeaux", "342A", "343"]
             }
         },
         "F": {
             "type": "filter",
             "when": "break",
             "filter": {
-                "room": ["Havane", "351", "352AB"]
+                "room": ["361", "362/363"]
             }
         },
         "G": {
             "type": "filter",
             "when": "break",
             "filter": {
-                "room": ["Bordeaux", "342A", "343"]
+                "room": ["Havane", "351", "352AB"]
             }
         },
         "H": {
             "type": "filter",
             "when": "break",
             "filter": {
-                "room": ["361", "362/363"]
+                "venue": "interactivity"
             }
         }
     },
@@ -104,14 +104,14 @@
             "type": "filter",
             "when": "session",
             "filter": {
-                "room": ["Havane", "351", "352"]
+                "room": ["Bordeaux", "342A", "343", "361", "362/363"]
             }
         },
         "H": {
             "type": "filter",
             "when": "session",
             "filter": {
-                "room": ["Bordeaux", "342A", "343", "361", "362/363"]
+                "room": ["Havane", "351", "352"]
             }
         }
     }
