@@ -37,7 +37,7 @@
 
     $(document).on("pageinit","#tiles", function(){
   
-    var test = window.current.location;
+    var test = window.location.current;
     alert(test);
     var socket = io.connect(host, {port: 8000});
     //var socket = io.connect("http://92.243.30.77", {port: 8000});
