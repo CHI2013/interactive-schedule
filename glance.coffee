@@ -755,6 +755,10 @@ class GlanceServer
             else
                 if days.length > 0
                     day = days[0].value
+                    now = @getTime()
+                    if day.date[0] > now[0] or day.date[1] > now[1] or day.date[2] > now[2]
+                        cb null, null
+                        return
                     @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
                         if err?
                             cb err, null
@@ -781,6 +785,15 @@ class GlanceServer
                     cb null, null
                     return
                 day = days[0].value
+                now = @getTime()
+                if day.date[0] > now[0] or day.date[1] > now[1] or day.date[2] > now[2]
+                    @db.fetch {'keys': day.timeslots}, (err, timeslots) =>
+                        if err?
+                            cb err, null
+                        else
+                            cb null, timeslots.rows[0].doc
+                            return
+                    return
                 time = @getTime()
                 timeVal = @createTimeVal time[3], time[4] #create an int that is easy to compare with
                 start = time[..2]
