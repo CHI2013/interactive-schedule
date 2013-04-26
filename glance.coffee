@@ -95,7 +95,7 @@ class GlanceServer
                     if val.type == 'filter'
                         if val.filter?
                             filter = _.clone val.filter
-                            if not err?
+                            if not err? and ongoingSubmissions != null
                                 data = ongoingSubmissions.submissions
                                 if filter?
                                     @filterSubmissions tile, filter, data
