@@ -9,6 +9,7 @@ sessionData = require('./' + process.argv[3]).rows
 schedule = require('./' + process.argv[4]).rows
 interactivity = require('./' + process.argv[5]).rows
 letterCodes = require './letterCodes.json'
+codesWithVideos = require './codesWithVideo.json'
 
 sessionLength = 80
 
@@ -142,6 +143,10 @@ addSubmission = (submission) ->
             word.trim().toLowerCase().replace '.', ''
     if letterCodes.code[submissionValue._id]?
         submissionValue.letterCode = letterCodes.code[submissionValue._id]
+    if submissionValue.letterCode? and _.contains(codesWithVideos, submissionValue.letterCode)
+        submissionValue.hasVideo = true
+    else
+        submissionValue.hasVideo = false
     delete submissionValue._id
     delete submissionValue._rev
     if submissionValue.session?
