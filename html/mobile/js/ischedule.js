@@ -4,6 +4,7 @@
           orientationChangeEnabled: false
         })
       });
+      //Go back to "More section on iOS"
       function closeISchedule(){
         NativeBridge.call('closeISchedule');
       }  
