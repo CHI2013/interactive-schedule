@@ -27,43 +27,29 @@ days = {
         'day_1': {
                 'type': 'day',
                 'number': 1,
-                'name': 'Saturday',
+                'name': 'Monday',
                 'timeslots': ['timeslot_1', 'timeslot_2', 'timeslot_3', 'timeslot_4'],
-                'date': [2013, 4, 27]
+                'date': [2013, 4, 29]
             },
         'day_2': {
                 'type': 'day',
                 'number': 2,
-                'name': 'Sunday',
+                'name': 'Tuesday',
                 'timeslots': ['timeslot_5', 'timeslot_6', 'timeslot_7', 'timeslot_8'],
-                'date': [2013, 4, 28]
+                'date': [2013, 4, 30]
             },
         'day_3': {
                 'type': 'day',
                 'number': 3,
-                'name': 'Monday',
+                'name': 'Wednesday',
                 'timeslots': ['timeslot_10', 'timeslot_11', 'timeslot_12'],
-                'date': [2013, 4, 29]
+                'date': [2013, 5, 1]
             },
         'day_4': {
                 'type': 'day',
                 'number': 4,
-                'name': 'Tuesday',
-                'timeslots': ['timeslot_13', 'timeslot_14', 'timeslot_15', 'timeslot_16'],
-                'date': [2013, 4, 30]
-            },
-        'day_5': {
-                'type': 'day',
-                'number': 5,
-                'name': 'Wednesday',
-                'timeslots': ['timeslot_17', 'timeslot_18', 'timeslot_19', 'timeslot_20'],
-                'date': [2013, 5, 1]
-            },
-        'day_6': {
-                'type': 'day',
-                'number': 6,
                 'name': 'Thursday',
-                'timeslots': ['timeslot_22', 'timeslot_23'],
+                'timeslots': ['timeslot_13', 'timeslot_14', 'timeslot_15', 'timeslot_16'],
                 'date': [2013, 5, 2]
             }
     }
@@ -256,6 +242,13 @@ insertInDb = (dict) ->
        chidb.insert value, id, (err, body) ->
            if err?
                console.log err 
+
+days['day_1'].timeslots.splice 0, 1
+delete timeslots['timeslot_1']
+days['day_4'].timeslots.splice 0, 1
+delete timeslots['timeslot_13']
+days['day_4'].timeslots.splice days['day_4'].timeslots.length - 1, days['day_4'].timeslots.length
+delete timeslots['timeslot_16']
 
 insertInDb days
 insertInDb timeslots
