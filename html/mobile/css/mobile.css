@@ -119,7 +119,22 @@ div[data-role="content"]{
 /*Ends style for search page*/
 
 /*General styles*/
+
+#offlineMsg{
+    height: 35px;
+    font-size: 1em;
+    width:200px;
+    font-family: 'PT Sans', sans-serif;
+    padding-top: 15px;
+  padding-left: 15px;
+
+}
+
+#reload{
+  visibility: hidden;
+}
 div[data-role="header"]{
+
   position:fixed;
   width:100%;
   z-index:1000;

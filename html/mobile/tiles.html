@@ -19,7 +19,7 @@
   <div data-role="header">  
     <a href="http://chischedule.org:8000/mobile/" id="backToScreens" data-role="button" data-icon="arrow-l">Back</a>     
     <h1>Tap to Add</h1>
-    <a href="#" id="refresh" data-role="button" data-icon="refresh" data-iconpos="right" onclick='reload();'>reload</a>     
+    <a href="#" id="reload" data-role="button" data-icon="refresh" data-iconpos="right" onclick='reload();'>reload</a>     
   </div>
  
   <div id ="main_grid" data-role="content"> 
@@ -34,6 +34,10 @@
       <div id="H" class="ui-block-b tile "><span>Filter videos</span></div>    
     </div>
   </div>
+  <div id="offlineMsg" data-role="popup" data-theme="a" data-overlay-theme="a" class="ui-content">
+      Lost WiFi connection.
+  </div>
+
 </div>
 </body>
 </html>
