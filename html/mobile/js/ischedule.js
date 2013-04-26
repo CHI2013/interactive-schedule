@@ -32,6 +32,25 @@
     var selectedTile = "";
     var host;
     var justLoaded = true;
+
+
+    var isOnline=setInterval(function(){checkOnlineStatus()},500);
+
+    function checkOnlineStatus(){
+        isOnline  = window.navigator.onLine;
+        if(!isOnline){
+          $( "#offlineMsg" ).popup( "option", "dismissible", false );
+          $( "#offlineMsg" ).popup( "open" );
+          $("#reload").css("visibility", "visible");
+        }
+        else{
+          $( "#offlineMsg" ).popup( "close" );
+
+        }
+        console.log(isOnline);
+        return isOnline;
+    }
+
     function setScreen(ip){
        host = "http://" + ip;
     }
