@@ -87,12 +87,10 @@ function addPhoto(i) {
 function addItem(html, container) {
     container = '#row-' + container;
     $(html).css('display', 'none');
-    $(container).prepend(html);
-    $(container + ' .item:first').fadeIn(200, function() {
-        var last = $(container + ' .item:last');
-        var offset = last.offset();
-        if((container == '#row-0' && offset.top > 140) || (container == '#row-1' && offset.top > 280))
-            last.remove();
+    $(container).append(html);
+    $(container + ' .item:first').fadeOut(150, function() {
+        $(container + ' .item:last').fadeIn(150);
+        $(this).remove();
     });
 }
 
