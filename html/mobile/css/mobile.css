@@ -97,10 +97,10 @@ div[data-role="content"]{
 }
 
 @media only screen and (max-device-width: 480px) {
-.tile{
-  height: 850px;
-  font-size: .8em;
-}
+  .tile{
+    height: 85px;
+    font-size: .8em;
+  }
 }
 /*Ends style for tiles page*/
 
