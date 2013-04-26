@@ -43,7 +43,7 @@
 
     $(document).on("pageinit","#tiles", function(){
 
-    var isOnline=setInterval(function(){checkOnlineStatus()},500);
+    var isOnline=setInterval(function(){checkOnlineStatus()},1000);
 
     function checkOnlineStatus(){
         isOnline  = window.navigator.onLine;
@@ -56,8 +56,7 @@
           $( "#offlineMsg" ).popup( "close" );
 
         }
-        console.log(isOnline);
-        return isOnline;
+     return isOnline;
     }
 
     host = $(location).attr('href')
