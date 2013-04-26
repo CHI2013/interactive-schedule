@@ -35,6 +35,10 @@
        host = "http://" + ip;
     }
 
+    function reload(){
+       location.reload();
+    }
+
     $(document).on("pageinit","#tiles", function(){
 
     host = $(location).attr('href')
