@@ -125,7 +125,7 @@ function doneTile() {
 }
 
 function interactiveTile() {
-    if($('#tagcloud').css('display') != 'none')
+    if($('#tagcloud').css('display') != 'none' || !d3.select('#tagcloud').selectAll('*').empty())
         return;
 
     var largestFontSize = 40;

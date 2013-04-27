@@ -259,17 +259,17 @@ h3.code {
 
 /* Metro Labels */
 
-.break_tile .one { left: 40px; }
-.break_tile .two { left: 420px;}
+.break_tile .one { right: 468px; }
+.break_tile .two { right: 90px;}
 .break_tile .midOne { left: 65px; }
-.break_tile .mid { left: 440px; }
-.break_tile .one-theatre { left: 25px; }
-.break_tile .two-theatre { left: 475px; }
-.break_tile .label_Maillot { left: 180px; }
+.break_tile .twoa { left: 432px; }
+.break_tile .twob { right: 58px; }
+.break_tile .two-theatre { left: 468px; }
+.break_tile .label_Maillot { left: 173px; }
 
 .session_tile .label { top: 8px !important; }
 .session_tile .one { left: 50px; }
-.session_tile .two { left: 85px;}
+.session_tile .two { right: 425px;}
 .session_tile .twoa { left: 45px;}
 .session_tile .twob { left: 93px;}
 .session_tile .twoab { left: 40px;}
