@@ -45,6 +45,8 @@ class GlanceServer
                 server = http.createServer @app
                 server.listen @config.port
                 @iosocket = io.listen server, {log: false}
+                if @config.viihapticsEnabled
+                    viihaptics = new (require './viihaptic/viihaptic').ViiHaptic(@iosocket)
                 @setupSocketIO()
                 @setupRest()
                 @setupTiles () =>
