@@ -154,8 +154,9 @@ function interactiveTile() {
     });
 
     var showTagCloud = function() {
+        d3.select("#tagcloud").selectAll("*").remove();
+        
         spec.data[0].values = keywords;
-
         vg.parse.spec(spec, function(chart) {
             var view = chart({
               el: '#tagcloud',

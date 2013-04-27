@@ -20,28 +20,31 @@ $(document).ready(function() {
     
     window.setInterval(clearFingers, 200);
     
-    
     socket.on('finger', function(data) {
         if (fingers[data.id] == undefined) {
             fingers[data.id] = {};
-            fingers[data.id].div = $('<div class="pointer" style="width:100px; height: 100px; position:absolute; top: 10px; left: 10px; background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,1) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 100%);"></div>');
+            fingers[data.id].div = $('<div class="pointer"></div>');
             $('body').append(fingers[data.id].div);
         } 
         fingers[data.id].timestamp = new Date();
         
-        moveCircle(data.id, data.x,data.y,data.z);
+        moveCircle(data.id, data.x, data.y, data.z);
         
     });
     
 });
 
-function moveCircle(id, x,y,z) {
+function moveCircle(id, x, y, z) {
     div = fingers[id].div
-    div.css("left",x).css("top",y);
+    div.css("left", x).css("top", y);
 	div.css({
 		width: z,
 		height: z,
 		left: x,
         top: y,
 	}, 5000);
+
+    var evt = document.createEvent("MouseEvents");
+    evt.initMouseEvent((z == 0) ? "click" : "hover", true, true, window,
+    0, x, y, x, y, false, false, false, false, 0, null);
 }
