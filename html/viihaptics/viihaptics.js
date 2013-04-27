@@ -12,4 +12,10 @@ $(document).ready(function() {
 
 function moveCircle(x,y,z) {
     $("#pointer").css("left",x).css("top",y);
+	$("#pointer").css({
+		width: z,
+		height: z,
+		left: x,
+        top: y,
+	}, 5000);
 }
