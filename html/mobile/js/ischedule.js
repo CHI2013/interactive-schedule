@@ -33,10 +33,6 @@
     var host;
     var justLoaded = true;
 
-    function setScreen(ip){
-       host = "http://" + ip;
-    }
-
     function reload(){
        location.reload();
     }
@@ -94,8 +90,34 @@
     function init(){
       createTiles();
       loadData();
-    };
+      sync();
+    };  
 
+    function sync(){
+      $.get('/tick', function(count){
+       console.log("get tick");
+       console.log(count);
+        if(!count.isEmpty)
+         {
+          for(var id in count)
+          {
+             updateTile(id, count[id]);
+            for(var i = 0; i<tiles.length;i++)
+            {
+              if(id === tiles[i].getAttribute("id"))
+              {
+                $('#'+id).fadeTo(250, 0.5, function() {
+                  // Animation complete.
+                 });
+                $('#'+id).fadeTo(250, 1, function() {
+                  // Animation complete.
+                 });
+              }
+            }
+          }
+         }
+      });
+    }
     //Creates 8 Tile objects
     function createTiles(){
       var ids = ["A","B","C","D","E","F","G","H"];
