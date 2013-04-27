@@ -90,11 +90,11 @@ function addItem(html, container) {
     $(container).append(html);
     $(container + ' .item:first').fadeOut({
         duration: 500, 
-        easing: 'easeInOutQuad', 
+        easing: 'easeInQuad', 
         complete: function() {
             $(container + ' .item:last').fadeIn({
                 duration: 500,
-                easing: 'easeInOutQuad'
+                easing: 'easeOutQuad'
             });
             $(this).remove();
         }

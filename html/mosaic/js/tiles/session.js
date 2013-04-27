@@ -85,7 +85,7 @@ function tick(ti) {
             left: $target.width()+100
         }).animate({
             left: 0
-        }, 500, 'easeInOutQuad', function() {
+        }, 500, 'easeOutQuad', function() {
             if(item.hasVideo && item.letterCode) {
                 $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
                 $('.submission.active .cbStatement').hide();
@@ -104,7 +104,7 @@ function tick(ti) {
             var $this = $(this);
             $this.removeClass('active').animate({
                 left: -($this.width())-100,
-            }, 500, 'easeInOutQuad', function() {
+            }, 500, 'easeInQuad', function() {
                 animateNext();
             });
         });
