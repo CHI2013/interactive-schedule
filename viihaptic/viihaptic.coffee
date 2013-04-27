@@ -14,7 +14,7 @@ class exports.ViiHaptic
                     id = element.args[1]
                     x = element.args[2]
                     y = element.args[3]
-                    y = element.args[4]
+                    z = element.args[4]
             
                     iosocket.sockets.emit 'finger', {'id': id, 'x': x, 'y': y, 'z': z, 'state': state}
                     
