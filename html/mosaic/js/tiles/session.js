@@ -77,6 +77,9 @@ function tick(ti) {
         });
     }
     $('#timeline .' + item['_id']).addClass('active');
+    if(item.startTime) 
+        $('#timeline .' + item['_id']).html('<p>' + item.startTime[3] + ':' + (item.startTime[4] == 0 ? '00' : item.startTime[4]) + '</p>');
+        
 
     $('.submission.active').each(function(index, self) {
         $('.submission.active .video').html('');
