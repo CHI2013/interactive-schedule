@@ -1,3 +1,5 @@
+var fingers = {};
+
 function clearFingers() {
     var now = new Date();
     for (var finger in fingers) {
@@ -16,7 +18,6 @@ $(document).ready(function() {
         port: 8000
     });
     
-    var fingers = {};
     window.setInterval(clearFingers, 200);
     
     
