@@ -10,11 +10,11 @@ class exports.ViiHaptic
             if oscMsg.elements[0]?
                 element = oscMsg.elements[0]
                 if element.args? and element.args.length > 4
-                    state = element.args[0]
-                    id = element.args[1]
-                    x = element.args[2]
-                    y = element.args[3]
-                    z = element.args[4]
+                    state = element.args[0].value
+                    id = element.args[1].value
+                    x = element.args[2].value
+                    y = element.args[3].value
+                    z = element.args[4].value
             
                     iosocket.sockets.emit 'finger', {'id': id, 'x': x, 'y': y, 'z': z, 'state': state}
                     
