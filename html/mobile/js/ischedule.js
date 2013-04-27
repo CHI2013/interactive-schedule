@@ -37,6 +37,17 @@
        location.reload();
     }
 
+  function postLog(action,message){
+    console.log(message);
+      $.post("http://localhost:8000/log", 
+      {
+        action: message,
+      },
+      function(data, status)
+      {
+        console.log("Logged: " + action + " - " + message);
+      });
+  };
     $(document).on("pageinit","#tiles", function(){
 
     var isOnline=setInterval(function(){checkOnlineStatus()},1000);
@@ -90,7 +101,6 @@
     function init(){
       createTiles();
       loadData();
-      sync();
     };  
 
     function sync(){
@@ -101,7 +111,7 @@
          {
           for(var id in count)
           {
-             updateTile(id, count[id]);
+            updateTile(id, count[id]);
             for(var i = 0; i<tiles.length;i++)
             {
               if(id === tiles[i].getAttribute("id"))
@@ -131,6 +141,7 @@
     function loadData(){
       $.get('/tiles', function(data){
         console.log(data);
+        console.log("load data");
         var kind;
         for(var id in data){
           if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
@@ -156,6 +167,7 @@
         }
         colorTiles(kind);
         showSubmissions();
+
       });
     };
 
@@ -226,6 +238,7 @@
             }
         }
       }
+      sync();
       justLoaded = false;
     };
 
@@ -241,10 +254,7 @@
           //assign new text, schedule_status and id to logical tile
           tile.text= tile.submissions[index].title;
           tile.submissionId = mapId(tile.submissions[tile.current]._id);
-          if(status !== "ignore")
-            tile.isInSchedule = status;
-          else
-           tile.isInSchedule = checkStatus(tileId);
+          tile.isInSchedule = checkStatus(tileId);
           //assign new current value to logical tile
           tile.current = index;
 
@@ -312,25 +322,33 @@
         if(text === "Filter videos"){
             selectedTile = tileId;
             $.mobile.changePage("search.html", "slide", true, true);
+            postLog("Loaded search page", tileId);
+
         }
-        else if( text ==="Syncing with display"){
+        else if( text === "Syncing with display"){
            return ;
         }
         else
           if (isInSchedule === "true") {
               if(isAndroid){
                 AndroidBridge.togglePaperFavorite(submissionId, false);
+                postLog("Removed from schedule on Android", submissionId);
+
               }
               else{
                NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+              postLog("Removed from schedule on iOS", submissionId);
+
               }
           }
           else if(isInSchedule === "false"){
               if(isAndroid){
                 AndroidBridge.togglePaperFavorite(submissionId, true);
+                postLog("Added to schedule on Android", submissionId);
               }
               else{
                NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+               postLog("Added to schedule on iOS", submissionId);
               }
           };
     });
@@ -370,8 +388,6 @@ Returns true or false depending on bridge call result which can be:
     //fix for string return value
     if(status === "True")
         status =  true;
-        else
-          status = false;
     return status;
     };
 
@@ -386,8 +402,6 @@ Returns true or false depending on bridge call result which can be:
       console.log(data);
       justLoaded = true;
       loadData();
-
-
     });
 
 
@@ -431,6 +445,7 @@ Returns true or false depending on bridge call result which can be:
                 }
             })
             .then( function ( response ) {
+              postLog("Searched for", value);
               result = value;
               console.log(response);
                 $.each( response, function ( i, val ) {
@@ -482,16 +497,8 @@ Returns true or false depending on bridge call result which can be:
   }
 
   function postFilter(result){
-    console.log(result);
-    console.log(selectedTile);
-    console.log(letterCodes);
-    // $.post("http://localhost:8000/filters",
-    // Add your ip here to test with mobile device
       $.post(host + "filters", 
       {
-        // "name": result,
-        // "when": "now",
-        // "volatile": true,
         "filterName": result,
         "tile": selectedTile,
         "letterCode": letterCodes
@@ -500,8 +507,9 @@ Returns true or false depending on bridge call result which can be:
       {
         console.log("Updated session: " + data);
         console.log(data);
+        postLog("Posted Filter", result);
       });
-  } ;
+  };
 
     $.fn.exists = function () {
       return this.length !== 0;
