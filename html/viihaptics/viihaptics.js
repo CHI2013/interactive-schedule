@@ -24,7 +24,7 @@ $(document).ready(function() {
     socket.on('finger', function(data) {
         if (fingers[data.id] == undefined) {
             fingers[data.id] = {};
-            fingers[data.id].div = $('<div class="pointer" style="width:100px; height: 100px; position:absolute; top: 10px; left: 10px; background: -webkit-radial-gradient(center, ellipse cover, rgba(' + Math.random()* 255 + ',' + Math.random()* 255 + ',' + Math.random()* 255 + ',1) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 100%);"></div>');
+            fingers[data.id].div = $('<div class="pointer" style="width:100px; height: 100px; position:absolute; top: 10px; left: 10px; background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,1) 0%,rgba(0,0,0,0) 70%,rgba(0,0,0,0) 100%);"></div>');
             $('body').append(fingers[data.id].div);
         } 
         fingers[data.id].timestamp = new Date();
