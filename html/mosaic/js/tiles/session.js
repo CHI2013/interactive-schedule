@@ -78,32 +78,40 @@ function tick(ti) {
     $('#timeline .' + item['_id']).addClass('active');
     if(item.startTime) 
         $('#timeline .' + item['_id']).html('<p>' + item.startTime[3] + ':' + (item.startTime[4] == 0 ? '00' : item.startTime[4]) + '</p>');
-        
 
-    $('.submission.active').each(function(index, self) {
-        $('.submission.active .video').html('');
+    var animateNext = function() {
+        var $target = $('.submission:eq(' + itemIndex + ')')
+        $target.addClass('active').show().css({
+            left: $target.width()+100
+        }).animate({
+            left: 0
+        }, 500, 'easeInOutQuad', function() {
+            if(item.hasVideo && item.letterCode) {
+                $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
+                $('.submission.active .cbStatement').hide();
+            } else {
+                $('.submission.active .video').hide();
+                $('.submission.active .cbStatement').show();
+            }
 
-        var $this = $(this);
-        $this.removeClass('active').animate({
-            left: -($this.width())-100,
-        }, 500);
-    });
+        });
+    }
 
-    var $target = $('.submission:eq(' + itemIndex + ')')
-    $target.addClass('active').show().css({
-        left: $target.width()+100
-    }).animate({
-        left: 0
-    }, 500, 'swing', function() {
-        if(item.hasVideo && item.letterCode) {
-            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
-            $('.submission.active .cbStatement').hide();
-        } else {
-            $('.submission.active .video').hide();
-            $('.submission.active .cbStatement').show();
-        }
+    if($('.submission.active').length > 0) {
+        $('.submission.active').each(function(index, self) {
+            $('.submission.active .video').html('');
 
-    });
+            var $this = $(this);
+            $this.removeClass('active').animate({
+                left: -($this.width())-100,
+            }, 500, 'easeInOutQuad', function() {
+                animateNext();
+            });
+        });
+    } else {
+        animateNext();
+    }  
+    
 
     if(tile.filter.name)
         $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);

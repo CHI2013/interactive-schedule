@@ -88,9 +88,16 @@ function addItem(html, container) {
     container = '#row-' + container;
     $(html).css('display', 'none');
     $(container).append(html);
-    $(container + ' .item:first').fadeOut(150, function() {
-        $(container + ' .item:last').fadeIn(150);
-        $(this).remove();
+    $(container + ' .item:first').fadeOut({
+        duration: 500, 
+        easing: 'easeInOutQuad', 
+        complete: function() {
+            $(container + ' .item:last').fadeIn({
+                duration: 500,
+                easing: 'easeInOutQuad'
+            });
+            $(this).remove();
+        }
     });
 }
 
