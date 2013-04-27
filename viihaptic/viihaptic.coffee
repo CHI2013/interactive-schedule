@@ -20,6 +20,6 @@ class exports.ViiHaptic
                     
             return true
           catch error
-            return console.log "invalid OSC packet"
+            return console.log "invalid OSC packet", error
         sock.bind 3333
     
