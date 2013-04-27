@@ -249,6 +249,10 @@ class GlanceServer
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}                
+
+        #Returns the current tick count
+        @app.get '/tick', (req, res) =>
+            res.jsonp @tickIndex
         
         #Returns a list of all sessions
         @app.get '/submission', (req, res) =>
