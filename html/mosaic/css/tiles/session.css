@@ -4,7 +4,7 @@ body {
     padding: 10px 10px 0 10px; 
     overflow: hidden;
     font-family: 'PT Sans', sans-serif;
-    cursor: url(imgs/cursor.png), none !important 
+    cursor: url(/mosaic/imgs/cursor.png), none !important 
 }
 
 #header {
