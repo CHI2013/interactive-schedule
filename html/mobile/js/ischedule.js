@@ -30,24 +30,21 @@
 
     //Global variable to pass the selected tile to the search page.
     var selectedTile = "";
-    var host;
     var justLoaded = true;
+    var host;
+  
+    host = $(location).attr('href')
+    host = host.substring(0, host.length - 17);
 
     function reload(){
        location.reload();
     }
 
-  function postLog(action,message){
+  function postLog(message){
     console.log(message);
-      $.post("http://localhost:8000/log", 
-      {
-        action: message,
-      },
-      function(data, status)
-      {
-        console.log("Logged: " + action + " - " + message);
-      });
-  };
+      $.post(host + "log", message);
+    };
+
     $(document).on("pageinit","#tiles", function(){
 
     var isOnline=setInterval(function(){checkOnlineStatus()},1000);
@@ -101,6 +98,7 @@
     function init(){
       createTiles();
       loadData();
+      postLog("loaded tiles page");
     };  
 
     function sync(){
@@ -254,7 +252,11 @@
           //assign new text, schedule_status and id to logical tile
           tile.text= tile.submissions[index].title;
           tile.submissionId = mapId(tile.submissions[tile.current]._id);
+          if(status === true || status === false)
+          tile.isInSchedule = status;
+          else
           tile.isInSchedule = checkStatus(tileId);
+     
           //assign new current value to logical tile
           tile.current = index;
 
@@ -322,7 +324,7 @@
         if(text === "Filter videos"){
             selectedTile = tileId;
             $.mobile.changePage("search.html", "slide", true, true);
-            postLog("Loaded search page", tileId);
+            postLog("Loaded search page " + tileId);
 
         }
         else if( text === "Syncing with display"){
@@ -332,23 +334,25 @@
           if (isInSchedule === "true") {
               if(isAndroid){
                 AndroidBridge.togglePaperFavorite(submissionId, false);
-                postLog("Removed from schedule on Android", submissionId);
-
+                updateTile(tileId, index, false);
+                postLog("Removed from schedule on Android " + submissionId);
               }
               else{
-               NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
-              postLog("Removed from schedule on iOS", submissionId);
-
+                NativeBridge.call('removeFromSchedule',submissionId,updateTile(tileId,index,false));
+                updateTile(tileId, index, false);
+                postLog("Removed from schedule on iOS " +  submissionId);
               }
           }
           else if(isInSchedule === "false"){
               if(isAndroid){
                 AndroidBridge.togglePaperFavorite(submissionId, true);
-                postLog("Added to schedule on Android", submissionId);
+                updateTile(tileId, index, true);
+                postLog("Added to schedule on Android " + submissionId);
               }
               else{
-               NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
-               postLog("Added to schedule on iOS", submissionId);
+                NativeBridge.call('addToSchedule',submissionId,updateTile(tileId,index,true));
+                updateTile(tileId, index, true);
+                postLog("Added to schedule on iOS " + submissionId);
               }
           };
     });
@@ -445,7 +449,7 @@ Returns true or false depending on bridge call result which can be:
                 }
             })
             .then( function ( response ) {
-              postLog("Searched for", value);
+              postLog("Searched for " + value);
               result = value;
               console.log(response);
                 $.each( response, function ( i, val ) {
@@ -507,7 +511,7 @@ Returns true or false depending on bridge call result which can be:
       {
         console.log("Updated session: " + data);
         console.log(data);
-        postLog("Posted Filter", result);
+        postLog("Posted Filter " + result);
       });
   };
 
