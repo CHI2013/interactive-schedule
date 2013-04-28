@@ -133,6 +133,9 @@ function doneTile() {
     $('body').attr('id', '').attr('class', '');
     $('#timeline').html('');
     $('#submissions').html('');
+
+    if(interactive)
+        $('#action').show();
 }
 
 function updateLoading() {
