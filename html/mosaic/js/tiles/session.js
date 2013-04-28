@@ -129,8 +129,16 @@ var leftOffset = parseInt(getURLParameter('left'));
 
 var hovered = {};
 
+var tagCloudTimeStamp;
+
 function checkHover() {
     var now = new Date();
+    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 10000) {
+        $('#tagcloud').hide();
+        $('#submissions').hide();
+        $('#action').show();
+        return;
+    }
     for (var hover in hovered) {
         if (hovered.hasOwnProperty(hover)) {
             text = $(hovered[hover].elem).text();
@@ -146,6 +154,8 @@ function checkHover() {
     };
 }
 
+
+
 function handleFingerInput(data) {
     if (data.x < leftOffset || data.x > leftOffset + 540) {
         return;
@@ -159,6 +169,7 @@ function handleFingerInput(data) {
         $('#submissions').hide();
         $('#tagcloud').show();
     }
+    tagCloudTimeStamp = new Date();
     //data.id, data.x, data.y
     d3.selectAll("text").html(function(d, i) {
         boundingBox = this.getBBox();
