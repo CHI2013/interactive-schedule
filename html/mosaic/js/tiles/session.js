@@ -126,6 +126,7 @@ function tick(ti) {
     $('#volatile_room').text(room);
 
     sinceTick = 0;
+    updateLoading();
 }
 
 function doneTile() {
@@ -135,9 +136,10 @@ function doneTile() {
 }
 
 function updateLoading() {
-    $('#loading .meter span').css('width', (sinceTick / 30000)*100 + '%');
-    sinceTick+=50;
-    window.setTimeout(updateLoading, 50);
+    $('#loading .meter span').css('width', (sinceTick/30000)*100 + '%');
+    $('#loading .meter span').animate({
+        'width': '100%'
+    }, 30000-sinceTick, 'easeInOutQuad');
 }
 
 var topOffset = parseInt(getURLParameter('top'));
