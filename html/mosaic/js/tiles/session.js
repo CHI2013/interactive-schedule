@@ -196,10 +196,10 @@ function handleFingerInput(data) {
 }
 
 function inside(x, y, left, top, width, height) {
-    if (x+1 < left || x-1 > left + width) {
+    if (x < left || x > left + width) {
         return false;
     }
-    if (y+1 < top || y-1 > top + height) {
+    if (y < top || y > top + height) {
         return false;
     }
     return true;
