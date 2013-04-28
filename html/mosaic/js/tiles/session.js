@@ -170,7 +170,7 @@ function handleFingerInput(data) {
             keyword = $(this).text();
             if (hovered[keyword] == undefined) {
                 hovered[keyword] = {};
-                hovered[hover].posted = false;
+                hovered[keyword].posted = false;
                 hovered[keyword].elem = this;
                 hovered[keyword].count = 0;
                 hovered[keyword].startTime = new Date();
