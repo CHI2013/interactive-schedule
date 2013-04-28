@@ -164,6 +164,8 @@ function handleFingerInput(data) {
         return;
     }
     
+    $('#action').hide();
+    
     if (!$('#tagcloud').is(':visible')) {
         $('#action').hide();
         $('#submissions').hide();
