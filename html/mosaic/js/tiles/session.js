@@ -163,15 +163,15 @@ function handleFingerInput(data) {
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
-            if (fingers[data.id] == undefined) {
-                fingers[data.id] = {};
-                fingers[data.id].elem = this;
-                fingers[data.id].count = 0;
+            if (hovered[data.id] == undefined) {
+                hovered[data.id] = {};
+                hovered[data.id].elem = this;
+                hovered[data.id].count = 0;
                 $(this).css("fill", "#fff");
             } else {
-                fingers[data.id].count++;
+                hovered[data.id].count++;
             }
-            fingers[data.id].timestamp = new Date();
+            hovered[data.id].timestamp = new Date();
         }
     });
 }
