@@ -133,7 +133,7 @@ function checkHover() {
     var now = new Date();
     for (var hover in hovered) {
         if (hovered.hasOwnProperty(hover)) {
-            if((now.getTime() - hovered[hover].timestamp.getTime()) > 120) {
+            if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 //fingers[finger].div.remove();
                 delete hovered[hover];
