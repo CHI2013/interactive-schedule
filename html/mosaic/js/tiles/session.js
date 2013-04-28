@@ -162,7 +162,7 @@ function handleFingerInput(data) {
         bbTop = topOffset + $('#tagcloud').offset().top + boundingBox.y
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
-        console.log(this);
+        console.log($(this).text());
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
             if (hovered[this.text] == undefined) {
                 hovered[this.text] = {};
