@@ -4,7 +4,7 @@ var durations = {};
 function init() {
     items = [];
     durations = {};
-
+    
     $('#action').hide();
     $('#loading').show();
     $('#submissions').show();
@@ -116,7 +116,50 @@ function doneTile() {
     $('#submissions').html('');
 }
 
+var topOffset = parseInt(getURLParameter('top'));
+var leftOffset = parseInt(getURLParameter('left'));
+
+function handleFingerInput(data) {
+    if (data.x < leftOffset || data.x > leftOffset + 540) {
+        return;
+    }
+    if (data.y < topOffset || data.y > topOffset + 405) {
+        return;
+    }
+    
+    //data.id, data.x, data.y
+    d3.selectAll("text").html(function(d, i) {
+        boundingBox = this.getBBox();
+        left = leftOffset + $('#tagcloud').offset().left + boundingBox.x
+        top = topOffset + $('#tagcloud').offset().top + boundingBox.y
+        width = boundingBox.width;
+        height = boundingBox.height;
+        if (inside(data.x, data.y, left, top, width, height)) {
+            console.log(this);
+        }
+    });
+}
+
+function inside(x, y, left, top, width, height) {
+    if (x < left || x > left + width) {
+        return false;
+    }
+    if (y < top || y > top + height) {
+        return false;
+    }
+    return true;
+}
+
 function interactiveTile() {
+    var socket = io.connect("http://" + window.location.hostname, {
+        port: 8000
+    });
+    
+    socket.on('finger', function(data) {
+        handleFingerInput(data);
+    });
+    
+    
     if($('#tagcloud').css('display') != 'none')
         return;
 
@@ -165,14 +208,40 @@ function interactiveTile() {
             view.update().on('click', function(e, i) {
                 $.post('/filters', {authorKeywords: [i.text], filterName: i.text, tile: tileId});
             });
+            
 
             $('#action').hide();
             $('#submissions').hide();
             $('#tagcloud').show();
+            
         });
+        
+        $('text').hover(hoverIn, hoverOut);
+        
     };
 
     return;
+}
+
+
+
+function getURLParameter(name) {
+  href = window.location.href;
+  split = href.split('?');
+  if (split.length > 0) {
+      search = '?'+split[1];
+      return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(search)||[,""])[1].replace(/\+/g, '%20'))||null
+  } else {
+      return null;
+  }
+}
+
+function hoverIn() {
+    console.log("IN");
+}
+
+function hoverOut() {
+    console.log("OUT");
 }
 
 function getClass(item) {

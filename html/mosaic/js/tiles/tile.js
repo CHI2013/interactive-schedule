@@ -4,6 +4,7 @@ var listenToTicks = true;
 
 $(document).ready(function() {
     tileId = window.location.hash.replace('#', '');
+    tileId = tileId.split('?')[0];
 
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
