@@ -127,6 +127,21 @@ function doneTile() {
 var topOffset = parseInt(getURLParameter('top'));
 var leftOffset = parseInt(getURLParameter('left'));
 
+var hovered = {};
+
+function checkHover() {
+    var now = new Date();
+    for (var hover in hovered) {
+        if (hovered.hasOwnProperty(hover)) {
+            if((now.getTime() - hovered[hover].timestamp.getTime()) > 120) {
+                $(hovered[hover].elem).css("fill", "#ccc");
+                //fingers[finger].div.remove();
+                delete hovered[hover];
+            }
+          }
+    };
+}
+
 function handleFingerInput(data) {
     if (data.x < leftOffset || data.x > leftOffset + 540) {
         return;
@@ -148,9 +163,15 @@ function handleFingerInput(data) {
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
-            $(this).css("fill", "#fff");
-            console.log(this);
-            console.log(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight);
+            if (fingers[data.id] == undefined) {
+                fingers[data.id] = {};
+                fingers[data.id].elem = this;
+                fingers[data.id].count = 0;
+                $(this).css("fill", "#fff");
+            } else {
+                fingers[data.id].count++;
+            }
+            fingers[data.id].timestamp = new Date();
         }
     });
 }
@@ -166,6 +187,7 @@ function inside(x, y, left, top, width, height) {
 }
 
 function interactiveTile() {
+    window.setInterval(checkHover, 100);
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
     });
