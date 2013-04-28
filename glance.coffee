@@ -1049,8 +1049,8 @@ class GlanceServer
         else
             matches = s.matchArray submissions, query
         matches.sort (s1, s2) => #Sort by room and order by startTime
-            room1 = if s1.room? then s1.room else ''
-            room2 = if s2.room? then s2.room else ''
+            room1 = if s1.room? then s1.room else 'ZZ'
+            room2 = if s2.room? then s2.room else 'ZZ'
             if room1 != room2
                 if @config.roomOrder? and _.contains(@config.roomOrder, room1) and  _.contains(@config.roomOrder, room2)
                     return @config.roomOrder.indexOf(room1) - @config.roomOrder.indexOf(room2)
