@@ -135,6 +135,10 @@ var tagCloudTimeStamp;
 var posted = false;
 
 function checkHover() {
+    if (posted) {
+        hovered = {};
+        return;
+    }
     var now = new Date();
     if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) {
         $('#tagcloud').hide();
