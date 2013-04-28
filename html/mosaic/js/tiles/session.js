@@ -133,7 +133,7 @@ var tagCloudTimeStamp;
 
 function checkHover() {
     var now = new Date();
-    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 5000) {
+    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) {
         $('#tagcloud').hide();
         $('#submissions').hide();
         $('#action').show();
