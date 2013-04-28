@@ -141,8 +141,6 @@
     //Load existing JSON data from /tiles and assign it to logical tiles
     function loadData(){
       $.get('/tiles', function(data){
-        console.log(data);
-        console.log("load data");
         var kind;
         for(var id in data){
           if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
