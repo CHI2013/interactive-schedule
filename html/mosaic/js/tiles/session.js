@@ -153,7 +153,6 @@ function checkHover() {
             text = $(hovered[hover].elem).text();
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 150) {
                 $(hovered[hover].elem).css("fill", "#ccc");
-                $(hovered[hover].elem).css("stroke", "none");
                 delete hovered[hover];
             } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
                 posted = true;
@@ -203,8 +202,6 @@ function handleFingerInput(data) {
                 hovered[keyword].elem = this;
                 hovered[keyword].startTime = new Date();
                 $(this).css("fill", "#ff0000");
-            } else {
-                d3.select(this).transition().delay(100).duration(1000).style("stroke", "black");
             }
             hovered[keyword].timestamp = new Date();
         }
