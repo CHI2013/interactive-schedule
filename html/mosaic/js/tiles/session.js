@@ -167,7 +167,7 @@ function handleFingerInput(data) {
                 hovered[data.id] = {};
                 hovered[data.id].elem = this;
                 hovered[data.id].count = 0;
-                $(this).css("fill", "#fff");
+                $(this).css("fill", "#ff0000");
             } else {
                 hovered[data.id].count++;
             }
