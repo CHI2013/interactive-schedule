@@ -149,6 +149,7 @@ function handleFingerInput(data) {
         height = boundingBox.height;
         if (inside(data.x, data.y, left, top, width, height)) {
             console.log(this);
+            console.log(data.x, data.y, left, top, width, height);
         }
     });
 }
