@@ -135,6 +135,11 @@ function handleFingerInput(data) {
         return;
     }
     
+    if (!$('#tagcloud').is(':visible')) {
+        if $('#action').hide();
+        $('#submissions').hide();
+        $('#tagcloud').show();
+    }
     //data.id, data.x, data.y
     d3.selectAll("text").html(function(d, i) {
         boundingBox = this.getBBox();
