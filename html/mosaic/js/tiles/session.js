@@ -130,6 +130,7 @@ var leftOffset = parseInt(getURLParameter('left'));
 var hovered = {};
 
 var tagCloudTimeStamp;
+var posted = false;
 
 function checkHover() {
     var now = new Date();
@@ -137,6 +138,7 @@ function checkHover() {
         $('#tagcloud').hide();
         $('#action').show();
         $('#submissions').show();
+        posted = false;
         return;
     }
     for (var hover in hovered) {
@@ -145,8 +147,8 @@ function checkHover() {
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
-            } else if (hovered[hover] != undefined && !hovered[hover].posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
-                hovered[hover].posted = true;
+            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
+                posted = true;
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
                $('#tagcloud').hide();
                hovered = {};
@@ -158,6 +160,9 @@ function checkHover() {
 
 
 function handleFingerInput(data) {
+    if (posted) {
+        return;
+    }
     if (data.x < leftOffset || data.x > leftOffset + 540) {
         return;
     }
@@ -207,6 +212,7 @@ function inside(x, y, left, top, width, height) {
 }
 
 function interactiveTile() {
+    posted = false;
     window.setInterval(checkHover, 100);
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
