@@ -151,9 +151,9 @@ function checkHover() {
         if (hovered.hasOwnProperty(hover)) {
             text = $(hovered[hover].elem).text();
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
-                $(hovered[hover].elem).animate({ fill:"#ccc"},100);
+                $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
-            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 900) {
+            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) {
                 posted = true;
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
                $('#tagcloud').hide();
@@ -199,8 +199,7 @@ function handleFingerInput(data) {
                 hovered[keyword].elem = this;
                 hovered[keyword].count = 0;
                 hovered[keyword].startTime = new Date();
-                
-                $(this).animate({ fill:"#ff0000"},100);
+                $(this).css("fill", "#ff0000");
             } else {
                 hovered[keyword].count++;
             }
