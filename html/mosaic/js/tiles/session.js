@@ -135,8 +135,8 @@ function checkHover() {
     var now = new Date();
     if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) {
         $('#tagcloud').hide();
-        $('#submissions').hide();
         $('#action').show();
+        $('#submissions').show();
         return;
     }
     for (var hover in hovered) {
@@ -168,7 +168,6 @@ function handleFingerInput(data) {
     
     if (!$('#tagcloud').is(':visible')) {
         $('#action').hide();
-        $('#submissions').hide();
         $('#tagcloud').show();
     }
     tagCloudTimeStamp = new Date();
