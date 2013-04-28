@@ -187,7 +187,7 @@ function inside(x, y, left, top, width, height) {
 }
 
 function interactiveTile() {
-    window.setInterval(checkHover, 100);
+    //window.setInterval(checkHover, 100);
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
     });
