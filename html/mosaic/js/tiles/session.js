@@ -4,7 +4,7 @@ var durations = {};
 function init() {
     items = [];
     durations = {};
-    
+
     $('#action').hide();
     $('#loading').show();
     $('#submissions').show();
@@ -78,32 +78,40 @@ function tick(ti) {
     $('#timeline .' + item['_id']).addClass('active');
     if(item.startTime) 
         $('#timeline .' + item['_id']).html('<p>' + item.startTime[3] + ':' + (item.startTime[4] == 0 ? '00' : item.startTime[4]) + '</p>');
-        
 
-    $('.submission.active').each(function(index, self) {
-        $('.submission.active .video').html('');
+    var animateNext = function() {
+        var $target = $('.submission:eq(' + itemIndex + ')')
+        $target.addClass('active').show().css({
+            left: $target.width()+100
+        }).animate({
+            left: 0
+        }, 500, 'easeOutBack', function() {
+            if(item.hasVideo && item.letterCode) {
+                $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
+                $('.submission.active .cbStatement').hide();
+            } else {
+                $('.submission.active .video').hide();
+                $('.submission.active .cbStatement').show();
+            }
 
-        var $this = $(this);
-        $this.removeClass('active').animate({
-            left: -($this.width())-100,
-        }, 500);
-    });
+        });
+    }
 
-    var $target = $('.submission:eq(' + itemIndex + ')')
-    $target.addClass('active').show().css({
-        left: $target.width()+100
-    }).animate({
-        left: 0
-    }, 500, 'swing', function() {
-        if(item.hasVideo && item.letterCode) {
-            $('.submission.active .video').html('<video height="100%" autoplay="1" muted="1" src="/videos/' + item.letterCode + '"></video>');
-            $('.submission.active .cbStatement').hide();
-        } else {
-            $('.submission.active .video').hide();
-            $('.submission.active .cbStatement').show();
-        }
+    if($('.submission.active').length > 0) {
+        $('.submission.active').each(function(index, self) {
+            $('.submission.active .video').html('');
 
-    });
+            var $this = $(this);
+            $this.removeClass('active').animate({
+                left: -($this.width())-100,
+            }, 500, 'easeInBack', function() {
+                animateNext();
+            });
+        });
+    } else {
+        animateNext();
+    }  
+    
 
     if(tile.filter.name)
         $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);
@@ -159,19 +167,12 @@ function interactiveTile() {
         handleFingerInput(data);
     });
     
-    
     if($('#tagcloud').css('display') != 'none')
         return;
 
-    $('#loading').hide();
-    $('#action').show().click(function() {
-        showTagCloud();
-    });
-
-    var largestFontSize = 48;
+    var largestFontSize = 40;
     var maxCount = 0;
     var keywords = [];
-    var spec = {};
 
     $.get('/ongoingkeywords', function(data) {
         Object.keys(data.keywords).forEach(function(k) {
@@ -189,41 +190,31 @@ function interactiveTile() {
 
         keywords.forEach(function(k) {
             k.fontSize = Math.floor(largestFontSize * k.value/maxCount);
-        })
-    });
-
-    $.get('/mosaic/js/tiles/tagCloud.json', function(data) {
-        spec = data;
-    });
-
-    var showTagCloud = function() {
-        d3.select("#tagcloud").selectAll("*").remove();
-        
-        spec.data[0].values = keywords;
-        vg.parse.spec(spec, function(chart) {
-            var view = chart({
-              el: '#tagcloud',
-              renderer: 'svg'
-            });
-            view.update().on('click', function(e, i) {
-                $.post('/filters', {authorKeywords: [i.text], filterName: i.text, tile: tileId});
-            });
-            
-
-            $('#action').hide();
-            $('#submissions').hide();
-            $('#tagcloud').show();
-            
         });
-        
-        $('text').hover(hoverIn, hoverOut);
-        
-    };
 
-    return;
+        $.get('/mosaic/js/tiles/tagCloud.json', function(spec) {
+            d3.select("#tagcloud").selectAll("*").remove();
+            spec.data[0].values = keywords;
+            vg.parse.spec(spec, function(chart) {
+                var view = chart({
+                  el: '#tagcloud',
+                  renderer: 'svg'
+                });
+                
+                view.update().on('click', function(e, i) {
+                    $.post('/filters', {authorKeywords: [i.text], filterName: i.text, tile: tileId});
+                });
+
+                $('#loading').hide();
+                $('#action').show().click(function() {
+                    $('#action').hide();
+                    $('#submissions').hide();
+                    $('#tagcloud').show();
+                });
+            });
+        });
+    });
 }
-
-
 
 function getURLParameter(name) {
   href = window.location.href;
@@ -234,14 +225,6 @@ function getURLParameter(name) {
   } else {
       return null;
   }
-}
-
-function hoverIn() {
-    console.log("IN");
-}
-
-function hoverOut() {
-    console.log("OUT");
 }
 
 function getClass(item) {
