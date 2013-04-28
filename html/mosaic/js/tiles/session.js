@@ -151,7 +151,7 @@ function checkHover() {
     for (var hover in hovered) {
         if (hovered.hasOwnProperty(hover)) { //Clean up highlighted keywords
             text = $(hovered[hover].elem).text();
-            if((now.getTime() - hovered[hover].timestamp.getTime()) > 45) {
+            if((now.getTime() - hovered[hover].timestamp.getTime()) > 150) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
             } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
