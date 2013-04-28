@@ -1,9 +1,11 @@
 var items = [];
 var durations = {};
+var interactive = false;
 
 function init() {
     items = [];
     durations = {};
+    interactive = false;
 
     $('#action').hide();
     $('#loading').show();
@@ -124,7 +126,102 @@ function doneTile() {
     $('#submissions').html('');
 }
 
+var topOffset = parseInt(getURLParameter('top'));
+var leftOffset = parseInt(getURLParameter('left'));
+
+var hovered = {};
+
+var tagCloudTimeStamp;
+var posted = false;
+
+function checkHover() {
+    if (posted) {
+        hovered = {};
+        return;
+    }
+    var now = new Date();
+    
+    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) { //Hide the tagcloud after 2.5s inactivity
+        $('#tagcloud').hide();
+        $('#action').show();
+        $('#submissions').show();
+        posted = false;
+        return;
+    }
+    for (var hover in hovered) {
+        if (hovered.hasOwnProperty(hover)) { //Clean up highlighted keywords
+            text = $(hovered[hover].elem).text();
+            if((now.getTime() - hovered[hover].timestamp.getTime()) > 150) {
+                $(hovered[hover].elem).css("fill", "#ccc");
+                delete hovered[hover];
+            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
+                posted = true;
+               $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
+               $('#tagcloud').hide();
+               hovered = {};
+            }
+          }
+    };
+}
+
+
+
+function handleFingerInput(data) {
+    if (!interactive) return;
+    if (posted) {
+        return;
+    }
+    if (data.x < leftOffset || data.x > leftOffset + 540) {
+        return;
+    }
+    if (data.y < topOffset || data.y > topOffset + 405) {
+        return;
+    }
+    
+    $('#action').hide();
+    
+    if (!$('#tagcloud').is(':visible')) {
+        $('#action').hide();
+        $('#tagcloud').show();
+    }
+    tagCloudTimeStamp = new Date();
+    //data.id, data.x, data.y
+    found = false;
+    d3.selectAll("text").html(function(d, i) {
+        boundingBox = this.getBBox();
+        bbLeft = leftOffset + $('#tagcloud').offset().left + boundingBox.x
+        bbTop = topOffset + $('#tagcloud').offset().top + boundingBox.y
+        bbWidth = boundingBox.width;
+        bbHeight = boundingBox.height;
+        if (!found && inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
+            found = true;
+            keyword = $(this).text();
+            if (hovered[keyword] == undefined) {
+                hovered[keyword] = {};
+                hovered[keyword].posted = false;
+                hovered[keyword].elem = this;
+                hovered[keyword].startTime = new Date();
+                $(this).css("fill", "#ff0000");
+            }
+            hovered[keyword].timestamp = new Date();
+        }
+    });
+}
+
+function inside(x, y, left, top, width, height) {
+    if (x - 2 < left || x + 2 > left + width) {
+        return false;
+    }
+    if (y - 2 < top || y + 2 > top + height) {
+        return false;
+    }
+    return true;
+}
+
 function interactiveTile() {
+    interactive = true;
+    posted = false;
+    
     if($('#tagcloud').css('display') != 'none' || !d3.select('#tagcloud').selectAll('*').empty())
         return;
 
@@ -172,6 +269,17 @@ function interactiveTile() {
             });
         });
     });
+}
+
+function getURLParameter(name) {
+  href = window.location.href;
+  split = href.split('?');
+  if (split.length > 0) {
+      search = '?'+split[1];
+      return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(search)||[,""])[1].replace(/\+/g, '%20'))||null
+  } else {
+      return null;
+  }
 }
 
 function getClass(item) {

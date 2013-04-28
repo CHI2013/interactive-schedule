@@ -4,6 +4,7 @@ var listenToTicks = true;
 
 $(document).ready(function() {
     tileId = window.location.hash.replace('#', '');
+    tileId = tileId.split('?')[0];
 
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
@@ -16,6 +17,20 @@ $(document).ready(function() {
             tick(-1);
     });
 
+    socket.on('finger', function(data) {
+        if (handleFingerInput != undefined) {
+            handleFingerInput(data);
+        }
+    });
+    
+
+    window.setInterval(function() {
+        if (checkHover != undefined) {
+            checkHover();
+        }
+    }, 100);
+        
+    
     $.ajaxSetup({ cache: false });
 
     var getTile = function() {

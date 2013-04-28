@@ -42,7 +42,10 @@
 
   function postLog(message){
     console.log(message);
-      $.post(host + "log", message);
+      $.post(host + "log",
+      {
+        "message": message
+      });
     };
 
     $(document).on("pageinit","#tiles", function(){

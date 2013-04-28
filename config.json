@@ -67,48 +67,48 @@
         }
     },
     "sessionTiles": {
-        "A": {
-            "type": "filter",
-            "when": "session",
-            "volatile": true
-        },
-        "B": {
-            "type": "filter",
-            "when": "session",
-            "volatile": true
-        },
-        "C": {
-            "type": "filter",
-            "when": "session",
-            "volatile": true
-        },
-        "D": {
-            "type": "filter",
-            "when": "session",
-            "volatile": true
-        },
         "E": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "F": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "G": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "H": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "A": {
             "type": "filter",
             "when": "session",
             "filter": {
                 "room": ["Blue", "241", "242", "243"]
             }
         },        
-        "F": {
+        "B": {
             "type": "filter",
             "when": "session",
             "filter": {
                 "room": ["251", "252A", "252B", "253"]
             }
         },
-        "G": {
+        "C": {
             "type": "filter",
             "when": "session",
             "filter": {
                 "room": ["Bordeaux", "342A", "343", "361", "362/363"]
             }
         },
-        "H": {
+        "D": {
             "type": "filter",
             "when": "session",
             "filter": {
