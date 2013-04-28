@@ -52,6 +52,11 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
+
+    $.get('/timeSinceTick', function(data) {
+        sinceTick = data.timeSinceTick;
+        updateLoading();
+    });
 }
 
 $(document).ready(function() {
