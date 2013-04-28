@@ -1,9 +1,11 @@
 var items = [];
 var durations = {};
+var interactive = false;
 
 function init() {
     items = [];
     durations = {};
+    interactive = false;
 
     $('#action').hide();
     $('#loading').show();
@@ -160,6 +162,7 @@ function checkHover() {
 
 
 function handleFingerInput(data) {
+    if (!interactive) return;
     if (posted) {
         return;
     }
@@ -212,6 +215,7 @@ function inside(x, y, left, top, width, height) {
 }
 
 function interactiveTile() {
+    interactive = true;
     posted = false;
     window.setInterval(checkHover, 100);
     var socket = io.connect("http://" + window.location.hostname, {
