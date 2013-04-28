@@ -148,7 +148,7 @@ function checkHover() {
             } else if (hovered[hover] != undefined && !hovered[hover].posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
                 console.log("Posting to filters", text, tileId);
                 hovered[hover].posted = true;
-               // $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
+               $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
             }
           }
     };
