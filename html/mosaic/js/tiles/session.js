@@ -1,6 +1,7 @@
 var items = [];
 var durations = {};
 var interactive = false;
+var sinceTick = 0;
 
 function init() {
     items = [];
@@ -51,6 +52,11 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
+
+    $.get('/timeSinceTick', function(data) {
+        sinceTick = data.timeSinceTick;
+        updateLoading();
+    });
 }
 
 function tick(ti) {
@@ -118,12 +124,20 @@ function tick(ti) {
     if(tile.filter.name)
         $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);
     $('#volatile_room').text(room);
+
+    sinceTick = 0;
 }
 
 function doneTile() {
     $('body').attr('id', '').attr('class', '');
     $('#timeline').html('');
     $('#submissions').html('');
+}
+
+function updateLoading() {
+    $('#loading .meter span').css('width', (sinceTick / 30000)*100 + '%');
+    sinceTick+=50;
+    window.setTimeout(updateLoading, 50);
 }
 
 var topOffset = parseInt(getURLParameter('top'));

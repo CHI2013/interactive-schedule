@@ -108,6 +108,7 @@ body {
     width: 520px;
     height: 355px;
     border: 1px dashed #352537;
+    border-radius: 5px;
 }
 
 .break_tile #submissions, .session_tile #submissions {
@@ -205,10 +206,13 @@ h3.code {
     width: 135px;
     position: absolute;
     top: 200px;
-    left: 245px;
+    left: 210px;
     font-size: 18px;
-    color: #fff;
+    color: #888;
+    text-align: center;
 }
+
+#loading p { margin: 0; }
 
 .break_tile #action, 
 .session_tile #action {
@@ -513,4 +517,31 @@ h3.code {
 .room_351 .label_351, .room_351    .line_351,
 .venue_interactivity .label_Maillot { 
     display: block !important; 
+}
+
+.meter { 
+    position: relative;
+    height: 10px;  /* Can be anything */
+    margin-top: 10px;
+    padding: 3px;
+    border: 1px solid #666;
+    border-radius: 5px;
+}
+
+.meter > span {
+    display: block;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #666;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.meter > span:after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 1;
+    overflow: hidden;
 }
