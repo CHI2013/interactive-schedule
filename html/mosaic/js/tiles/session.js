@@ -140,7 +140,8 @@ function checkHover() {
         return;
     }
     var now = new Date();
-    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) {
+    
+    if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) { //Hide the tagcloud after 2.5s inactivity
         $('#tagcloud').hide();
         $('#action').show();
         $('#submissions').show();
@@ -148,12 +149,12 @@ function checkHover() {
         return;
     }
     for (var hover in hovered) {
-        if (hovered.hasOwnProperty(hover)) {
+        if (hovered.hasOwnProperty(hover)) { //Clean up highlighted keywords
             text = $(hovered[hover].elem).text();
-            if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
+            if((now.getTime() - hovered[hover].timestamp.getTime()) > 25) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
-            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) {
+            } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
                 posted = true;
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
                $('#tagcloud').hide();
@@ -185,13 +186,15 @@ function handleFingerInput(data) {
     }
     tagCloudTimeStamp = new Date();
     //data.id, data.x, data.y
+    found = false;
     d3.selectAll("text").html(function(d, i) {
         boundingBox = this.getBBox();
         bbLeft = leftOffset + $('#tagcloud').offset().left + boundingBox.x
         bbTop = topOffset + $('#tagcloud').offset().top + boundingBox.y
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
-        if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
+        if (!found && inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
+            found = true;
             keyword = $(this).text();
             if (hovered[keyword] == undefined) {
                 hovered[keyword] = {};
