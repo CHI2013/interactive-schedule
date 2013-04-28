@@ -133,11 +133,14 @@ function checkHover() {
     var now = new Date();
     for (var hover in hovered) {
         if (hovered.hasOwnProperty(hover)) {
+            text = $(hovered[hover].elem).text();
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
                 $(hovered[hover].elem).css("fill", "#ccc");
-                //fingers[finger].div.remove();
                 delete hovered[hover];
             }
+            if (hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
+                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
+            } 
           }
     };
 }
@@ -168,6 +171,7 @@ function handleFingerInput(data) {
                 hovered[keyword] = {};
                 hovered[keyword].elem = this;
                 hovered[keyword].count = 0;
+                hovered[keyword].startTime = new Date();
                 $(this).css("fill", "#ff0000");
             } else {
                 hovered[keyword].count++;
