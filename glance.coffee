@@ -35,6 +35,7 @@ class GlanceServer
         @config = {}
         @tickIndex = {}
         @autoCompleteList = undefined
+        @lastTick = new Date();
         
         @currentTimeslot = null;
         
@@ -129,6 +130,7 @@ class GlanceServer
         @tickCount++
             
     tick: () ->
+        @lastTick = new Date();
         for tileId, i of @tickIndex
             @tickIndex[tileId] = ++i
             if not @tiles[tileId]['volatile']
@@ -252,6 +254,11 @@ class GlanceServer
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}                
 
+        @app.get '/timeToTick', (req, res) =>
+            now = new Date()
+            timeToNextTick = now.getTime() - @lastTick.getTime()
+            res.jsonp {'timeToTick': timeToNextTick}
+        
         #Returns the current tick count
         @app.get '/tick', (req, res) =>
             res.jsonp @tickIndex
