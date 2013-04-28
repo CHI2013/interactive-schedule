@@ -137,10 +137,9 @@ function checkHover() {
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
-            }
-            if (hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
+            } else if (hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
                 $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
-            } 
+            }
           }
     };
 }
