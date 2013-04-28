@@ -141,8 +141,6 @@
     //Load existing JSON data from /tiles and assign it to logical tiles
     function loadData(){
       $.get('/tiles', function(data){
-        console.log(data);
-        console.log("load data");
         var kind;
         for(var id in data){
           if(data[id].type === "filter" && data[id].hasOwnProperty("filter"))
@@ -184,25 +182,26 @@
         $('#G').removeClass("orange");
         $('#H').removeClass("purple");
 
-        $('#A').addClass("light_purple");
-        $('#B').addClass("light_purple");
-        $('#C').addClass("light_purple");
-        $('#D').addClass("light_purple");
-        $('#E').addClass("blue");
-        $('#F').addClass("green");
-        $('#G').addClass("red");
-        $('#H').addClass("orange");
+
+        $('#A').addClass("blue");
+        $('#B').addClass("green");
+        $('#C').addClass("red");
+        $('#D').addClass("orange");
+        $('#E').addClass("light_purple");
+        $('#F').addClass("light_purple");
+        $('#G').addClass("light_purple");
+        $('#H').addClass("light_purple");
       }
       else{
 
-        $('#A').removeClass("light_purple");
-        $('#B').removeClass("light_purple");
-        $('#C').removeClass("light_purple");
-        $('#D').removeClass("light_purple");
-        $('#E').removeClass("blue");
-        $('#F').removeClass("green");
-        $('#G').removeClass("red");
-        $('#H').removeClass("orange");
+        $('#A').removeClass("blue");
+        $('#B').removeClass("green");
+        $('#C').removeClass("red");
+        $('#D').removeClass("orange");
+        $('#E').removeClass("light_purple");
+        $('#F').removeClass("light_purple");
+        $('#G').removeClass("light_purple");
+        $('#H').removeClass("light_purple");
 
         $('#A').addClass("blue");
         $('#B').addClass("blue");
