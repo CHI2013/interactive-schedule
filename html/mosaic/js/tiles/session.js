@@ -148,6 +148,8 @@ function handleFingerInput(data) {
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
+            $(this).css("fill", "#fff");
+            "value": "#fff"
             console.log(this);
             console.log(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight);
         }
