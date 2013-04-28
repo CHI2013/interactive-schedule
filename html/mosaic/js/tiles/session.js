@@ -52,12 +52,14 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
+}
 
+$(document).ready(function() {
     $.get('/timeSinceTick', function(data) {
         sinceTick = data.timeSinceTick;
         updateLoading();
     });
-}
+});
 
 function tick(ti) {
     itemIndex = ti % items.length;
@@ -133,9 +135,7 @@ function doneTile() {
     $('body').attr('id', '').attr('class', '');
     $('#timeline').html('');
     $('#submissions').html('');
-
-    if(interactive)
-        $('#action').show();
+    $('#action').hide();
 }
 
 function updateLoading() {
