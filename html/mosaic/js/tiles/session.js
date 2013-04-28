@@ -221,7 +221,6 @@ function inside(x, y, left, top, width, height) {
 function interactiveTile() {
     interactive = true;
     posted = false;
-    window.setInterval(checkHover, 100);
     
     if($('#tagcloud').css('display') != 'none')
         return;

@@ -18,8 +18,18 @@ $(document).ready(function() {
     });
 
     socket.on('finger', function(data) {
-        handleFingerInput(data);
+        if (handleFingerInput != undefined) {
+            handleFingerInput(data);
+        }
     });
+    
+
+    window.setInterval(function() {
+        if (checkHover != undefined) {
+            checkHover();
+        }
+    }, 100);
+        
     
     $.ajaxSetup({ cache: false });
 
