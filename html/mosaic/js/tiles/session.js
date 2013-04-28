@@ -163,15 +163,15 @@ function handleFingerInput(data) {
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
-            if (hovered[data.id] == undefined) {
-                hovered[data.id] = {};
-                hovered[data.id].elem = this;
-                hovered[data.id].count = 0;
+            if (hovered[this.text] == undefined) {
+                hovered[this.text] = {};
+                hovered[this.text].elem = this;
+                hovered[this.text].count = 0;
                 $(this).css("fill", "#ff0000");
             } else {
-                hovered[data.id].count++;
+                hovered[this.text].count++;
             }
-            hovered[data.id].timestamp = new Date();
+            hovered[this.text].timestamp = new Date();
         }
     });
 }
@@ -187,7 +187,7 @@ function inside(x, y, left, top, width, height) {
 }
 
 function interactiveTile() {
-    //window.setInterval(checkHover, 100);
+    window.setInterval(checkHover, 100);
     var socket = io.connect("http://" + window.location.hostname, {
         port: 8000
     });
