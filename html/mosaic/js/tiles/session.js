@@ -200,11 +200,10 @@ function handleFingerInput(data) {
                 hovered[keyword] = {};
                 hovered[keyword].posted = false;
                 hovered[keyword].elem = this;
-                hovered[keyword].count = 0;
                 hovered[keyword].startTime = new Date();
                 $(this).css("fill", "#ff0000");
             } else {
-                hovered[keyword].count++;
+                d3.select(this).transition().style("color", "black");
             }
             hovered[keyword].timestamp = new Date();
         }
