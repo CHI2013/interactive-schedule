@@ -203,7 +203,7 @@ function handleFingerInput(data) {
                 hovered[keyword].startTime = new Date();
                 $(this).css("fill", "#ff0000");
             } else {
-                d3.select(this).transition().style("color", "black");
+                d3.select(this).transition().style("stroke", "black");
             }
             hovered[keyword].timestamp = new Date();
         }
