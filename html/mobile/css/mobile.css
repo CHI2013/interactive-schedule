@@ -107,7 +107,7 @@ div[data-role="content"]{
 
 /*Style for search page*/
 .selected{
-  /*background-color: rgba(166,166,166,1) !important;*/
+  background-color: rgba(166,166,166,1) !important;
   /*Had to do it this way to override JQM android theme styling AND iOS*/
   background-image: linear-gradient(#aaaaaa, #aaaaaa) !important;
 }
