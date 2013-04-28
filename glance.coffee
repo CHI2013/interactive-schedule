@@ -254,10 +254,10 @@ class GlanceServer
                     @iosocket.sockets.emit 'tilesUpdated', {}
                     @iosocket.sockets.emit 'newTile', {'tileId': tileId}                
 
-        @app.get '/timeToTick', (req, res) =>
+        @app.get '/timeSinceTick', (req, res) =>
             now = new Date()
-            timeToNextTick = now.getTime() - @lastTick.getTime()
-            res.jsonp {'timeToTick': timeToNextTick}
+            timeSinceTick = now.getTime() - @lastTick.getTime()
+            res.jsonp {'timeSinceTick': timeSinceTick }
         
         #Returns the current tick count
         @app.get '/tick', (req, res) =>
