@@ -143,13 +143,13 @@ function handleFingerInput(data) {
     //data.id, data.x, data.y
     d3.selectAll("text").html(function(d, i) {
         boundingBox = this.getBBox();
-        left = leftOffset + $('#tagcloud').offset().left + boundingBox.x
-        top = topOffset + $('#tagcloud').offset().top + boundingBox.y
-        width = boundingBox.width;
-        height = boundingBox.height;
-        if (inside(data.x, data.y, left, top, width, height)) {
+        bbLeft = leftOffset + $('#tagcloud').offset().left + boundingBox.x
+        bbTop = topOffset + $('#tagcloud').offset().top + boundingBox.y
+        bbWidth = boundingBox.width;
+        bbHeight = boundingBox.height;
+        if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
             console.log(this);
-            console.log(data.x, data.y, left, top, width, height);
+            console.log(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight);
         }
     });
 }
