@@ -17,6 +17,10 @@ $(document).ready(function() {
             tick(-1);
     });
 
+    socket.on('finger', function(data) {
+        handleFingerInput(data);
+    });
+    
     $.ajaxSetup({ cache: false });
 
     var getTile = function() {

@@ -222,13 +222,6 @@ function interactiveTile() {
     interactive = true;
     posted = false;
     window.setInterval(checkHover, 100);
-    var socket = io.connect("http://" + window.location.hostname, {
-        port: 8000
-    });
-    
-    socket.on('finger', function(data) {
-        handleFingerInput(data);
-    });
     
     if($('#tagcloud').css('display') != 'none')
         return;
