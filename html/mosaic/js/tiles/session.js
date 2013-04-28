@@ -162,17 +162,17 @@ function handleFingerInput(data) {
         bbTop = topOffset + $('#tagcloud').offset().top + boundingBox.y
         bbWidth = boundingBox.width;
         bbHeight = boundingBox.height;
-        console.log($(this).text());
         if (inside(data.x, data.y, bbLeft, bbTop, bbWidth, bbHeight)) {
-            if (hovered[this.text] == undefined) {
-                hovered[this.text] = {};
-                hovered[this.text].elem = this;
-                hovered[this.text].count = 0;
+            keyword = $(this).text();
+            if (hovered[keyword] == undefined) {
+                hovered[keyword] = {};
+                hovered[keyword].elem = this;
+                hovered[keyword].count = 0;
                 $(this).css("fill", "#ff0000");
             } else {
-                hovered[this.text].count++;
+                hovered[keyword].count++;
             }
-            hovered[this.text].timestamp = new Date();
+            hovered[keyword].timestamp = new Date();
         }
     });
 }
