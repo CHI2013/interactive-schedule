@@ -67,7 +67,11 @@ $(document).ready(function() {
 });
 
 function tick(ti) {
+    sinceTick = 0;
+    updateLoading();
+
     itemIndex = ti % items.length;
+
     if(!tile.hasOwnProperty('filter') || ti == -1)
         return interactiveTile();
 
@@ -131,9 +135,6 @@ function tick(ti) {
     if(tile.filter.name)
         $('#volatile_label').html(titleCaps(tile.filter.name) + '<br />' + (ti+1) + '/' + items.length);
     $('#volatile_room').text(room);
-
-    sinceTick = 0;
-    updateLoading();
 }
 
 function doneTile() {
@@ -176,7 +177,7 @@ function checkHover() {
         if (hovered.hasOwnProperty(hover)) { //Clean up highlighted keywords
             text = $(hovered[hover].elem).text();
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 150) {
-                $(hovered[hover].elem).css("fill", "#ccc");
+                $(hovered[hover].elem).css("fill", "#777");
                 delete hovered[hover];
             } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
                 posted = true;
@@ -225,7 +226,7 @@ function handleFingerInput(data) {
                 hovered[keyword].posted = false;
                 hovered[keyword].elem = this;
                 hovered[keyword].startTime = new Date();
-                $(this).css("fill", "#ff0000");
+                $(this).css("fill", "#fff");
             }
             hovered[keyword].timestamp = new Date();
         }

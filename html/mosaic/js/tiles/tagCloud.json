@@ -33,7 +33,7 @@
           "text": {"field": "data.text"}
         },
         "update": {
-          "fill": {"value": "#ccc"}
+          "fill": {"value": "#777"}
         },
         "hover": {
           "fill": {"value": "#fff"}
