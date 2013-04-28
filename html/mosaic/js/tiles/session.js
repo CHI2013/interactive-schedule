@@ -137,8 +137,9 @@ function checkHover() {
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
                 $(hovered[hover].elem).css("fill", "#ccc");
                 delete hovered[hover];
-            } else if (hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
+            } else if (!hovered[hover].posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1500) {
                 console.log("Posting to filters", text, tileId);
+                hovered[hover].posted = true;
                // $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
             }
           }
@@ -169,6 +170,7 @@ function handleFingerInput(data) {
             keyword = $(this).text();
             if (hovered[keyword] == undefined) {
                 hovered[keyword] = {};
+                hovered[hover].posted = false;
                 hovered[keyword].elem = this;
                 hovered[keyword].count = 0;
                 hovered[keyword].startTime = new Date();
