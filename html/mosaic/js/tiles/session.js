@@ -151,7 +151,7 @@ function checkHover() {
         if (hovered.hasOwnProperty(hover)) {
             text = $(hovered[hover].elem).text();
             if((now.getTime() - hovered[hover].timestamp.getTime()) > 20) {
-                $(hovered[hover].elem).css("fill", "#ccc");
+                $(hovered[hover].elem).animate({ backgroundColor:"#ccc"},100);
                 delete hovered[hover];
             } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 900) {
                 posted = true;
@@ -199,7 +199,8 @@ function handleFingerInput(data) {
                 hovered[keyword].elem = this;
                 hovered[keyword].count = 0;
                 hovered[keyword].startTime = new Date();
-                $(this).css("fill", "#ff0000");
+                
+                $(this).animate({ backgroundColor:"#ff0000"},100);
             } else {
                 hovered[keyword].count++;
             }
