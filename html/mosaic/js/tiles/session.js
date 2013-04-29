@@ -69,7 +69,7 @@ $(document).ready(function() {
 
 function tick(ti) {
     sinceTick = 0;
-    updateLoading();
+    $('#loading .meter span').css('width', '0%');
 
     itemIndex = ti % items.length;
 
@@ -165,12 +165,15 @@ function checkHover() {
         hovered = {};
         return;
     }
+    if (!interactive) return;
+    
     var now = new Date();
     
     if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) { //Hide the tagcloud after 2.5s inactivity
         $('#tagcloud').hide();
         $('#action').show();
         $('#submissions').show();
+        $('#volatile_label').html('');
         posted = false;
         return;
     }
@@ -184,6 +187,7 @@ function checkHover() {
                 posted = true;
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
                $('#tagcloud').hide();
+               $('#volatile_label').html('');
                hovered = {};
             }
           }
@@ -205,6 +209,8 @@ function handleFingerInput(data) {
     }
     
     $('#action').hide();
+    $('body').addClass('volatile_true');
+    $('#volatile_label').html(hoverText);
     
     if (!$('#tagcloud').is(':visible')) {
         $('#action').hide();
@@ -227,10 +233,12 @@ function handleFingerInput(data) {
                 hovered[keyword].posted = false;
                 hovered[keyword].elem = this;
                 hovered[keyword].startTime = new Date();
+                hovered[keyword].ticker = '';
                 $(this).css("fill", "#fff");
             }
             hovered[keyword].timestamp = new Date();
-            $('#volatile_label').html(hoverText + 'Selecting ' + keyword);
+            hovered[keyword].ticker += '.';
+            $('#volatile_label').html(hoverText + 'Selecting ' + keyword + hovered[keyword].ticker);
         }
     });
 }
