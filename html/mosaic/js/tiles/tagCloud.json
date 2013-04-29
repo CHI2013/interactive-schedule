@@ -13,7 +13,7 @@
           "text": "data.text",
           "font": "PT Sans",
           "fontSize": "data.fontSize",
-          "padding": 20
+          "padding": 0
         }
       ]
     }
