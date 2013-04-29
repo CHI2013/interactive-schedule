@@ -193,6 +193,7 @@ function checkHover() {
         postLog("Tagcloud timed out " + tileId);
         logHovered();
         posted = false;
+        tagCloudTimeStamp = undefined;
         return;
     }
     for (var hover in hovered) {
