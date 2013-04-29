@@ -241,8 +241,10 @@ function interactiveTile() {
     interactive = true;
     posted = false;
     
-    if($('#tagcloud').css('display') != 'none' || !d3.select('#tagcloud').selectAll('*').empty())
+    if($('#tagcloud').css('display') != 'none' || !d3.select('#tagcloud').selectAll('*').empty()) {
+        $('#action').show();
         return;
+    }
 
     var largestFontSize = 40;
     var maxCount = 0;
