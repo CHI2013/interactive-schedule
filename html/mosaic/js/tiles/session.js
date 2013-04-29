@@ -237,8 +237,8 @@ function handleFingerInput(data) {
         $('#tagcloud').show();
         d3.selectAll("text").html(function(d, i) {
             $(this).css("fill", "#777");
-        }
-        postLog("Tagcloud enabled " + tileId);
+        });
+        postLog("enabled " + tileId);
     }
     tagCloudTimeStamp = new Date();
     //data.id, data.x, data.y
