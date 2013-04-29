@@ -14,11 +14,6 @@ function init() {
     $('#submissions').show();
     $('#tagcloud').hide();
 
-    $.get('/timeSinceTick', function(data) {
-        sinceTick = data.timeSinceTick;
-        updateLoading();
-    });
-
     if(!tile.hasOwnProperty('filter'))
         return interactiveTile();
 
@@ -58,6 +53,11 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
+
+    $.get('/timeSinceTick', function(data) {
+        sinceTick = data.timeSinceTick;
+        updateLoading();
+    });
 }
 
 $(document).ready(function() {
@@ -174,6 +174,7 @@ function checkHover() {
         $('#action').show();
         $('#submissions').show();
         $('#volatile_label').html('');
+        $('#volatile_room').text('');
         posted = false;
         return;
     }
@@ -188,6 +189,7 @@ function checkHover() {
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
                $('#tagcloud').hide();
                $('#volatile_label').html('');
+               $('#volatile_room').text('');
                hovered = {};
             }
           }
