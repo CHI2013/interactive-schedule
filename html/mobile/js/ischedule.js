@@ -50,6 +50,10 @@
 
     $(document).on("pageinit","#tiles", function(){
 
+    if(isAndroid){    
+      $('#backToScreens').css("display","none");
+    }
+
     var isOnline=setInterval(function(){checkOnlineStatus()},1000);
 
     function checkOnlineStatus(){
