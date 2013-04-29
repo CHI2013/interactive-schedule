@@ -14,8 +14,13 @@ function init() {
     $('#submissions').show();
     $('#tagcloud').hide();
 
+    $.get('/timeSinceTick', function(data) {
+        sinceTick = data.timeSinceTick;
+        updateLoading();
+    });
+
     if(!tile.hasOwnProperty('filter'))
-        return;
+        return interactiveTile();
 
     var filter = tile.filter;
     console.log("Initializing tile " + filter.tileId);
@@ -53,11 +58,6 @@ function init() {
         html += '</div></div>';
         $('#submissions').append(html);
     }
-
-    $.get('/timeSinceTick', function(data) {
-        sinceTick = data.timeSinceTick;
-        updateLoading();
-    });
 }
 
 $(document).ready(function() {
@@ -166,7 +166,7 @@ function checkHover() {
         return;
     }
     if (!interactive) return;
-    
+
     var now = new Date();
     
     if (tagCloudTimeStamp != undefined && (now.getTime() - tagCloudTimeStamp.getTime()) > 2500) { //Hide the tagcloud after 2.5s inactivity
@@ -259,6 +259,7 @@ function interactiveTile() {
     
     if($('#tagcloud').css('display') != 'none' || !d3.select('#tagcloud').selectAll('*').empty()) {
         $('#action').show();
+        $('#loading').hide();
         return;
     }
 
