@@ -2,6 +2,7 @@ var items = [];
 var durations = {};
 var interactive = false;
 var sinceTick = 0;
+var hoverText = "Point and hover over a keyword to select it.<br />";
 
 function init() {
     items = [];
@@ -229,6 +230,7 @@ function handleFingerInput(data) {
                 $(this).css("fill", "#fff");
             }
             hovered[keyword].timestamp = new Date();
+            $('#volatile_label').html(hoverText + 'Selecting ' + keyword);
         }
     });
 }
