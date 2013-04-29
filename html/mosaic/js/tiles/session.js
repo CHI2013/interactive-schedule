@@ -217,6 +217,9 @@ function handleFingerInput(data) {
     if (!$('#tagcloud').is(':visible')) {
         $('#action').hide();
         $('#tagcloud').show();
+        d3.selectAll("text").html(function(d, i) {
+            $(this).css("fill", "#777");
+        }
     }
     tagCloudTimeStamp = new Date();
     //data.id, data.x, data.y
