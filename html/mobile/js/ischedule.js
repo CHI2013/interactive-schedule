@@ -227,7 +227,7 @@
             tiles[i].innerHTML = "Syncing with display";
           }
           else
-            tiles[i].innerHTML = tile.text;
+          tiles[i].innerHTML = tile.text;
           tiles[i].setAttribute("submissionId", tile.submissionId);
           tiles[i].setAttribute("total", tile.total);
           tiles[i].setAttribute("isInSchedule", tile.isInSchedule);
@@ -250,7 +250,10 @@
         if(tile.id === tileId)
         {
           index = index % tile.total;
+          //assign new current value to logical tile
+          tile.current = index;
           //Update logical tiles
+          
           //assign new text, schedule_status and id to logical tile
           tile.text= tile.submissions[index].title;
           tile.submissionId = mapId(tile.submissions[tile.current]._id);
@@ -258,9 +261,6 @@
           tile.isInSchedule = status;
           else
           tile.isInSchedule = checkStatus(tileId);
-     
-          //assign new current value to logical tile
-          tile.current = index;
 
           //update visual tiles
           //tiles is the visual tiles, tilesData are the logical tiles
