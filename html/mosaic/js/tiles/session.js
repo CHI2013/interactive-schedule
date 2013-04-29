@@ -160,6 +160,21 @@ var hovered = {};
 var tagCloudTimeStamp;
 var posted = false;
 
+function logHovered() {
+    var hoverlog = [];
+    for (var hover in hovered) {
+        hoverlog.push({
+            keyword: hover,
+            startTime: hovered[hover].startTime.getTime(),
+            timestamp: hovered[hover].timestamp.getTime(),
+            ticker: hovered[hover].ticket
+        });
+    }
+    
+    hoverlog.sort(function(a, b) { return a.startTime - b.startTime; });
+    postLog(JSON.stringify(hoverlog, null, 2));
+}
+
 function checkHover() {
     if (posted) {
         hovered = {};
@@ -175,6 +190,8 @@ function checkHover() {
         $('#submissions').show();
         $('#volatile_label').html('');
         $('#volatile_room').text('');
+        postLog("Tagcloud timed out " + tileId);
+        logHovered();
         posted = false;
         return;
     }
@@ -187,6 +204,7 @@ function checkHover() {
             } else if (hovered[hover] != undefined && !posted && hovered[hover].timestamp.getTime() - hovered[hover].startTime.getTime() > 1100) { //If hovered for more long enough post the filter
                 posted = true;
                $.post('/filters', {authorKeywords: [text], filterName: text, tile: tileId});
+               logHovered();
                $('#tagcloud').hide();
                $('#volatile_label').html('');
                $('#volatile_room').text('');
@@ -220,6 +238,7 @@ function handleFingerInput(data) {
         d3.selectAll("text").html(function(d, i) {
             $(this).css("fill", "#777");
         }
+        postLog("Tagcloud enabled " + tileId);
     }
     tagCloudTimeStamp = new Date();
     //data.id, data.x, data.y
@@ -324,6 +343,13 @@ function getURLParameter(name) {
       return null;
   }
 }
+
+function postLog(message){
+    $.post("/log",
+    {
+      "message": message
+    });
+  };
 
 function getClass(item) {
     if(item.room)
