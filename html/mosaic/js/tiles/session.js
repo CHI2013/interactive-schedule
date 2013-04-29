@@ -167,7 +167,7 @@ function logHovered() {
             keyword: hover,
             startTime: hovered[hover].startTime.getTime(),
             timestamp: hovered[hover].timestamp.getTime(),
-            ticker: hovered[hover].ticket
+            ticker: hovered[hover].ticker
         });
     }
     
