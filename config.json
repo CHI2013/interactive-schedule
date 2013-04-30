@@ -1,0 +1,111 @@
+{
+    "name": "Lobby",
+    "db": "chi2013",
+    "port": 8000,
+    "tickFrequency": 30000,
+    "viihapticsEnabled": false,
+    "videoDir": "http://92.243.30.77:8000/videos",
+    "roomOrder": ["251", "252A", "252B", "253", "Blue", "241", "242A", "242B", "242AB", "243", "Havane", "351", "352AB", "Bordeaux", "342A", "343", "361", "362/363", "interactivity"],
+    "orientation": "vertical",
+    "searchFields": ["authors", "room", "title", "authorEmails", "authorKeywords", "communities", "acmClassifiers", "institutions", "cities", "states", "countries", "letterCode"],
+    "breakTiles": {
+        "E": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "F": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "G": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "H": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "A": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Blue", "241", "242", "243"]
+            }
+        },        
+        "B": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["251", "252A", "252B", "253"]
+            }
+        },
+        "C": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Bordeaux", "342A", "343", "361", "362/363"]
+            }
+        },
+        "D": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Havane", "351", "352"]
+            }
+        }
+    },
+    "sessionTiles": {
+        "E": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "F": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "G": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "H": {
+            "type": "filter",
+            "when": "session",
+            "volatile": true
+        },
+        "A": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Blue", "241", "242", "243"]
+            }
+        },        
+        "B": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["251", "252A", "252B", "253"]
+            }
+        },
+        "C": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Bordeaux", "342A", "343", "361", "362/363"]
+            }
+        },
+        "D": {
+            "type": "filter",
+            "when": "session",
+            "filter": {
+                "room": ["Havane", "351", "352"]
+            }
+        }
+    }
+}
