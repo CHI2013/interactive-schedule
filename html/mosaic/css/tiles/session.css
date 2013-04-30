@@ -100,7 +100,7 @@ body {
     color: #fff;
 }
 
-#submissions { 
+#submissions, #tagcloud { 
     position: absolute; 
     top: 45px;
     left: 10px;

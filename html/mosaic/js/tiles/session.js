@@ -7,6 +7,8 @@ function init() {
 
     $('#action').hide();
     $('#loading').show();
+    $('#submissions').show();
+    $('#tagcloud').hide();
 
     if(!tile.hasOwnProperty('filter'))
         return;
@@ -51,11 +53,8 @@ function init() {
 
 function tick(ti) {
     itemIndex = ti % items.length;
-    if(!tile.hasOwnProperty('filter') || ti == -1) {
-        $('#loading').hide();
-        $('#action').show();
-        return;
-    }
+    if(!tile.hasOwnProperty('filter') || ti == -1)
+        return interactiveTile();
 
     console.log($('body').attr('id') + ' tick ' + ti);
 
@@ -115,6 +114,64 @@ function doneTile() {
     $('body').attr('id', '').attr('class', '');
     $('#timeline').html('');
     $('#submissions').html('');
+}
+
+function interactiveTile() {
+    if($('#tagcloud').css('display') != 'none')
+        return;
+
+    $('#loading').hide();
+    $('#action').show().click(function() {
+        showTagCloud();
+    });
+
+    var largestFontSize = 48;
+    var maxCount = 0;
+    var keywords = [];
+    var spec = {};
+
+    $.get('/ongoingkeywords', function(data) {
+        Object.keys(data.keywords).forEach(function(k) {
+            var v = data.keywords[k].length;
+            if(v <= 1)
+                return;
+
+            if(maxCount < v) maxCount = v;
+
+            keywords.push({
+                'text': k,
+                'value': v
+            });
+        });
+
+        keywords.forEach(function(k) {
+            k.fontSize = Math.floor(largestFontSize * k.value/maxCount);
+        })
+    });
+
+    $.get('/mosaic/js/tiles/tagCloud.json', function(data) {
+        spec = data;
+    });
+
+    var showTagCloud = function() {
+        spec.data[0].values = keywords;
+
+        vg.parse.spec(spec, function(chart) {
+            var view = chart({
+              el: '#tagcloud',
+              renderer: 'svg'
+            });
+            view.update().on('click', function(e, i) {
+                $.post('/filters', {authorKeywords: [i.text], filterName: i.text, tile: tileId});
+            });
+
+            $('#action').hide();
+            $('#submissions').hide();
+            $('#tagcloud').show();
+        });
+    };
+
+    return;
 }
 
 function getClass(item) {

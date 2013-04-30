@@ -1,0 +1,44 @@
+{
+  "name": "wordcloud",
+  "width": 520,
+  "height": 355,
+  "padding": {"top":0, "bottom":0, "left":0, "right":0},
+  "data": [
+    {
+      "name": "table",
+      "values": [],
+      "transform": [
+        {
+          "type": "wordcloud",
+          "text": "data.text",
+          "font": "PT Sans",
+          "fontSize": "data.fontSize",
+          "padding": 20
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "type": "text",
+      "from": {"data": "table"},
+      "properties": {
+        "enter": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "align": {"value": "center"},
+          "baseline": {"value": "alphabetic"},
+          "font": {"field": "font"},
+          "fontSize": {"field": "fontSize"},
+          "text": {"field": "data.text"}
+        },
+        "update": {
+          "fill": {"value": "#ccc"}
+        },
+        "hover": {
+          "fill": {"value": "#fff"}
+        }
+      }
+    }
+  ]
+}
