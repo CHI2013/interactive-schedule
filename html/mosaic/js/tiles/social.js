@@ -9,14 +9,20 @@ var altUrl;
 var lastPhotoAdded = 0;
 
 function tick() {
-    var pseudoCoinFlip = Math.floor((Math.random()*3));
-    var row = Math.floor((Math.random()*2)); 
+    // var pseudoCoinFlip = Math.floor((Math.random()*3));
+    // var row = Math.floor((Math.random()*2)); 
 
-    if(allPhotos.length > 0 && lastPhotoAdded > 0)
-        addItem(addPhoto(), row);
+    // if(allPhotos.length > 0 && lastPhotoAdded > 0)
+    //     addItem(addPhoto(), row);
     
+    // if(allTweets.length > 0 && lastTweetAdded > 0)
+    //     addItem(addTweet(), row^1);
+
     if(allTweets.length > 0 && lastTweetAdded > 0)
-        addItem(addTweet(), row^1);
+        addItem(addTweet(), 0);
+
+    if(allTweets.length > 0 && lastTweetAdded > 0)
+        addItem(addTweet(), 1);
 
     window.setTimeout(tick, 7*1000);
 }
