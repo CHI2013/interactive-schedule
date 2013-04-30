@@ -7,6 +7,7 @@ fs = require 'fs'
 _ = require 'underscore'
 expressWinston = require 'express-winston'
 winston = require 'winston'
+os = require 'os'
 process.env.TZ = 'Europe/Paris' 
 
 class GlanceServer
@@ -35,9 +36,10 @@ class GlanceServer
         @config = {}
         @tickIndex = {}
         @autoCompleteList = undefined
-        @lastTick = new Date();
+        @lastTick = new Date()
+        @ips = {}
         
-        @currentTimeslot = null;
+        @currentTimeslot = null
         
         @loadConfig () =>
             @dbName = @config.db
@@ -123,13 +125,51 @@ class GlanceServer
             
             sock.on 'disconnect', () =>
                 @logger.info "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
-            
-     
+    
+    getIP: () ->
+        interfaces = os.networkInterfaces()
+        addresses = []
+        for i, addresses of interfaces
+            for address in addresses
+                if address.family == 'IPv4' and not address.internal
+                    return address.address
+        return null
+        
+    postIP: () ->
+        ip = @getIP()
+        if ip == null
+            return
+        if not @config.registry?
+            return
+        post_domain = @config.registry
+        post_port = 8000
+        post_path = '/registerIP'
+
+        post_data = JSON.stringify {"name": @config.name, "ip": ip}
+
+        post_options = {
+            host: post_domain,
+            port: post_port,
+            path: post_path,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': post_data.length
+            }
+        }
+
+        post_req = http.request post_options, (res) ->
+            res.setEncoding 'utf8'
+        post_req.write(post_data)
+        post_req.end()
+    
+        
     sendTick: () ->
         @iosocket.sockets.emit 'tick', @tickIndex #We are still in the same timeslot, we'll send a tick
         @tickCount++
             
     tick: () ->
+        @postIP()
         @lastTick = new Date();
         for tileId, i of @tickIndex
             @tickIndex[tileId] = ++i
@@ -215,6 +255,17 @@ class GlanceServer
             
         @app.get '/tiles', (req, res) =>
             res.jsonp @tiles
+        
+        @app.post '/registerIP', (req, res) =>
+            msg = req.body
+            if msg? and msg.ip? and msg.name?
+                @ips[msg.name] = msg.ip
+                res.jsonp {'status': 'ok'}
+            else
+                res.jsonp {'status': 'error', 'message': "invalid registration"}, 500
+                
+        @app.get '/registeredIPs', (req, res) =>
+            res.jsonp @ips
             
         @app.post '/log', (req, res) =>
             if req.body.message?
