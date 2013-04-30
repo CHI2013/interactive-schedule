@@ -48,6 +48,15 @@
       });
     };
 
+  $.get('/registeredIps', function(data){
+         console.log(data);
+          for(screen in data){
+              ip = data[screen];
+              name = screen; 
+             $("#screen_list").append('<li><h4><a href="http://' + ip + ':8000/mobile/tiles.html" data-transition="slide">' + name + '</a></h4></li>');
+        }
+        });
+
     $(document).on("pageinit","#tiles", function(){
 
     if(isAndroid){    
