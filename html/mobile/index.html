@@ -12,20 +12,6 @@
     <script src="js/jquery.mobile-1.3.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/NativeBridge.js"></script>
-  <script>
-  var hostIp = function getHostIp(){
-
-      $.get('/registeredIps', function(data){
-       console.log(data);
-        for(screen in data){
-            ip = data[screen];
-            name = screen; 
-        $("#screen_list").append('<li><h4><a href="http://' + ip + ':8000/mobile/tiles.html" data-transition="slide">' + name + '</a></h4></li>');
-      }
-      });
-
-    };
-  </script>
   </head> 
 <body> 
   <div data-role="page" id="home" data-add-back-btn="true">
@@ -38,7 +24,7 @@
         <p> Here you can interact with the large displays found through the conference and discover interesting events and add them to your schedule. It requires you to be within the venue and near to one of the shared displays.</p>
         <h4 class="centered"> Select the display you are at </h4>
         <ul  id="screen_list" data-role="listview" data-filter="false">
-      </ul>
+        </ul>
     </div>
   </div>
 </body>
