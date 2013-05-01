@@ -45,14 +45,14 @@ days = {
                 'type': 'day',
                 'number': 3,
                 'name': 'Wednesday',
-                'timeslots': ['timeslot_10', 'timeslot_11', 'timeslot_12'],
+                'timeslots': ['timeslot_10', 'timeslot_11', 'timeslot_12', 'timeslot_13'],
                 'date': [2013, 5, 1]
             },
         'day_4': {
                 'type': 'day',
                 'number': 4,
                 'name': 'Thursday',
-                'timeslots': ['timeslot_13', 'timeslot_14', 'timeslot_15', 'timeslot_16'],
+                'timeslots': ['timeslot_14', 'timeslot_15', 'timeslot_16', 'timeslot_17'],
                 'date': [2013, 5, 2]
             }
     }
@@ -257,9 +257,9 @@ insertInDb = (dict) ->
 days['day_1'].timeslots.splice 0, 1
 delete timeslots['timeslot_1']
 days['day_4'].timeslots.splice 0, 1
-delete timeslots['timeslot_13']
+delete timeslots['timeslot_14']
 days['day_4'].timeslots.splice days['day_4'].timeslots.length - 1, days['day_4'].timeslots.length
-delete timeslots['timeslot_16']
+delete timeslots['timeslot_17']
 
 insertInDb days
 insertInDb timeslots
