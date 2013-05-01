@@ -14,10 +14,6 @@ class GlanceServer
     constructor: () ->
         
         @transports = [
-              new winston.transports.File {
-                  filename: 'glance.log',
-                  timestamp: true
-                  },
             new winston.transports.Console {
                   colorize: true,
                   timestamp: true
@@ -28,6 +24,7 @@ class GlanceServer
             'transports': @transports 
         }
         
+        @logfile = fs.createWriteStream 'log.txt', {'flags': 'a'}
         
         @tiles = {}
         @tickCount = 0
@@ -55,6 +52,13 @@ class GlanceServer
                 @setupTiles () =>
                     @startTick()
 
+    log: (msg, json) ->
+        if json?
+            msg = msg + " " + JSON.stringify(json) + "\n"
+        now = new Date()
+        msg = now + ": " + msg
+        @logfile.write msg
+    
     clearTicker: () ->
         if @ticker?
             clearInterval @ticker
@@ -121,9 +125,11 @@ class GlanceServer
     
     setupSocketIO: () ->
         @iosocket.sockets.on 'connection', (sock) =>
+            @log "Client connected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
             @logger.info "Client connected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
             
             sock.on 'disconnect', () =>
+                @log "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
                 @logger.info "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
     
     getIP: () ->
@@ -169,7 +175,10 @@ class GlanceServer
         @tickCount++
             
     tick: () ->
-        @postIP()
+        try
+            @postIP()
+        catch error
+            console.log "Failed posting IP"
         @lastTick = new Date();
         for tileId, i of @tickIndex
             @tickIndex[tileId] = ++i
@@ -194,6 +203,7 @@ class GlanceServer
                     @currentTimeslot = doc._id
                 else if @currentTimeslot != null
                     @currentTimeslot = null
+                @log "Changing timeslot", {'new': @currentTimeslot, 'old': oldTimeslot}
                 @logger.info "Changing timeslot", {'new': @currentTimeslot, 'old': oldTimeslot}
                 @autoCompleteList = undefined
                 @clearTicker()
@@ -269,6 +279,7 @@ class GlanceServer
             
         @app.post '/log', (req, res) =>
             if req.body.message?
+                @log "Client:", {'message': req.body.message, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                 @logger.info "Client:", {'message': req.body.message, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                 res.jsonp {'status': 'ok'}
             else
@@ -277,10 +288,12 @@ class GlanceServer
         #Apply a new filter. The content of the post is a tag. A tile-id will be popped from @availableTiles and the filter will be applied on the given tile.
         #IF the query contains a named tile this will be used IF it is available, otherwise it will be given another tile.
         @app.post '/filters', (req, res) =>
+            @log "Filter posted", {'filter': req.body, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
             @logger.info "Filter posted", {'filter': req.body, 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
             
             if @availableTiles.length == 0
                 res.jsonp {'status': 'error', 'message': 'No empty tiles'}, 500
+                @log "No room for filter", {'filter': req.body, 'timeslot': @currentTimeslot}
                 @logger.info "No room for filter", {'filter': req.body, 'timeslot': @currentTimeslot}
                 return
             
@@ -300,6 +313,7 @@ class GlanceServer
                 else
                     data = data.submissions
                     @filterSubmissions tileId, query, data, filterName, true
+                    @log "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     @logger.info "Filter created", {'filter': req.body, 'results': @tiles[tileId].filter.submissions.map((s) -> s._id), 'timeslot': @currentTimeslot, 'clientIp': req.connection.remoteAddress}
                     res.jsonp {'status': 'ok', 'tileId': tileId}
                     @iosocket.sockets.emit 'tilesUpdated', {}
