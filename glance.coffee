@@ -13,6 +13,10 @@ process.env.TZ = 'Europe/Paris'
 class GlanceServer
     constructor: () ->
         
+        #The following two lines are horrible, horrible, please find a better solution
+        process.on 'uncaughtException', (err) ->
+            console.log err
+        
         @transports = [
             new winston.transports.Console {
                   colorize: true,
@@ -133,7 +137,10 @@ class GlanceServer
                 @logger.info "Client disconnected", {'id': sock.id, 'clientIp': sock.handshake.address.address}
     
     getIP: () ->
-        interfaces = os.networkInterfaces()
+        try
+            interfaces = os.networkInterfaces()
+        catch error
+            return null
         addresses = []
         for i, addresses of interfaces
             for address in addresses
